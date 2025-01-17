@@ -53,7 +53,7 @@ class viewer:
         self._process = subprocess.Popen(
             [os.path.join(_viewer_dir, 'viewer'), str(s.getsockname()[1])],
             stdout=subprocess.PIPE,
-            stderr=(None if debug else subprocess.PIPE))
+            stderr=(None if debug else subprocess.DEVNULL))
         if debug:
             print ('Started viewer process: %s' \
                 % os.path.join(_viewer_dir, 'viewer'))
