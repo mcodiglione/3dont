@@ -18,27 +18,35 @@
 
         packages = rec {
           default = visualizer;
-          visualizer = pkgs.python3.pkgs.buildPythonPackage {
-            pname = "3dont";
+          visualizer = pkgs.python3.pkgs.toPythonModule ( pkgs.stdenv.mkDerivation {
+            pname = "3D-ont";
             src = ./.;
             inherit version;
 
             nativeBuildInputs = with pkgs; [
               libsForQt5.qt5.wrapQtAppsHook
+              cmake
+              pkg-config
             ];
             
             buildInputs = with pkgs; [
               eigen
               python3
-              tbb
+              tbb.dev
               libsForQt5.qt5.qtbase
               libGL
+              python3Packages.numpy
             ];
             
-            dependencies = with pkgs.python3Packages; [
+            propagatebBuildInputs = with pkgs.python3Packages; [
               numpy
             ];
-          };
+            
+            cmakeFlags = [
+              "-DTBB_ROOT=${pkgs.tbb.out}"
+              "-DTBB_INCLUDE_DIR=${pkgs.tbb.dev}/include"
+            ];
+          });
         };
 
         apps = {
