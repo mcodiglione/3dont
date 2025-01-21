@@ -48,12 +48,14 @@ function(copy_target_dependencies x)
         ${PROJECT_SOURCE_DIR}/cmake/CopyAppleDependencies.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name} ${PPTK_LIBS_DIR})
   elseif(UNIX)
+    find_file(helper_script CopyLinuxDependencies.cmake 
+        PATHS ${CMAKE_MODULE_PATH} REQUIRED)
     add_custom_command(TARGET ${x} POST_BUILD
-      COMMAND ${CMAKE_COMMAND} -P
-        ${PROJECT_SOURCE_DIR}/cmake/CopyLinuxDependencies.cmake
+      COMMAND ${CMAKE_COMMAND} -P ${helper_script}
         ${_target_file}
         ${CMAKE_CURRENT_BINARY_DIR}/${_target_file_name}
         ${PPTK_LIBS_DIR} ${PPTK_PATCHELF})
+    unset(helper_script CACHE) # find_file creates a cache variable, this is temporary
   endif()
 endfunction()
 
@@ -65,14 +67,16 @@ endmacro()
 function(copy_file x)
   # x should be a file path, and should not be a variable
   # i.e. copy_file(${var}), not copy_file(var)
-  get_filename_component(name ${x} NAME)
-  file(RELATIVE_PATH temp ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
-  if (NOT (temp STREQUAL ""))
-    string(REGEX REPLACE "(/|\\\\)" "." temp "${temp}")
-    string(CONCAT name "${temp}" "." "${name}")
+  get_filename_component(filename ${x} NAME)
+  file(RELATIVE_PATH rel_path ${PROJECT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+  if (NOT (rel_path STREQUAL ""))
+    string(REGEX REPLACE "(/|\\\\)" "." rel_path "${rel_path}")
+    string(CONCAT target_name "${rel_path}" "." "${filename}")
+  else()
+    string(CONCAT target_name "${PROJECT_NAME}" "." "${filename}")
   endif()
   if (ARGC EQUAL 2)
-    set(${ARGV1} ${name} PARENT_SCOPE)
+    set(${ARGV1} ${target_name} PARENT_SCOPE)
   endif()
   if (NOT IS_ABSOLUTE ${x})
     set(src ${CMAKE_CURRENT_SOURCE_DIR}/${x})
@@ -80,7 +84,7 @@ function(copy_file x)
     set(src ${x})
   endif()
   set(dst ${CMAKE_CURRENT_BINARY_DIR})
-  add_custom_target(${name} ALL
+  add_custom_target(${target_name} ALL
     COMMAND ${CMAKE_COMMAND} -E copy_if_different ${src} ${dst}
     COMMENT "Copying ${src} to ${dst}")
 endfunction()

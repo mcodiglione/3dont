@@ -1,14 +1,13 @@
-# # Uncomment the following lines to run as standalone cmake script
-# cmake_minimum_required(VERSION 3.0)
-# project(estimate_normals)
+cmake_minimum_required(VERSION 3.14)
+project(estimate_normals)
 
-# set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake" ${CMAKE_CURRENT_SOURCE_DIR})
-# find_package(PythonLibs 2.7 REQUIRED)
-# find_package(Numpy REQUIRED)
-# find_package(TBB REQUIRED)
-# find_package(Eigen REQUIRED)
-# include(UsefulMacros)
-# include(FindOpenMP)
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+find_package(Python3 COMPONENTS Interpreter Development NumPy)
+find_package(Eigen3 REQUIRED)
+find_package(TBB COMPONENTS tbb tbbmalloc REQUIRED)
+find_package(OpenMP REQUIRED)
+include(UsefulMacros)
 
 add_library(estimate_normals SHARED estimate_normals.cpp)
 set(_link_flags ${OpenMP_CXX_FLAGS})
@@ -24,16 +23,13 @@ set_target_properties(estimate_normals PROPERTIES
   LINK_FLAGS ${_link_flags})
 set_target_python_module_name(estimate_normals)
 target_compile_definitions(estimate_normals PRIVATE -DUSE_TBB)
-target_link_libraries(estimate_normals
-  ${TBB_tbb_LIBRARY}
-  ${TBB_tbbmalloc_LIBRARY})
+target_link_libraries(estimate_normals Python3::NumPy Eigen3::Eigen
+    TBB::tbb TBB::tbbmalloc
+)
 target_include_directories(estimate_normals PRIVATE
   ../../include     # for python_util.h
   ../../kdtree/src  # for kdtree.h
-  ${Eigen_INCLUDE_DIR}
-  ${PYTHON_INCLUDE_DIR}
-  ${TBB_INCLUDE_DIR}
-  ${Numpy_INCLUDE_DIR})
+)
 copy_target(estimate_normals)
 copy_target_dependencies(estimate_normals)
 copy_file(__init__.py)

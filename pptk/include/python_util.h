@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include "Python.h"
-#include "arrayobject.h"
+#include "numpy/arrayobject.h"
 
 struct Array2D {
   const unsigned char* data;

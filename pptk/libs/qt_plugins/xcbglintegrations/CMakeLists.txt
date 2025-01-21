@@ -1,6 +1,7 @@
 if(UNIX AND NOT APPLE)
-  copy_file_with_dependencies(
-    ${Qt5_PLUGINS_DIR}/xcbglintegrations/libqxcb-egl-integration.so)
-  copy_file_with_dependencies(
-    ${Qt5_PLUGINS_DIR}/xcbglintegrations/libqxcb-glx-integration.so)
+  find_package(Qt5 COMPONENTS Gui REQUIRED)
+  get_target_property(xcb_egl_loc Qt5::QXcbEglIntegrationPlugin LOCATION)
+  copy_file_with_dependencies(${xcb_egl_loc})
+  get_target_property(xcb_glx_loc Qt5::QXcbGlxIntegrationPlugin LOCATION)
+  copy_file_with_dependencies(${xcb_glx_loc})
 endif()

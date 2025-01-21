@@ -4,14 +4,14 @@ function(copy_system_file x)
   if(ARGC EQUAL 2)
     set(y ${ARGV1})
   endif()
-  find_file(temp ${x} ${y})
-  copy_file(${temp} _target)
+  find_file(file_loc ${x} PATHS ${y} REQUIRED)
+  copy_file(${file_loc} _target)
   if(UNIX AND NOT APPLE)
     add_custom_command(TARGET ${_target} POST_BUILD COMMAND
       ${PPTK_PATCHELF} --set-rpath \\\$\$ORIGIN
       ${CMAKE_CURRENT_BINARY_DIR}/${x})
   endif()
-  unset(temp CACHE)
+  unset(file_loc CACHE) # find_file creates a cache variable, this is temporary
 endfunction()
 
 function(copy_import_target x)
@@ -35,13 +35,14 @@ elseif (APPLE)
 elseif (UNIX)
   # create local copies of system libraries that are required by pptk targets
   # but not provided by a bare bone manylinux1 platform, as specified in PEP 513
-  if (CMAKE_LIBRARY_ARCHITECTURE)
-    set(_paths
-      /lib/${CMAKE_LIBRARY_ARCHITECTURE}
-      /usr/lib/${CMAKE_LIBRARY_ARCHITECTURE})
-  endif()
-  copy_system_file(libgomp.so.1 "${_paths}")
-  copy_system_file(libz.so.1 "${_paths}")
+  find_package(OpenMP REQUIRED)
+  get_filename_component(gomp_file ${OpenMP_gomp_LIBRARY} NAME)
+  get_filename_component(gomp_path ${OpenMP_gomp_LIBRARY} DIRECTORY)
+  copy_system_file(${gomp_file} ${gomp_path})
+  find_package(ZLIB REQUIRED)
+  get_filename_component(zlib_file ${ZLIB_LIBRARY} NAME)
+  get_filename_component(zlib_path ${ZLIB_LIBRARY} DIRECTORY)
+  copy_system_file(${zlib_file} ${zlib_path})
 endif()
 
 add_subdirectory(qt_plugins)
