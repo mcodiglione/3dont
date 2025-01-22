@@ -3,6 +3,9 @@ project(pptk)
 
 # set(CMAKE_BUILD_TYPE Release)
 
+# Qt5::QXcbGlxIntegrationPlugin
+# Qt5::QXcbIntegrationPlugin
+
 # localize all dependencies (.dll, .so, or .dylib) in the following folder
 set(PPTK_LIBS_DIR ${PROJECT_BINARY_DIR}/pptk/libs)
 

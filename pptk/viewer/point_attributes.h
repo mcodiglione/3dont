@@ -164,7 +164,7 @@ class PointAttributes {
 
   void _compute_rgba_LOD_helper(std::size_t attr_idx,
                                 const Octree::Node* node) {
-    if (node == NULL) return;
+    if (node == nullptr) return;
 
     std::vector<float>& attr = _attr[attr_idx];
     quint64 dim = _attr_dim[attr_idx];
@@ -183,7 +183,7 @@ class PointAttributes {
       float w = 1.0f;
       unsigned int num_children = 0;
       for (unsigned int i = 0; i < 8; i++) {
-        if (node->children[i] == NULL) continue;
+        if (node->children[i] == nullptr) continue;
         num_children++;
         _compute_rgba_LOD_helper(attr_idx, node->children[i]);
         _accumulate_rgba(x, w, &attr[4 * node->children[i]->centroid_index]);
@@ -193,7 +193,7 @@ class PointAttributes {
   }
 
   void _compute_LOD_helper(std::size_t attr_idx, const Octree::Node* node) {
-    if (node == NULL) return;
+    if (node == nullptr) return;
 
     std::vector<float>& attr = _attr[attr_idx];
     quint64 dim = _attr_dim[attr_idx];

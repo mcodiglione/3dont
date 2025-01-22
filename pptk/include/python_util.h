@@ -358,7 +358,7 @@ bool CheckAndExtractArray2D(Array2D& x, PyObject* obj) {
 */
 bool CastAsLong(long& number, PyObject* item) {
   PyObject* number_obj = PyNumber_Long(item);
-  if (number_obj == NULL) return false;
+  if (number_obj == nullptr) return false;
 
   number = PyLong_AsLong(number_obj);  // may raise OverflowError
   Py_DECREF(number_obj);
@@ -375,7 +375,7 @@ bool CastAsLong(long& number, PyObject* item) {
 */
 bool CastAsLongLong(long long& number, PyObject* item) {
   PyObject* number_obj = PyNumber_Long(item);
-  if (number_obj == NULL) return false;
+  if (number_obj == nullptr) return false;
 
   number = PyLong_AsLongLong(number_obj);  // may raise OverflowError
   Py_DECREF(number_obj);
@@ -392,7 +392,7 @@ bool CastAsLongLong(long long& number, PyObject* item) {
 */
 bool CastAsDouble(double& number, PyObject* item) {
   PyObject* number_obj = PyNumber_Float(item);
-  if (number_obj == NULL) return false;
+  if (number_obj == nullptr) return false;
 
   number = (float)PyFloat_AS_DOUBLE(number_obj);
   Py_DECREF(number_obj);
@@ -407,7 +407,7 @@ bool CastAsDouble(double& number, PyObject* item) {
 template <typename T>  // assumes T is integral type
 bool CastAsIndex(T& index, PyObject* item) {
   PyObject* index_obj = PyNumber_Index(item);
-  if (index_obj == NULL) return false;
+  if (index_obj == nullptr) return false;
 
   long long temp;
   bool success = CastAsLongLong(temp, index_obj);

@@ -95,7 +95,7 @@ bool extract_array(ListItem& item, PyObject* obj, Py_ssize_t item_idx,
                  (int)item_idx, operand_name);
     return false;
   }
-  PyArrayObject* arr = (PyArrayObject*)obj;
+  auto* arr = (PyArrayObject*)obj;
   if (PyArray_TYPE(arr) != NPY_FLOAT32) {
     PyErr_Format(PyExc_TypeError,
                  "Array dtype must be float32: "
@@ -207,17 +207,16 @@ static PyObject* binary_op_single(PyObject* self, PyObject* args) {
   PyObject *X, *Y;
   if (!PyArg_ParseTuple(args, "OO", &X, &Y)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments.");
-    return NULL;
+    return nullptr;
   }
   ListItem x_struct, y_struct;
-  if (!extract_scalar_or_array(x_struct, X, 0, "left ")) return NULL;
-  if (!extract_scalar_or_array(y_struct, Y, 0, "right ")) return NULL;
+  if (!extract_scalar_or_array(x_struct, X, 0, "left ")) return nullptr;
+  if (!extract_scalar_or_array(y_struct, Y, 0, "right ")) return nullptr;
   npy_intp out_dims[2];
   if (!arrays_compatible(out_dims[0], out_dims[1],
                          x_struct.m, x_struct.n, y_struct.m, y_struct.n, 0))
-    return NULL;
-  PyArrayObject* out_item =
-      (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
+    return nullptr;
+  auto* out_item = (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
   float* out_data = (float*)PyArray_DATA(out_item);
   const float* x_ptr = x_struct.data;
   const float* y_ptr = y_struct.data;
@@ -241,7 +240,7 @@ static PyObject* binary_op(PyObject* self, PyObject* args) {
   if (!extract_operands_to_binop(out_len,
                                  X, x_len, x_struct,
                                  Y, y_len, y_struct, args))
-    return NULL;
+    return nullptr;
 
   PyObject* out_list = PyList_New(out_len);
   for (Py_ssize_t i = 0; i < out_len; i++) {
@@ -249,19 +248,19 @@ static PyObject* binary_op(PyObject* self, PyObject* args) {
     // iteration. to restrict to arrays, use just extract_array()
     if (x_len != 1) {
       PyObject* x_item = PyList_GetItem(X, i);
-      if (!extract_scalar_or_array(x_struct, x_item, i, "left ")) return NULL;
+      if (!extract_scalar_or_array(x_struct, x_item, i, "left ")) return nullptr;
     }
     if (y_len != 1) {
       PyObject* y_item = PyList_GetItem(Y, i);
-      if (!extract_scalar_or_array(y_struct, y_item, i, "right ")) return NULL;
+      if (!extract_scalar_or_array(y_struct, y_item, i, "right ")) return nullptr;
     }
     npy_intp out_dims[2];
     if (!arrays_compatible(out_dims[0], out_dims[1], x_struct.m, x_struct.n,
                            y_struct.m, y_struct.n, i))
-      return NULL;
-    PyArrayObject* out_item =
+      return nullptr;
+    auto* out_item =
         (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-    float* out_data = (float*)PyArray_DATA(out_item);
+    auto* out_data = (float*)PyArray_DATA(out_item);
     const float* x_ptr = x_struct.data;
     const float* y_ptr = y_struct.data;
     for (npy_intp r = 0; r < out_dims[0]; r++) {
@@ -312,11 +311,11 @@ static PyObject* reduction_op_single(PyObject* self, PyObject* args,
   typedef typename Reducer::ResultType ResultType;
   PyObject* X;
   PyObject* axis_obj = Py_None;
-  char* keywords[] = {(char*)"X", (char*)"axis", NULL};
+  char* keywords[] = {(char*)"X", (char*)"axis", nullptr};
   if (!PyArg_ParseTupleAndKeywords(args, kwdict, "O|O", keywords, &X,
                                    &axis_obj)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   int axis;
   if (axis_obj != Py_None) {
@@ -329,19 +328,19 @@ static PyObject* reduction_op_single(PyObject* self, PyObject* args,
                    "Type %s object passed "
                    "as axis option",
                    axis_obj->ob_type->tp_name);
-      return NULL;
+      return nullptr;
     }
   } else {
     axis = -1;  // denotes reduction over entire matrix
   }
   if (axis < -1 || axis > 1) {
     PyErr_Format(PyExc_ValueError, "Invalid axis value: %d", axis);
-    return NULL;
+    return nullptr;
   }
   if (axis == -1) {
     ListItem x_struct;
     if (!extract_array(x_struct, X, 0)) {
-      return NULL;
+      return nullptr;
     }
 
     const float* x_ptr = x_struct.data;
@@ -354,9 +353,9 @@ static PyObject* reduction_op_single(PyObject* self, PyObject* args,
     }
 
     npy_intp out_dim = 1;
-    PyArrayObject* out_item = (PyArrayObject*)PyArray_EMPTY(
+    auto* out_item = (PyArrayObject*)PyArray_EMPTY(
         1, &out_dim, TypeMap<ResultType>::type_num, 0);
-    ResultType* out_data = (ResultType*)PyArray_DATA(out_item);
+    auto* out_data = (ResultType*)PyArray_DATA(out_item);
     *out_data = reducer.finalize();
     PyObject* out_scalar = PyArray_ToScalar((void*)out_data, out_item);
     Py_DECREF(out_item);  // mark out_item for garbage collection
@@ -364,13 +363,13 @@ static PyObject* reduction_op_single(PyObject* self, PyObject* args,
   } else if (axis == 0) {
     ListItem x_struct;
     if (!extract_array(x_struct, X, 0)) {
-      return NULL;
+      return nullptr;
     }
 
     npy_intp out_dims[2] = {1, x_struct.n};
     PyObject* out_item =
         PyArray_EMPTY(2, out_dims, TypeMap<ResultType>::type_num, 0);
-    ResultType* out_data = (ResultType*)PyArray_DATA((PyArrayObject*)out_item);
+    auto* out_data = (ResultType*)PyArray_DATA((PyArrayObject*)out_item);
     const float* x_ptr = x_struct.data;
     Reducer reducer;
     for (npy_intp c = 0; c < x_struct.n; c++) {
@@ -384,13 +383,13 @@ static PyObject* reduction_op_single(PyObject* self, PyObject* args,
   } else {  // axis == 1
     ListItem x_struct;
     if (!extract_array(x_struct, X, 0)) {
-      return NULL;
+      return nullptr;
     }
 
     npy_intp out_dims[2] = {x_struct.m, 1};
     PyObject* out_item =
         PyArray_EMPTY(2, out_dims, TypeMap<ResultType>::type_num, 0);
-    ResultType* out_data = (ResultType*)PyArray_DATA((PyArrayObject*)out_item);
+    auto* out_data = (ResultType*)PyArray_DATA((PyArrayObject*)out_item);
     const float* x_ptr = x_struct.data;
     Reducer reducer;
     for (npy_intp r = 0; r < x_struct.m; r++) {
@@ -410,15 +409,15 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
   typedef typename Reducer::ResultType ResultType;
   PyObject* X;
   PyObject* axis_obj = Py_None;
-  char* keywords[] = {(char*)"X", (char*)"axis", NULL};
+  char* keywords[] = {(char*)"X", (char*)"axis", nullptr};
   if (!PyArg_ParseTupleAndKeywords(args, kwdict, "O|O", keywords, &X,
                                    &axis_obj)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   if (!PyList_Check(X)) {
     PyErr_SetString(PyExc_TypeError, "Requires list input");
-    return NULL;
+    return nullptr;
   }
   int axis;
   if (axis_obj != Py_None) {
@@ -431,14 +430,14 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
                    "Type %s object passed "
                    "as axis option",
                    axis_obj->ob_type->tp_name);
-      return NULL;
+      return nullptr;
     }
   } else {
     axis = -1;  // denotes reduction over entire matrix
   }
   if (axis < -1 || axis > 1) {
     PyErr_Format(PyExc_ValueError, "Invalid axis value: %d", axis);
-    return NULL;
+    return nullptr;
   }
 
   Py_ssize_t x_len = PyList_Size(X);
@@ -448,7 +447,7 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
       PyObject* x_item = PyList_GetItem(X, i);
       ListItem x_struct;
       if (!extract_array(x_struct, x_item, i)) {
-        return NULL;
+        return nullptr;
       }
 
       const float* x_ptr = x_struct.data;
@@ -461,9 +460,9 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
       }
 
       npy_intp out_dim = 1;
-      PyArrayObject* out_item = (PyArrayObject*)PyArray_EMPTY(
+      auto* out_item = (PyArrayObject*)PyArray_EMPTY(
           1, &out_dim, TypeMap<ResultType>::type_num, 0);
-      ResultType* out_data = (ResultType*)PyArray_DATA(out_item);
+      auto* out_data = (ResultType*)PyArray_DATA(out_item);
       *out_data = reducer.finalize();
       PyObject* out_scalar = PyArray_ToScalar((void*)out_data, out_item);
       Py_DECREF(out_item);  // mark out_item for garbage collection
@@ -474,13 +473,13 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
       PyObject* x_item = PyList_GetItem(X, i);
       ListItem x_struct;
       if (!extract_array(x_struct, x_item, i)) {
-        return NULL;
+        return nullptr;
       }
 
       npy_intp out_dims[2] = {1, x_struct.n};
       PyObject* out_item =
           PyArray_EMPTY(2, out_dims, TypeMap<ResultType>::type_num, 0);
-      ResultType* out_data =
+      auto* out_data =
           (ResultType*)PyArray_DATA((PyArrayObject*)out_item);
       const float* x_ptr = x_struct.data;
       Reducer reducer;
@@ -498,13 +497,13 @@ static PyObject* reduction_op(PyObject* self, PyObject* args,
       PyObject* x_item = PyList_GetItem(X, i);
       ListItem x_struct;
       if (!extract_array(x_struct, x_item, i)) {
-        return NULL;
+        return nullptr;
       }
 
       npy_intp out_dims[2] = {x_struct.m, 1};
       PyObject* out_item =
           PyArray_EMPTY(2, out_dims, TypeMap<ResultType>::type_num, 0);
-      ResultType* out_data =
+      auto* out_data =
           (ResultType*)PyArray_DATA((PyArrayObject*)out_item);
       const float* x_ptr = x_struct.data;
       Reducer reducer;
@@ -656,18 +655,18 @@ static PyObject* _sdot(PyObject* self, PyObject* args) {
   PyObject *X, *Y;
   if (!PyArg_ParseTuple(args, "OO", &X, &Y)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   ListItem x_struct, y_struct;
-  if (!extract_scalar_or_array(x_struct, X, 0, "left ")) return NULL;
-  if (!extract_scalar_or_array(y_struct, Y, 0, "right ")) return NULL;
+  if (!extract_scalar_or_array(x_struct, X, 0, "left ")) return nullptr;
+  if (!extract_scalar_or_array(y_struct, Y, 0, "right ")) return nullptr;
   bool x_is_scalar = x_struct.m == 1 && x_struct.n == 1;
   bool y_is_scalar = y_struct.m == 1 && y_struct.n == 1;
   if (x_struct.n != y_struct.m && !x_is_scalar && !y_is_scalar) {
     PyErr_Format(
         PyExc_ValueError, "Incompatible matrix sizes (%d, %d), (%d, %d)",
         (int)x_struct.m, (int)x_struct.n, (int)y_struct.m, (int)y_struct.n);
-    return NULL;
+    return nullptr;
   }
   npy_intp out_dims[2];
   if (x_is_scalar) {
@@ -680,9 +679,9 @@ static PyObject* _sdot(PyObject* self, PyObject* args) {
     out_dims[0] = x_struct.m;
     out_dims[1] = y_struct.n;
   }
-  PyArrayObject* out_item =
+  auto* out_item =
       (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-  float* out_data = (float*)PyArray_DATA(out_item);
+  auto* out_data = (float*)PyArray_DATA(out_item);
   if (x_is_scalar) {
     const float x_val = *x_struct.data;
     const float* y_ptr = y_struct.data;
@@ -723,17 +722,17 @@ static PyObject* _dot(PyObject* self, PyObject* args) {
   Py_ssize_t x_len, y_len, out_len;
   if (!extract_operands_to_binop(out_len, X, x_len, x_struct, Y, y_len,
                                  y_struct, args))
-    return NULL;
+    return nullptr;
 
   PyObject* out_list = PyList_New(out_len);
   for (Py_ssize_t i = 0; i < out_len; i++) {
     if (x_len != 1) {
       PyObject* x_item = PyList_GetItem(X, i);
-      if (!extract_scalar_or_array(x_struct, x_item, i, "left ")) return NULL;
+      if (!extract_scalar_or_array(x_struct, x_item, i, "left ")) return nullptr;
     }
     if (y_len != 1) {
       PyObject* y_item = PyList_GetItem(Y, i);
-      if (!extract_scalar_or_array(y_struct, y_item, i, "right ")) return NULL;
+      if (!extract_scalar_or_array(y_struct, y_item, i, "right ")) return nullptr;
     }
     bool x_is_scalar = x_struct.m == 1 && x_struct.n == 1;
     bool y_is_scalar = y_struct.m == 1 && y_struct.n == 1;
@@ -742,7 +741,7 @@ static PyObject* _dot(PyObject* self, PyObject* args) {
                    "Incompatible matrix sizes (%d, %d), (%d, %d). (item %d)",
                    (int)x_struct.m, (int)x_struct.n,
                    (int)y_struct.m, (int)y_struct.n, (int)i);
-      return NULL;
+      return nullptr;
     }
     npy_intp out_dims[2];
     if (x_is_scalar) {
@@ -755,9 +754,9 @@ static PyObject* _dot(PyObject* self, PyObject* args) {
       out_dims[0] = x_struct.m;
       out_dims[1] = y_struct.n;
     }
-    PyArrayObject* out_item =
+    auto* out_item =
         (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-    float* out_data = (float*)PyArray_DATA(out_item);
+    auto* out_data = (float*)PyArray_DATA(out_item);
     // note: not sure why using Eigen's matrix multiply is
     // alot slower than a naive triple for-loop matrix multiply:
     // multiplying two 3x3 matrices 1M times takes:
@@ -818,16 +817,16 @@ static PyObject* _stranspose(PyObject* self, PyObject* args) {
   PyObject* X;
   if (!PyArg_ParseTuple(args, "O", &X)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   ListItem x_struct;
-  if (!extract_array(x_struct, X, 0)) return NULL;
+  if (!extract_array(x_struct, X, 0)) return nullptr;
   MapTypeConst mat_x(x_struct.data, x_struct.m, x_struct.n,
                      StrideType(x_struct.row_stride, x_struct.col_stride));
   npy_intp out_dims[2] = {x_struct.n, x_struct.m};
-  PyArrayObject* out_item =
+  auto* out_item =
       (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-  float* out_data = (float*)PyArray_DATA(out_item);
+  auto* out_data = (float*)PyArray_DATA(out_item);
   MapType mat_out(out_data, out_dims[0], out_dims[1],
                   StrideType(out_dims[1], 1));
   mat_out = mat_x.transpose();
@@ -838,29 +837,29 @@ static PyObject* _transpose(PyObject* self, PyObject* args) {
   PyObject* X;
   if (!PyArg_ParseTuple(args, "O", &X)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   if (!PyList_Check(X)) {
     PyErr_SetString(PyExc_TypeError, "Requires list as first argument");
-    return NULL;
+    return nullptr;
   }
   Py_ssize_t x_len = PyList_Size(X);
   if (x_len == 0) {
     PyErr_SetString(PyExc_ValueError, "Requres non-empty lists");
-    return NULL;
+    return nullptr;
   }
   Py_ssize_t out_len = x_len;
   PyObject* out_list = PyList_New(out_len);
   for (Py_ssize_t i = 0; i < out_len; i++) {
     ListItem x_struct;
     if (!extract_array(x_struct, PyList_GetItem(X, i), i, "indexee "))
-      return NULL;
+      return nullptr;
     MapTypeConst mat_x(x_struct.data, x_struct.m, x_struct.n,
                        StrideType(x_struct.row_stride, x_struct.col_stride));
     npy_intp out_dims[2] = {x_struct.n, x_struct.m};
-    PyArrayObject* out_item =
+    auto* out_item =
         (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-    float* out_data = (float*)PyArray_DATA(out_item);
+    auto* out_data = (float*)PyArray_DATA(out_item);
     MapType mat_out(out_data, out_dims[0], out_dims[1],
                     StrideType(out_dims[1], 1));
     mat_out = mat_x.transpose();
@@ -876,7 +875,7 @@ static PyObject* _abs(PyObject* self, PyObject* args) {
 
 bool extract_integer(npy_intp& number, PyObject* item, npy_intp item_index) {
   PyObject* number_obj = PyNumber_Long(item);
-  if (number_obj == NULL) {
+  if (number_obj == nullptr) {
     PyErr_Format(PyExc_TypeError,
                  "Encountered non-\"int()-able\" %s object on %d-th item",
                  item->ob_type->tp_name, (int)item_index);
@@ -901,12 +900,12 @@ bool extract_indices(vector<npy_intp>& indices, PyObject* obj,
     for (Py_ssize_t i = 0; i < len; i++) {
       npy_intp number;
       if (!extract_integer(number, PyList_GetItem(obj, i), item_idx))
-        return NULL;
+        return false;
       indices.push_back(number);
     }
     return true;
   } else if (PyArray_Check(obj)) {
-    PyArrayObject* arr = (PyArrayObject*)obj;
+    auto* arr = (PyArrayObject*)obj;
     if (PyArray_NDIM(arr) != 1) {
       PyErr_Format(PyExc_ValueError,
                    "On %d-th item, numpy array has ndim = %d. "
@@ -924,19 +923,19 @@ bool extract_indices(vector<npy_intp>& indices, PyObject* obj,
       return true;
     } else {
       if (PyArray_TYPE(arr) == NPY_INT64) {
-        npy_int64* ptr = (npy_int64*)PyArray_DATA(arr);
+        auto* ptr = (npy_int64*)PyArray_DATA(arr);
         for (npy_intp i = 0; i < arr_len; i++)
           indices.push_back(*(ptr + i * arr_stride));
       } else if (PyArray_TYPE(arr) == NPY_INT32) {
-        npy_int32* ptr = (npy_int32*)PyArray_DATA(arr);
+        auto* ptr = (npy_int32*)PyArray_DATA(arr);
         for (npy_intp i = 0; i < arr_len; i++)
           indices.push_back(*(ptr + i * arr_stride));
       } else if (PyArray_TYPE(arr) == NPY_UINT64) {
-        npy_uint64* ptr = (npy_uint64*)PyArray_DATA(arr);
+        auto* ptr = (npy_uint64*)PyArray_DATA(arr);
         for (npy_intp i = 0; i < arr_len; i++)
           indices.push_back(*(ptr + i * arr_stride));
       } else if (PyArray_TYPE(arr) == NPY_UINT32) {
-        npy_uint32* ptr = (npy_uint32*)PyArray_DATA(arr);
+        auto* ptr = (npy_uint32*)PyArray_DATA(arr);
         for (npy_intp i = 0; i < arr_len; i++)
           indices.push_back(*(ptr + i * arr_stride));
       } else {
@@ -1017,23 +1016,23 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
   PyObject* I;
   if (!PyArg_ParseTuple(args, "OO", &X, &I)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   // check first argument X
   if (!PyList_Check(X)) {
     PyErr_SetString(PyExc_TypeError, "Requires list as first argument");
-    return NULL;
+    return nullptr;
   }
   Py_ssize_t x_len = PyList_Size(X);
 
   // check second argument I
   if (!PyTuple_Check(I) || PyTuple_GET_SIZE(I) != 2) {
     PyErr_SetString(PyExc_TypeError, "Requires 2-tuple as second argument");
-    return NULL;
+    return nullptr;
   }
   PyObject* Ir = PyTuple_GET_ITEM(I, 0);
   PyObject* Ic = PyTuple_GET_ITEM(I, 1);
-  PyObject* Y = NULL;
+  PyObject* Y = nullptr;
   Py_ssize_t y_len;
   int index_type = 0;
   if (!PySlice_Check(Ir)) {
@@ -1042,7 +1041,7 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
                    "In _idx(X,(Y,Z)), Y must be either list or slice. "
                    "Intead found %s object.",
                    Ir->ob_type->tp_name);
-      return NULL;
+      return nullptr;
     }
     Y = Ir;
     y_len = PyList_Size(Y);
@@ -1054,7 +1053,7 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
                    "In _idx(X,(Y,Z)), Z must be either list or slice. "
                    "Intead found %s object.",
                    Ic->ob_type->tp_name);
-      return NULL;
+      return nullptr;
     }
     Y = Ic;
     y_len = PyList_Size(Y);
@@ -1063,7 +1062,7 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
   if (index_type == 3) {
     PyErr_SetString(PyExc_TypeError,
                     "Simultaneous row and column indexing unsupported.");
-    return NULL;
+    return nullptr;
   }
   // note: at this point, meaning of index_type is as follows:
   // 0 - slice rows with Ir, slice columns with Ic
@@ -1072,9 +1071,9 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
 
   // determine length of output list
   Py_ssize_t out_len;
-  if (x_len == 0 || Y != NULL && y_len == 0) {
+  if (x_len == 0 || Y != nullptr && y_len == 0) {
     PyErr_SetString(PyExc_ValueError, "Requres non-empty lists");
-    return NULL;
+    return nullptr;
   }
   if (index_type == 0) {
     out_len = x_len;
@@ -1090,7 +1089,7 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
                      "In _idx(X,(Y,Z)), "
                      "len(X) = %d and len(Z) = %d incompatible.",
                      (int)x_len, (int)y_len);
-      return NULL;
+      return nullptr;
     }
     out_len = x_len > y_len ? x_len : y_len;
   }
@@ -1100,7 +1099,7 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
   if (x_len == 1) {
     PyObject* x_item = PyList_GetItem(X, 0);
     if (!extract_array(x_struct, x_item, 0, "indexee ")) {
-      return NULL;
+      return nullptr;
     }
     if (index_type == 0)
       slice_rows_and_cols(x_struct, (PySliceObject*)Ir, (PySliceObject*)Ic);
@@ -1112,9 +1111,9 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
 
   // read Y[0] once and use for all x in X if y_len == 1
   vector<npy_intp> indices;
-  if (Y != NULL && y_len == 1) {
+  if (Y != nullptr && y_len == 1) {
     PyObject* y_item = PyList_GetItem(Y, 0);
-    if (!extract_indices(indices, y_item, 0)) return NULL;
+    if (!extract_indices(indices, y_item, 0)) return nullptr;
   }
 
   PyObject* out_list = PyList_New(out_len);
@@ -1123,15 +1122,15 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
       if (x_len != 1) {
         PyObject* x_item = PyList_GetItem(X, i);
         if (!extract_array(x_struct, PyList_GetItem(X, i), i, "indexee "))
-          return NULL;
+          return nullptr;
         slice_rows_and_cols(x_struct, (PySliceObject*)Ir, (PySliceObject*)Ic);
       }
 
       npy_intp out_dims[2] = {x_struct.m, x_struct.n};
-      PyArrayObject* out_item =
+      auto* out_item =
           (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
       const float* in_data = x_struct.data;
-      float* out_data = (float*)PyArray_DATA(out_item);
+      auto* out_data = (float*)PyArray_DATA(out_item);
       for (npy_intp r = 0; r < x_struct.m; r++) {
         for (npy_intp c = 0; c < x_struct.n; c++)
           *(out_data++) = *(in_data + c * x_struct.col_stride);
@@ -1144,20 +1143,20 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
     for (Py_ssize_t i = 0; i < out_len; i++) {
       if (x_len != 1) {
         if (!extract_array(x_struct, PyList_GetItem(X, i), i, "indexee "))
-          return NULL;
+          return nullptr;
         slice_rows(x_struct, (PySliceObject*)Ir);
       }
 
       if (y_len != 1)
-        if (!extract_indices(indices, PyList_GetItem(Y, i), i)) return NULL;
+        if (!extract_indices(indices, PyList_GetItem(Y, i), i)) return nullptr;
 
-      if (!check_indices(indices, x_struct.n, i)) return NULL;
+      if (!check_indices(indices, x_struct.n, i)) return nullptr;
 
       npy_intp out_dims[2] = {x_struct.m, (npy_intp)indices.size()};
-      PyArrayObject* out_item =
+      auto* out_item =
           (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
       const float* in_data = x_struct.data;
-      float* out_data = (float*)PyArray_DATA(out_item);
+      auto* out_data = (float*)PyArray_DATA(out_item);
       for (npy_intp r = 0; r < x_struct.m; r++) {
         for (size_t c = 0; c < indices.size(); c++) {
           npy_intp col_index = indices[c];
@@ -1173,21 +1172,20 @@ static PyObject* _idx(PyObject* self, PyObject* args) {
     for (Py_ssize_t i = 0; i < out_len; i++) {
       if (x_len != 1) {
         if (!extract_array(x_struct, PyList_GetItem(X, i), i, "indexee "))
-          return NULL;
+          return nullptr;
         slice_cols(x_struct, (PySliceObject*)Ic);
       }
 
       if (y_len != 1)
-        if (!extract_indices(indices, PyList_GetItem(Y, i), i)) return NULL;
+        if (!extract_indices(indices, PyList_GetItem(Y, i), i)) return nullptr;
 
-      if (!check_indices(indices, x_struct.m, i)) return NULL;
+      if (!check_indices(indices, x_struct.m, i)) return nullptr;
 
       npy_intp out_dims[2] = {(npy_intp)indices.size(), x_struct.n};
-      PyArrayObject* out_item =
+      auto* out_item =
           (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-      float* out_data = (float*)PyArray_DATA(out_item);
-      for (size_t r = 0; r < indices.size(); r++) {
-        npy_intp row_index = indices[r];
+      auto* out_data = (float*)PyArray_DATA(out_item);
+      for (long row_index : indices) {
         if (row_index < 0) row_index += x_struct.m;
         const float* in_data = x_struct.data + row_index * x_struct.row_stride;
         for (npy_intp c = 0; c < x_struct.n; c++)
@@ -1203,14 +1201,14 @@ static PyObject* _seigh(PyObject* self, PyObject* args) {
   PyObject* X;
   if (!PyArg_ParseTuple(args, "O", &X)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   ListItem x_struct;
-  if (!extract_array(x_struct, X, 0)) return NULL;
+  if (!extract_array(x_struct, X, 0)) return nullptr;
   if (x_struct.m != x_struct.n) {
     PyErr_Format(PyExc_ValueError, "Array not square. %d x %d", (int)x_struct.m,
                  (int)x_struct.n);
-    return NULL;
+    return nullptr;
   }
   MapTypeConst mat_x(x_struct.data, x_struct.m, x_struct.n,
                      StrideType(x_struct.row_stride, x_struct.col_stride));
@@ -1219,17 +1217,17 @@ static PyObject* _seigh(PyObject* self, PyObject* args) {
   npy_intp out_dims[2] = {x_struct.m, x_struct.n};
 
   // store eigenvalues in first tuple slot
-  PyArrayObject* eigvals =
+  auto* eigvals =
       (PyArrayObject*)PyArray_EMPTY(1, out_dims, NPY_FLOAT32, 0);
-  float* eigval_data = (float*)PyArray_DATA(eigvals);
+  auto* eigval_data = (float*)PyArray_DATA(eigvals);
   for (npy_intp j = 0; j < out_dims[0]; j++)
     *(eigval_data++) = solver.eigenvalues()[j];
   PyTuple_SET_ITEM(out_tuple, 0, (PyObject*)eigvals);
 
   // store eigenvectors in second tuple slot
-  PyArrayObject* eigvecs =
+  auto* eigvecs =
       (PyArrayObject*)PyArray_EMPTY(2, out_dims, NPY_FLOAT32, 0);
-  float* eigvec_data = (float*)PyArray_DATA(eigvecs);
+  auto* eigvec_data = (float*)PyArray_DATA(eigvecs);
   copy(&solver.eigenvectors()(0, 0),
        &solver.eigenvectors()(out_dims[0] - 1, out_dims[1] - 1) + 1,
        eigvec_data);
@@ -1242,27 +1240,27 @@ static PyObject* _eigh(PyObject* self, PyObject* args) {
   PyObject* X;
   if (!PyArg_ParseTuple(args, "O", &X)) {
     PyErr_SetString(PyExc_TypeError, "Failed to parse arguments");
-    return NULL;
+    return nullptr;
   }
   if (!PyList_Check(X)) {
     PyErr_SetString(PyExc_TypeError, "Requires list as first argument");
-    return NULL;
+    return nullptr;
   }
   Py_ssize_t x_len = PyList_Size(X);
   if (x_len == 0) {
     PyErr_SetString(PyExc_ValueError, "Requres non-empty lists");
-    return NULL;
+    return nullptr;
   }
   Py_ssize_t out_len = x_len;
   PyObject* out_list = PyList_New(out_len);
   for (Py_ssize_t i = 0; i < out_len; i++) {
     ListItem x_struct;
     if (!extract_array(x_struct, PyList_GetItem(X, i), i, "indexee "))
-      return NULL;
+      return nullptr;
     if (x_struct.m != x_struct.n) {
       PyErr_Format(PyExc_ValueError, "Array not square. %d x %d. Item %d.",
                    (int)x_struct.m, (int)x_struct.n, (int)i);
-      return NULL;
+      return nullptr;
     }
     MapTypeConst mat_x(x_struct.data, x_struct.m, x_struct.n,
                        StrideType(x_struct.row_stride, x_struct.col_stride));
@@ -1342,18 +1340,18 @@ static PyMethodDef method_table[] = {
     {"_stranspose", _stranspose, METH_VARARGS,
      "[x1.T,...,xn.T]<-[x1,...,xn].T"},
     {"_seigh", _seigh, METH_VARARGS, "single (eigenvalues, eigenvectors)"},
-    {NULL, NULL, 0, NULL}};
+    {nullptr, nullptr, 0, nullptr}};
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef module_def = {PyModuleDef_HEAD_INIT,
                                         "vfuncs",
-                                        NULL,
+                                        nullptr,
                                         -1,
                                         method_table,
-                                        NULL,
-                                        NULL,
-                                        NULL,
-                                        NULL};
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr};
 
 PyMODINIT_FUNC PyInit_vfuncs(void) {
   PyObject* module = PyModule_Create(&module_def);

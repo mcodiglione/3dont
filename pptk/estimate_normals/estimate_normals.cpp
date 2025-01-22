@@ -40,7 +40,7 @@ void estimate_normals(vector<T>* eigenvectors, vector<T>* eigenvalues,
   }
 
   int num_normals = num_points;
-  if (subsample_indices != NULL)
+  if (subsample_indices != nullptr)
     num_normals = subsample_indices->size();
 
   // pre-allocate space for results (assume num_eigen either 1 or 3)
@@ -69,7 +69,7 @@ void estimate_normals(vector<T>* eigenvectors, vector<T>* eigenvalues,
     }
 
     int i_ = i;
-    if (subsample_indices != NULL)
+    if (subsample_indices != nullptr)
       i_ = (*subsample_indices)[i];
 
     // not using KNearestNeighborsSelf, because we want to include the
@@ -143,7 +143,7 @@ void estimate_normals(PyObject*& out1, PyObject*& out2, PyObject*& out3,
   VectorFromArray2D(points, arr);
 
   int num_normals = arr.m;
-  if (ptr_subsample_indices != NULL)
+  if (ptr_subsample_indices != nullptr)
     num_normals = ptr_subsample_indices->size();
 
   int num_eigen = 1;
@@ -165,14 +165,14 @@ void estimate_normals(PyObject*& out1, PyObject*& out2, PyObject*& out3,
 
   int typenum = NumpyTypeNumber<T>::value;
 
-  out1 = NULL;
-  out2 = NULL;
-  out3 = NULL;
+  out1 = nullptr;
+  out2 = nullptr;
+  out3 = nullptr;
   vector<T> evecs;
   vector<T> evals;
   vector<int> nbhd_sizes;
-  estimate_normals<T>(&evecs, output_eigenvalues == 1 ? &evals : NULL,
-                      output_neighborhood_sizes == 1 ? &nbhd_sizes : NULL,
+  estimate_normals<T>(&evecs, output_eigenvalues == 1 ? &evals : nullptr,
+                      output_neighborhood_sizes == 1 ? &nbhd_sizes : nullptr,
                       points, k, r, ptr_subsample_indices, num_eigen, verbose,
                       num_procs);
   out1 = PyArray_EMPTY(out1_ndim, out1_dims, typenum, false);
@@ -283,13 +283,13 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
   // check k and r
   if (r <= 0.0f) {
     PyErr_SetString(PyExc_ValueError, "r must be positive");
-    return NULL;
+    return nullptr;
   } else if (k == 0) {
     PyErr_SetString(PyExc_ValueError, "k cannot be zero");
-    return NULL;
+    return nullptr;
   } else if (k < 0 && r == std::numeric_limits<float>::infinity()) {
     PyErr_SetString(PyExc_ValueError, "invalid combo: r == inf and k < 0");
-    return NULL;
+    return nullptr;
   }
 
   Array2D arr;
@@ -297,25 +297,25 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
     if (!PyErr_Occurred())
       PyErr_SetString(PyExc_TypeError,
                       "points must be interpretable as 0, 1 or 2-d array");
-    return NULL;
+    return nullptr;
   }
 
   std::vector<int> subsample_indices;
-  std::vector<int>* ptr_subsample_indices = NULL;
+  std::vector<int>* ptr_subsample_indices = nullptr;
   if (subsample != Py_None) {
     if (!CheckAndExtractIndices(subsample_indices, subsample, arr.m)) {
       if (!PyErr_Occurred())
         PyErr_SetString(PyExc_TypeError,
                         "subsample must be interpretable as specifying a "
                         "subset of points");
-      return NULL;
+      return nullptr;
     }
     ptr_subsample_indices = &subsample_indices;
   }
 
-  PyObject* out1 = NULL;
-  PyObject* out2 = NULL;
-  PyObject* out3 = NULL;
+  PyObject* out1 = nullptr;
+  PyObject* out2 = nullptr;
+  PyObject* out3 = nullptr;
   if (arr.type_num == NPY_FLOAT32) {
     estimate_normals<float>(out1, out2, out3, arr, k, r, ptr_subsample_indices,
                             (bool)output_eigenvalues,
@@ -330,16 +330,16 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
                              num_procs);
   } else {
     PyErr_SetString(PyExc_TypeError, "points must be float32 or float64");
-    return NULL;
+    return nullptr;
   }
 
-  if (out2 == NULL && out3 == NULL) {
+  if (out2 == nullptr && out3 == nullptr) {
     return out1;
   } else {
     PyObject* out = PyTuple_New(3);
     PyTuple_SetItem(out, 0, out1);
-    PyTuple_SetItem(out, 1, out2 != NULL ? out2 : Py_None);
-    PyTuple_SetItem(out, 2, out3 != NULL ? out3 : Py_None);
+    PyTuple_SetItem(out, 1, out2 != nullptr ? out2 : Py_None);
+    PyTuple_SetItem(out, 2, out3 != nullptr ? out3 : Py_None);
     return out;
   }
 }
@@ -347,18 +347,18 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
 static PyMethodDef methods[] = {
     {"estimate_normals", (PyCFunction)estimate_normals_wrapper,
      METH_VARARGS | METH_KEYWORDS, estimate_normals_usage},
-    {NULL, NULL, 0, NULL}};
+    {nullptr, nullptr, 0, nullptr}};
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef module_def = {PyModuleDef_HEAD_INIT,
                                         "estimate_normals",
-                                        NULL,
+                                        nullptr,
                                         -1,
                                         methods,
-                                        NULL,
-                                        NULL,
-                                        NULL,
-                                        NULL};
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr};
 
 PyMODINIT_FUNC PyInit_estimate_normals(void) {
   PyObject* module = PyModule_Create(&module_def);

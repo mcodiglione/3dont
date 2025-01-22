@@ -68,7 +68,7 @@ class DeleteTreeAction {
 };
 
 void DeleteKdTree(PyObject* obj) {
-  KdTreeStruct* ptr = (KdTreeStruct*)PyCapsule_GetPointer(obj, NULL);
+  KdTreeStruct* ptr = (KdTreeStruct*)PyCapsule_GetPointer(obj, nullptr);
   DeleteTreeAction action(ptr);
   PerformAction<DeleteTreeAction>(action, ptr->type_num, ptr->dim);
 }
@@ -76,7 +76,7 @@ void DeleteKdTree(PyObject* obj) {
 class BuildTreeAction {
  public:
   BuildTreeAction(const Array2D& x, const pointkd::BuildParams& params)
-      : x_(x), params_(params), results_(NULL) {}
+      : x_(x), params_(params), results_(nullptr) {}
 
   template <typename T, int dim>
   void Perform() {
@@ -92,7 +92,7 @@ class BuildTreeAction {
     }
     KdTreeStruct* kdtree_struct =
         new KdTreeStruct((void*)tree, x_.type_num, dim);
-    results_ = PyCapsule_New((void*)kdtree_struct, NULL, &DeleteKdTree);
+    results_ = PyCapsule_New((void*)kdtree_struct, nullptr, &DeleteKdTree);
   }
 
   PyObject* results() const { return results_; }
@@ -132,7 +132,7 @@ PyObject* QueryWithIndices(const pointkd::KdTree<T, dim>* kdtree,
                  "QueryWithIndices(): "
                  "k = %ld and dmax = %lf is an invalid combination.",
                  k, dmax);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -154,7 +154,7 @@ PyObject* QueryWithPoints(const pointkd::KdTree<Tx, dim>* kdtree,
                  "QueryWithPoints(): "
                  "k = %ld and dmax = %lf is an invalid combination.",
                  k, dmax);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -166,14 +166,14 @@ class QueryTreeAction {
         obj_queries_(obj_queries),
         k_(k),
         dmax_(dmax),
-        results_(NULL) {}
+        results_(nullptr) {}
   template <typename T, int dim>
   void Perform() {
     const pointkd::KdTree<T, dim>* tree =
         (const pointkd::KdTree<T, dim>*)ptr_->tree_ptr;
     pointkd::Indices indices;
     std::vector<pointkd::Indices> r;
-    if (obj_queries_ == NULL || obj_queries_ == Py_None) {
+    if (obj_queries_ == nullptr || obj_queries_ == Py_None) {
       // query with indices 0 ... num_points-1
       for (int i = 0; i < tree->num_points(); i++) indices.push_back(i);
       results_ = QueryWithIndices(tree, indices, k_, dmax_);
@@ -182,7 +182,7 @@ class QueryTreeAction {
       PyErr_SetString(PyExc_NotImplementedError,
                       "QueryTreeAction::Perform(): "
                       "slice-based query not yet implemented");
-      results_ = NULL;
+      results_ = nullptr;
     } else if (PyArray_Check(obj_queries_) && PyArray_NDIM(obj_queries_) == 2) {
       // query with points
       Array2D x;
@@ -192,7 +192,7 @@ class QueryTreeAction {
                      "QueryTreeAction::Perform(): "
                      "query point dim = %d (expecting dim = %d).",
                      (int)x.n, dim);
-        results_ = NULL;
+        results_ = nullptr;
       } else if (x.type_num == NPY_FLOAT32) {
         std::vector<float> q;
         VectorFromArray2D(q, x);
@@ -243,7 +243,7 @@ class QueryTreeAction {
                      "QueryTreeAction::Perform(): "
                      "could not use object of type %s as query input.",
                      obj_queries_->ob_type->tp_name);
-      results_ = NULL;
+      results_ = nullptr;
     }
   }
 
@@ -280,16 +280,16 @@ static char kdtree_build_usage[] =
 
 static PyObject* Build(PyObject* self, PyObject* args, PyObject* kwargs) {
   static char* keywords[] = {(char*)"data", (char*)"numprocs",
-                             (char*)"maxleafsize", (char*)"emptysplit", NULL};
-  PyObject* data = NULL;
+                             (char*)"maxleafsize", (char*)"emptysplit", nullptr};
+  PyObject* data = nullptr;
   pointkd::BuildParams build_params;
   if (!PyArg_ParseTupleAndKeywords(
           args, kwargs, "O|iid", keywords, &data, &build_params.num_proc,
           &build_params.max_leaf_size, &build_params.empty_split_threshold)) {
     PyErr_SetString(PyExc_TypeError, "Build(): failed parsing arguments");
-    return NULL;
+    return nullptr;
   }
-  // TODO: make sure data is never NULL at this point
+  // TODO: make sure data is never nullptr at this point
   Array2D x;
   if (CheckAndExtractArray2D(x, data)) {
     BuildTreeAction action(x, build_params);
@@ -299,7 +299,7 @@ static PyObject* Build(PyObject* self, PyObject* args, PyObject* kwargs) {
     if (!PyErr_Occurred())
       PyErr_Format(PyExc_TypeError, "Build(): points array type %s unsupported",
                    data->ob_type->tp_name);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -342,21 +342,21 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
   const double dbl_infinity = numeric_limits<double>::infinity();
   PyObject* obj_kdtree;
   PyObject* obj_queries;
-  PyObject* obj_k = NULL;
-  PyObject* obj_dmax = NULL;
+  PyObject* obj_k = nullptr;
+  PyObject* obj_dmax = nullptr;
   int num_procs = -1;
   static char* keywords[] = {(char*)"kdtree", (char*)"queries",  (char*)"k",
-                             (char*)"dmax",   (char*)"numprocs", NULL};
+                             (char*)"dmax",   (char*)"numprocs", nullptr};
   if (!PyArg_ParseTupleAndKeywords(args, kwargs, "OO|OOi", keywords,
                                    &obj_kdtree, &obj_queries, &obj_k, &obj_dmax,
                                    &num_procs)) {
     PyErr_SetString(PyExc_TypeError, "Query(): failed parsing arguments");
-    return NULL;
+    return nullptr;
   }
 
   // check option obj_k and set k
   long k;
-  if (obj_k == NULL) {  // k not specified
+  if (obj_k == nullptr) {  // k not specified
     k = 1;
   } else if (obj_k == Py_None) {
     k = -1;
@@ -365,15 +365,15 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
       PyErr_Format(PyExc_RuntimeError,
                    "Query(): could not interpret k of type %s as C long.",
                    obj_k->ob_type->tp_name);
-    return NULL;
+    return nullptr;
   } else if (k <= 0) {
     PyErr_Format(PyExc_ValueError, "Query(): encountered negative k=%ld", k);
-    return NULL;
+    return nullptr;
   }
 
   // check option obj_dmax and set dmax
   double dmax;
-  if (obj_dmax == NULL) {  // dmax not specified
+  if (obj_dmax == nullptr) {  // dmax not specified
     dmax = dbl_infinity;
   } else if (obj_dmax == Py_None) {
     dmax = dbl_infinity;
@@ -382,22 +382,22 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
       PyErr_Format(PyExc_RuntimeError,
                    "Query(): could not interpret dmax of type %s as C double.",
                    obj_dmax->ob_type->tp_name);
-    return NULL;
+    return nullptr;
   } else if (dmax < 0.0) {
     PyErr_Format(PyExc_ValueError, "Query(): encountered negative dmax %lf",
                  dmax);
-    return NULL;
+    return nullptr;
   }
 
   // get pointer to k-d tree
   const KdTreeStruct* kdtree_struct;
   if (PyCapsule_CheckExact(obj_kdtree)) {
-    kdtree_struct = (const KdTreeStruct*)PyCapsule_GetPointer(obj_kdtree, NULL);
+    kdtree_struct = (const KdTreeStruct*)PyCapsule_GetPointer(obj_kdtree, nullptr);
   } else {
     PyErr_SetString(PyExc_TypeError,
                     "Query(): "
                     "first arg must be capsule of a KdTreeStruct pointer");
-    return NULL;
+    return nullptr;
   }
 
   // note: at this point, k >= -1 and dMax >= 0.0
@@ -405,7 +405,7 @@ static PyObject* Query(PyObject* self, PyObject* args, PyObject* kwargs) {
   PerformAction<QueryTreeAction>(action, kdtree_struct->type_num,
                                  kdtree_struct->dim);
   if (PyErr_Occurred()) {
-    return NULL;
+    return nullptr;
   } else {
     return action.results();
   }
@@ -416,18 +416,18 @@ static PyMethodDef methods_table[] = {
      kdtree_build_usage},
     {"_query", (PyCFunction)Query, METH_VARARGS | METH_KEYWORDS,
      kdtree_query_usage},
-    {NULL, NULL, 0, NULL}};
+    {nullptr, nullptr, 0, nullptr}};
 
 #if PY_MAJOR_VERSION >= 3
 static struct PyModuleDef module_def = {PyModuleDef_HEAD_INIT,
                                         "kdtree",
-                                        NULL,
+                                        nullptr,
                                         -1,
                                         methods_table,
-                                        NULL,
-                                        NULL,
-                                        NULL,
-                                        NULL};
+                                        nullptr,
+                                        nullptr,
+                                        nullptr,
+                                        nullptr};
 
 PyMODINIT_FUNC PyInit_kdtree(void) {
   PyObject* module = PyModule_Create(&module_def);

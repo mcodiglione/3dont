@@ -92,7 +92,7 @@ Node<T>* CopyConstructorHelper(const Node<T>* node) {
     node_copy->right = CopyConstructorHelper(node->right);
     return node_copy;
   } else {
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -116,8 +116,8 @@ Node<T>* TrimEmptyGaps(Node<T>*& current_node, int begin_index, int end_index,
                        Box<T, dim>& node_box, Box<T, dim>& bounding_box,
                        double trim_threshold) {
   // perform as many empty splits as possible
-  Node<T>* node = NULL;
-  current_node = NULL;
+  Node<T>* node = nullptr;
+  current_node = nullptr;
   while (true) {
     EmptyGap gap = LargestEmptyGap(bounding_box, node_box);
     if (gap.size == 0.0)  // node_box identical to bounding_box
@@ -129,7 +129,7 @@ Node<T>* TrimEmptyGaps(Node<T>*& current_node, int begin_index, int end_index,
     if (gap.size / width <= trim_threshold) break;
 
     Node<T>* new_node = (Node<T>*)Allocate(sizeof(Node<T>));
-    new_node->left = new_node->right = NULL;
+    new_node->left = new_node->right = nullptr;
     new_node->split_dim = gap.dim;
     if (gap.side == 0) {  // left empty
       new_node->split_value = bounding_box.min(gap.dim);
@@ -143,11 +143,11 @@ Node<T>* TrimEmptyGaps(Node<T>*& current_node, int begin_index, int end_index,
 
     if (current_node) {
       if ((int)current_node->split_index == begin_index) {  // left empty
-        current_node->left = NULL;
+        current_node->left = nullptr;
         current_node->right = new_node;
       } else {  // current_node->split_index == end_index (right empty)
         current_node->left = new_node;
-        current_node->right = NULL;
+        current_node->right = nullptr;
       }
     }
     current_node = new_node;
@@ -252,8 +252,8 @@ Node<T>* MakeNode(Node<T>*& current_node, int begin_index, int end_index,
                   const pointkd::BuildParams& build_params) {
   typedef typename KdTree<T, dim>::DistT DistT;
   int node_size = end_index - begin_index;
-  Node<T>* node = NULL;
-  current_node = NULL;  // needed in case is_root and TrimEmptyGaps not run
+  Node<T>* node = nullptr;
+  current_node = nullptr;  // needed in case is_root and TrimEmptyGaps not run
   Box<T, dim> bounding_box(node_box);
   bool is_root = (node_size == num_points);
   if (!is_root) {  // non-root node extents may not be tight
@@ -274,7 +274,7 @@ Node<T>* MakeNode(Node<T>*& current_node, int begin_index, int end_index,
                                   // we avoid further splitting
       node_size > build_params.max_leaf_size) {
     Node<T>* new_node = (Node<T>*)Allocate(sizeof(Node<T>));
-    new_node->left = new_node->right = NULL;
+    new_node->left = new_node->right = nullptr;
     int split_dim;
     ComputeSplit<T, dim>(split_dim, new_node->split_value, bounding_box);
     new_node->split_dim = (unsigned int)split_dim;
@@ -605,15 +605,15 @@ void RNearNeighborsHelper(Indices& results, int begin_index, int end_index,
 template <typename T>
 void SerializeHelper(std::vector<SmallNode<T> >& buf, int node_index,
                      const Node<T>* node) {
-  // assumes current node is not a leaf, therefore node != NULL
+  // assumes current node is not a leaf, therefore node != nullptr
   int child_offset = 0;
-  bool has_left = node->left != NULL;
-  bool has_right = node->right != NULL;
+  bool has_left = node->left != nullptr;
+  bool has_right = node->right != nullptr;
   if (has_left && has_right) {
     child_offset = (int)buf.size() - node_index;
     buf.push_back(SmallNode<T>());
     buf.push_back(SmallNode<T>());
-  } else if (has_left || has_right) {  // exactly one non-NULL child
+  } else if (has_left || has_right) {  // exactly one non-nullptr child
     child_offset = (int)buf.size() - node_index;
     buf.push_back(SmallNode<T>());
   }
@@ -656,21 +656,21 @@ class BuildTask : public tbb::task {
       node_ = RecursiveBuildHelper<T, dim>(begin_index_, end_index_, indices_,
                                            node_box_, points_, num_points_,
                                            build_params_);
-      return NULL;
+      return nullptr;
     } else {
-      NodeT* current_node = NULL;
+      NodeT* current_node = nullptr;
       node_ = MakeNode<T, dim>(current_node, begin_index_, end_index_, indices_,
                                node_box_, points_, num_points_, build_params_);
-      // note: if current_node != NULL, then node_box_ is its extent.
+      // note: if current_node != nullptr, then node_box_ is its extent.
 
-      if (!current_node) return NULL;
+      if (!current_node) return nullptr;
 
       T split_value = current_node->split_value;
       int split_index = current_node->split_index;
       int split_dim = current_node->split_dim;
 
       // create left task
-      BuildTask<T, dim>* left_task = NULL;
+      BuildTask<T, dim>* left_task = nullptr;
       if (split_index > begin_index_) {
         left_task = new (tbb::task::allocate_child()) BuildTask<T, dim>(
             current_node->left, begin_index_, split_index, indices_, node_box_,
@@ -679,7 +679,7 @@ class BuildTask : public tbb::task {
       }
 
       // create right task
-      BuildTask<T, dim>* right_task = NULL;
+      BuildTask<T, dim>* right_task = nullptr;
       if (end_index_ > split_index) {
         right_task = new (tbb::task::allocate_child()) BuildTask<T, dim>(
             current_node->right, split_index, end_index_, indices_, node_box_,
@@ -700,7 +700,7 @@ class BuildTask : public tbb::task {
         spawn_and_wait_for_all(*left_task);
       }
 
-      return NULL;
+      return nullptr;
     }
   }
 
@@ -863,7 +863,7 @@ KdTree<T, dim>& KdTree<T, dim>::operator=(const KdTree<T, dim>& other) {
 template <typename T, int dim>
 const std::vector<SmallNode<T> >& KdTree<T, dim>::SmallNodes() {
   // serialize tree into an array of small nodes
-  if (root_ != NULL && small_nodes_.empty()) {
+  if (root_ != nullptr && small_nodes_.empty()) {
     small_nodes_.push_back(SmallNode<T>());
     impl::SerializeHelper(small_nodes_, 0, root_);
   }

@@ -37,6 +37,11 @@
               ninja
             ];
             
+            # dontWrapQtApps = true;
+            # preFixup = ''
+            #   makeWrapperArgs+=("''${qtWrapperArgs[@]}")
+            # '';
+            
             buildInputs = with pkgs; [
               eigen
               tbb.dev

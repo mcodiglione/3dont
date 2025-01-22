@@ -70,14 +70,14 @@ class PointCloud : protected OpenGLFuncs {
     // create buffer for storing selection mask
     glGenBuffers(1, &_buffer_selection_mask);
     glBindBuffer(GL_ARRAY_BUFFER, _buffer_selection_mask);
-    glBufferData(GL_ARRAY_BUFFER, _positions.size() / 3 * sizeof(float), NULL,
+    glBufferData(GL_ARRAY_BUFFER, _positions.size() / 3 * sizeof(float), nullptr,
                  GL_DYNAMIC_DRAW);
 
     // create buffer for storing point indices obtained from octree
     glGenBuffers(1, &_buffer_octree_ids);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _buffer_octree_ids);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, _num_points * sizeof(unsigned int),
-                 NULL, GL_DYNAMIC_DRAW);
+                 nullptr, GL_DYNAMIC_DRAW);
 
     _context->doneCurrent();
     _attributes.reset();
@@ -119,14 +119,14 @@ class PointCloud : protected OpenGLFuncs {
   void clearAttributes() { _attributes = PointAttributes(); }
 
   // render methods
-  void draw(const QtCamera& camera, const SelectionBox* box = NULL) {
+  void draw(const QtCamera& camera, const SelectionBox* box = nullptr) {
     queryLOD(_octree_ids, camera, 0.25f);
     if (_octree_ids.empty()) return;
     draw(&_octree_ids[0], (unsigned int)_octree_ids.size(), camera, box);
   }
 
   void draw(const unsigned int* indices, const unsigned int num_points,
-            const QtCamera& camera, const SelectionBox* box = NULL) {
+            const QtCamera& camera, const SelectionBox* box = nullptr) {
     if (_num_points == 0) return;
 
     // box should be in normalized device coordinates

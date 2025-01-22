@@ -58,7 +58,7 @@ class Text : public OpenGLFuncs {
   virtual ~Text() { clearCache(); }
 
   void clearCache() {
-    if (_context == NULL) return;
+    if (_context == nullptr) return;
     _context->makeCurrent(_window);
     foreach (GLuint texture, textures)
       glDeleteTextures(1, &texture);
@@ -83,7 +83,7 @@ class Text : public OpenGLFuncs {
 
   QRectF renderText(float x, float y, const QString& text,
                     const QVector4D& color = QVector4D(1, 1, 1, 1)) {
-    if (_context == NULL) return QRectF();
+    if (_context == nullptr) return QRectF();
 
     x = 2.0f * x / _window->width() - 1.0f;
     y = 2.0f * y / _window->height() - 1.0f;

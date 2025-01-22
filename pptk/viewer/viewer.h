@@ -65,8 +65,8 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     _dolly = new CameraDolly();
 
     // initalize various states
-    _socket_waiting_on_enter_key = NULL;
-    _timer_fine_render_delay = NULL;
+    _socket_waiting_on_enter_key = nullptr;
+    _timer_fine_render_delay = nullptr;
     _fine_render_state = INACTIVE;
     _render_time = std::numeric_limits<double>::infinity();
     _show_text = true;
@@ -159,7 +159,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
       const char* msg = "x";
       comm::sendBytes(msg, 1, _socket_waiting_on_enter_key);
       _socket_waiting_on_enter_key->disconnectFromHost();
-      _socket_waiting_on_enter_key = NULL;
+      _socket_waiting_on_enter_key = nullptr;
     } else {
       QWindow::keyPressEvent(ev);
       return;
@@ -605,7 +605,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
       QTimer::singleShot(0, this, SLOT(drawRefinedPoints()));
     _fine_render_state = INITIALIZE;
     delete _timer_fine_render_delay;
-    _timer_fine_render_delay = NULL;
+    _timer_fine_render_delay = nullptr;
   }
 
   void drawRefinedPoints() {
@@ -843,7 +843,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
   }
 
   void renderPointsFine(int msec = 0) {
-    // assumes timer points to valid memory if it is non NULL
+    // assumes timer points to valid memory if it is non nullptr
     delete _timer_fine_render_delay;
     _timer_fine_render_delay = new QTimer(this);
     connect(_timer_fine_render_delay, SIGNAL(timeout()), this,

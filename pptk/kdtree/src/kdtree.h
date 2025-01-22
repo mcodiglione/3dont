@@ -63,7 +63,7 @@ class KdTree {
     DistT dist2;
   };
 
-  KdTree() : root_(NULL) {}
+  KdTree() : root_(nullptr) {}
 
   /**
     * Assumes points stored in array-of-struct format.

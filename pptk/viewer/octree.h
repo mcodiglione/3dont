@@ -72,8 +72,8 @@ class Octree {
   Octree()
       : _max_leaf_size(64),
         _num_points(0),
-        _root(NULL),
-        _ptr_point_xyz(NULL),
+        _root(nullptr),
+        _ptr_point_xyz(nullptr),
         _cube_size(0.0f) {
     _lower_left_corner[0] = _lower_left_corner[1] = _lower_left_corner[2] =
         0.0f;
@@ -109,7 +109,7 @@ class Octree {
     point_size.resize(_num_points, 0.0f);
 
     if (_num_points == 0) {
-      _root = NULL;
+      _root = nullptr;
       return;
     }
 
@@ -529,7 +529,7 @@ class Octree {
     centroid_xyz[0] = centroid_xyz[1] = centroid_xyz[2] = 0.0f;
     unsigned int count = 0;
     for (unsigned int i = 0; i < 8; i++) {
-      if (children[i] == NULL) continue;
+      if (children[i] == nullptr) continue;
       float* child_centroid_xyz = &point_xyz[3 * children[i]->centroid_index];
       unsigned int child_count = children[i]->point_count;
       for (unsigned int dim = 0; dim < 3; dim++) {
@@ -563,7 +563,7 @@ class Octree {
     std::vector<float>& point_size = *_ptr_point_size;
     Node* node;
     if (count == 0) {
-      node = NULL;
+      node = nullptr;
     } else if (pointsAreIdentical(indices, count) || count <= _max_leaf_size) {
       // create leaf node
       node = new Node();
