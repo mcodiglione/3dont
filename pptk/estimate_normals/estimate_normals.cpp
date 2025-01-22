@@ -258,7 +258,7 @@ static char estimate_normals_usage[] =
 
 static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
                                           PyObject* kwargs) {
-  PyObject* p = NULL;
+  PyObject* p = nullptr;
   PyObject* subsample = Py_None;
   int k;
   float r;
@@ -267,17 +267,17 @@ static PyObject* estimate_normals_wrapper(PyObject* self, PyObject* args,
   int output_neighborhood_sizes = 0;
   int verbose = 1;
   int num_procs = -1;
-  static char* keywords[] = {
+  const char* keywords[] = {
       "points", "k", "r", "subsample", "output_eigenvalues",
       "output_all_eigenvectors", "output_neighborhood_sizes", "verbose",
-      "num_procs", NULL};
-  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oif|Oiiiii", keywords, &p, &k,
+      "num_procs", nullptr};
+  if (!PyArg_ParseTupleAndKeywords(args, kwargs, "Oif|Oiiiii", (char**)keywords, &p, &k,
                                    &r, &subsample, &output_eigenvalues,
                                    &output_all_eigenvectors,
                                    &output_neighborhood_sizes, &verbose,
                                    &num_procs)) {
     PyErr_SetString(PyExc_RuntimeError, "Failed to parse inputs");
-    return NULL;
+    return nullptr;
   }
 
   // check k and r

@@ -160,7 +160,7 @@ class Text : public OpenGLFuncs {
 
     GLuint texture = textures.last();
 
-    GLsizei width = pixelFontMetrics.width(c);
+    GLsizei width = pixelFontMetrics.horizontalAdvance(c);
     GLsizei height = pixelFontMetrics.height();
 
     QPixmap pixmap(width, height);
@@ -192,7 +192,7 @@ class Text : public OpenGLFuncs {
 
     CharData& character = characters[unicodeC];
     character.textureId = texture;
-    character.width = fontMetrics.width(c);
+    character.width = fontMetrics.horizontalAdvance(c);
     character.height = fontMetrics.height();
     character.s[0] = static_cast<GLfloat>(xOffset) / TEXTURE_SIZE;
     character.t[0] = static_cast<GLfloat>(yOffset) / TEXTURE_SIZE;
