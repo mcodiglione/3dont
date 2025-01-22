@@ -1,33 +1,33 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.15)
 project(pptk)
 
-set(CMAKE_BUILD_TYPE Release)
-set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+# set(CMAKE_BUILD_TYPE Release)
 
 # localize all dependencies (.dll, .so, or .dylib) in the following folder
 set(PPTK_LIBS_DIR ${PROJECT_BINARY_DIR}/pptk/libs)
 
-# use patchelf to modify binary RPATH when building pptk on Linux
-if(UNIX AND NOT APPLE)
-  find_program(PPTK_PATCHELF patchelf)
-  if (NOT PPTK_PATCHELF)
-    message(FATAL_ERROR
-      "patchelf needed for localizing library dependencies; \
-      please manually set the PPTK_PATCHELF variable.")
-  endif()
-endif()
-
 # adds -std=gnu++11 flag when compiling with gcc
 set(CMAKE_CXX_STANDARD 11)
 
-include(UsefulMacros)
 
-# following lines specifies the CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS variable
-set(CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP TRUE)
-set(CMAKE_INSTALL_OPENMP_LIBRARIES TRUE)  # requires cmake 3.1
-include(InstallRequiredSystemLibraries)
+find_package(OpenMP REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(Eigen3 REQUIRED)
+find_package(Qt5 CONFIG REQUIRED COMPONENTS Widgets Network OpenGL Core)
+find_package(Python COMPONENTS Interpreter Development.Module NumPy)
 
-copy_file(setup.py)
-copy_file(LICENSE)
+find_package(TBB COMPONENTS tbb)
+if(NOT TBB_FOUND)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(TBB REQUIRED tbb)
+
+    add_library(TBB::tbb INTERFACE IMPORTED)
+    set_target_properties(TBB::tbb PROPERTIES
+            INTERFACE_INCLUDE_DIRECTORIES "${TBB_INCLUDE_DIRS}"
+            INTERFACE_LINK_LIBRARIES "${TBB_LIBRARIES}"
+    )
+endif()
+
+
 add_subdirectory(pptk)
 add_subdirectory(licenses)
