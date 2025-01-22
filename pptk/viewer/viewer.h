@@ -38,16 +38,19 @@ class Viewer : public QWindow, protected OpenGLFuncs {
  public:
   explicit Viewer(quint16 clientPort) : QWindow() {
     setSurfaceType(QSurface::OpenGLSurface);
+    QSurfaceFormat f;
+    f.setDepthBufferSize(16);
+    setFormat(f);
+    resize(1,1);
     create();
 
     // create OpenGL context
     _context = new QOpenGLContext();
-    QSurfaceFormat f = format();
-    f.setDepthBufferSize(16);
-    _context->setFormat(f);
+    _context->setFormat(format());
     _context->create();
 
     // associate OpenGL functions with _context
+
     _context->makeCurrent(this);
     initializeOpenGLFunctions();
     _context->doneCurrent();

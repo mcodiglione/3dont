@@ -37,10 +37,13 @@
               ninja
             ];
             
-            # dontWrapQtApps = true;
+            dontWrapQtApps = true;
             # preFixup = ''
             #   makeWrapperArgs+=("''${qtWrapperArgs[@]}")
             # '';
+            preFixup = ''
+                wrapQtApp "$out/lib/python3.12/site-packages/bin/viewer"
+            '';
             
             buildInputs = with pkgs; [
               eigen
@@ -68,6 +71,8 @@
             packages = with pkgs.python3Packages; [
               build
             ];
+            LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
+            QT_SCALE_FACTOR="0.5";
           };
         };
       });
