@@ -42,7 +42,7 @@
             #   makeWrapperArgs+=("''${qtWrapperArgs[@]}")
             # '';
             preFixup = ''
-                wrapQtApp "$out/lib/python3.12/site-packages/bin/viewer"
+                wrapQtApp "$out/lib/python3.12/site-packages/pptk/viewer/viewer"
             '';
             
             buildInputs = with pkgs; [
@@ -61,7 +61,10 @@
         apps = {
           default = {
             type = "app";
-            program = "${self.defaultPackage.${system}}/bin/a.out";
+            program = let
+              py = pkgs.python3.withPackages (_: [ self.packages.${system}.visualizer ]);
+            in
+              "${py}/bin/python";
           };
         };
 

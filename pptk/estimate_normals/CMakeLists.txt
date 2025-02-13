@@ -1,4 +1,4 @@
-add_library(estimate_normals SHARED estimate_normals.cpp)
+add_library(estimate_normals MODULE estimate_normals.cpp)
 
 set(_link_flags ${OpenMP_CXX_FLAGS})
 
@@ -10,8 +10,9 @@ elseif(UNIX)
   set(_link_flags "${_link_flags} -static-libstdc++")
 endif()
 set_target_properties(estimate_normals PROPERTIES
-  COMPILE_FLAGS ${OpenMP_CXX_FLAGS}
-  LINK_FLAGS ${_link_flags})
+        PREFIX ""
+        COMPILE_FLAGS ${OpenMP_CXX_FLAGS}
+        LINK_FLAGS ${_link_flags})
 
 
 target_compile_definitions(estimate_normals PRIVATE -DUSE_TBB)

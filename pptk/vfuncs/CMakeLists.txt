@@ -1,4 +1,4 @@
-add_library(vfuncs SHARED vfuncs.cpp)
+add_library(vfuncs MODULE vfuncs.cpp)
 target_link_libraries(vfuncs Eigen3::Eigen Python::NumPy)
 
 if(WIN32)
@@ -8,7 +8,8 @@ elseif(APPLE)
     LINK_FLAGS "-undefined dynamic_lookup")
 elseif(UNIX)
   set_target_properties(vfuncs PROPERTIES
-    LINK_FLAGS "-static-libstdc++")
+          PREFIX ""
+          LINK_FLAGS "-static-libstdc++")
 endif()
 target_include_directories(vfuncs PRIVATE
   ../include  # for python_util.h

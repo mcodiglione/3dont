@@ -23,3 +23,9 @@ build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
 wheel.packages = ["pptk"]
+
+wheel.exclude = [
+  "pptk/**/*.cpp",
+  "pptk/**/*.h",
+  "pptk/**/*.hpp"
+]
