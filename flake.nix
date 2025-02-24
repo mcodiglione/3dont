@@ -71,10 +71,11 @@
         devShells = {
           default = pkgs.mkShell {
             inputsFrom = [ self.packages.${system}.visualizer ];
-            packages = with pkgs.python3Packages; [
-              build
+            packages = with pkgs; [
+              python3Packages.build
+              qtcreator
             ];
-            LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
+            # LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
             QT_SCALE_FACTOR="0.5";
           };
         };

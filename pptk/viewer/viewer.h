@@ -269,7 +269,8 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     Q_UNUSED(ev);
     _camera.setAspectRatio((float)width() / height());
     _context->makeCurrent(this);
-    glViewport(0, 0, width(), height());
+    qreal pixelRatio = this->devicePixelRatio();
+    glViewport(0, 0, width() * pixelRatio, height() * pixelRatio);
     _context->doneCurrent();
   }
 

@@ -1,3 +1,7 @@
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOMOC ON)
+
+
 add_executable(viewer
   main.cpp
   octree.h
@@ -15,9 +19,11 @@ add_executable(viewer
   text.h
   camera_dolly.h
   splines.h
-  point_attributes.h)
+  point_attributes.h
+  main_layout.h
+  main_layout.ui
+)
 
-set_target_properties(viewer PROPERTIES AUTOMOC TRUE)
 target_link_libraries(viewer OpenGL Qt5::Widgets Qt5::Network Qt5::OpenGL Eigen3::Eigen)
 target_include_directories(viewer PRIVATE )
 
