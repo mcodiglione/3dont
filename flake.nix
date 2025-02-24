@@ -76,7 +76,7 @@
               qtcreator
             ];
             # LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
-            QT_SCALE_FACTOR="0.5";
+            # QT_SCALE_FACTOR="0.5";
           };
         };
       });
