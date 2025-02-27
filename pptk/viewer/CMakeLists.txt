@@ -24,7 +24,7 @@ add_executable(viewer
   main_layout.ui
 )
 
-target_link_libraries(viewer OpenGL Qt5::Widgets Qt5::Network Qt5::OpenGL Eigen3::Eigen)
+target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen)
 target_include_directories(viewer PRIVATE )
 
 install(TARGETS viewer DESTINATION pptk/viewer)

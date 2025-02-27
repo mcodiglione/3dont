@@ -18,10 +18,15 @@ class MainLayout : public QMainWindow {
   public:
   explicit MainLayout(int clientPort = 4001, QWidget *parent = nullptr): QMainWindow(parent), ui(new Ui::MainLayout) {
     ui->setupUi(this);
+    ui->statusbar->showMessage(tr("Loading..."));
+
+    connect(ui->executeQueryButton, SIGNAL(clicked()), this, SLOT(on_pushButton_clicked()));
 
     QWindow *viewer = new Viewer(clientPort);
+    viewer->setFlags(Qt::FramelessWindowHint);
     QWidget *container = createWindowContainer(viewer, this);
     setCentralWidget(container);
+    ui->statusbar->showMessage(tr("Ready"), 5000);
   }
 
   ~MainLayout() override {

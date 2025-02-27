@@ -1,7 +1,7 @@
 #ifndef __MI_OPENGL_TEXT_H__
 #define __MI_OPENGL_TEXT_H__
 
-#include <QGLWidget>
+// #include <QOpenGLWidget>
 #include <QOpenGLContext>
 #include <QRectF>
 #include <QWindow>
@@ -168,7 +168,7 @@ class Text : public OpenGLFuncs {
 
     QPainter painter;
     painter.begin(&pixmap);
-    painter.setRenderHints(QPainter::HighQualityAntialiasing |
+    painter.setRenderHints(QPainter::Antialiasing |
                            QPainter::TextAntialiasing);
     painter.setFont(pixelFont);
     painter.setPen(Qt::white);

@@ -31,7 +31,7 @@
             dontUseCmakeConfigure = true;
 
             nativeBuildInputs = with pkgs; [
-              libsForQt5.qt5.wrapQtAppsHook
+              qt6.wrapQtAppsHook
               pkg-config
               cmake
               ninja
@@ -48,9 +48,9 @@
             buildInputs = with pkgs; [
               eigen
               tbb.dev
-              libsForQt5.qt5.qtbase
+              qt6.qtbase
               libGL
-            ];
+            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland ];
             
             dependencies = with pkgs.python3Packages; [
               numpy
@@ -73,10 +73,21 @@
             inputsFrom = [ self.packages.${system}.visualizer ];
             packages = with pkgs; [
               python3Packages.build
-              qtcreator
+              qt6.qttools
+              gammaray
             ];
-            # LD_LIBRARY_PATH="/run/opengl-driver/lib:/run/opengl-driver-32/lib";
-            # QT_SCALE_FACTOR="0.5";
+            nativeBuildInputs = with pkgs; [
+              qt6.wrapQtAppsHook
+              makeWrapper
+            ];
+            # https://discourse.nixos.org/t/python-qt-woes/11808/10
+            shellHook = ''
+              setQtEnvironment=$(mktemp --suffix .setQtEnvironment.sh)
+              echo "shellHook: setQtEnvironment = $setQtEnvironment"
+              makeWrapper "/bin/sh" "$setQtEnvironment" "''${qtWrapperArgs[@]}"
+              sed "/^exec/d" -i "$setQtEnvironment"
+              source "$setQtEnvironment"
+            '';
           };
         };
       });
