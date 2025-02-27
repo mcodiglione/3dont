@@ -2,6 +2,7 @@
 #define __MI_OPENGL_TEXT_H__
 
 // #include <QOpenGLWidget>
+#include "opengl_funcs.h"
 #include <QOpenGLContext>
 #include <QRectF>
 #include <QWindow>
@@ -12,7 +13,6 @@
 #include <QtGui/QPixmap>
 #include <cmath>
 #include <iostream>
-#include "opengl_funcs.h"
 
 /* following text rendering code adapted from libs/opengl/Text.h and
    libs/opengl/Text.cpp of mifit project: https://code.google.com/p/mifit/ */
@@ -33,8 +33,8 @@ class Text : public OpenGLFuncs {
     GLfloat t[2];
   };
 
- public:
-  Text(QWindow* window, QOpenGLContext* context, const QFont& f)
+  public:
+  Text(QWindow *window, QOpenGLContext *context, const QFont &f)
       : _context(context),
         _window(window),
         font(f),
@@ -51,7 +51,7 @@ class Text : public OpenGLFuncs {
     // (I don't really know how this works... this is a hack)
     if (_window->devicePixelRatio() != 1.0)
       pixelFont.setPixelSize(
-          qRound(_window->devicePixelRatio() * font.pointSize()));
+              qRound(_window->devicePixelRatio() * font.pointSize()));
     pixelFontMetrics = QFontMetrics(pixelFont);
   }
 
@@ -67,22 +67,22 @@ class Text : public OpenGLFuncs {
     characters.clear();
   }
 
-  const QFont& getFont() const { return font; }
+  const QFont &getFont() const { return font; }
 
-  const QFontMetrics& getFontMetrics() const { return fontMetrics; }
+  const QFontMetrics &getFontMetrics() const { return fontMetrics; }
 
-  QSizeF computeTextSize(const QString& text) {
+  QSizeF computeTextSize(const QString &text) {
     QSizeF sz;
     for (int i = 0; i < text.length(); ++i) {
-      CharData& c = createCharacter(text[i]);
-      sz.setHeight(qMax(sz.height(), (qreal)c.height));
+      CharData &c = createCharacter(text[i]);
+      sz.setHeight(qMax(sz.height(), (qreal) c.height));
       sz.setWidth(sz.width() + c.width);
     }
     return sz;
   }
 
-  QRectF renderText(float x, float y, const QString& text,
-                    const QVector4D& color = QVector4D(1, 1, 1, 1)) {
+  QRectF renderText(float x, float y, const QString &text,
+                    const QVector4D &color = QVector4D(1, 1, 1, 1)) {
     if (_context == nullptr) return QRectF();
 
     x = 2.0f * x / _window->width() - 1.0f;
@@ -102,7 +102,7 @@ class Text : public OpenGLFuncs {
     glColor4f(color.x(), color.y(), color.z(), color.w());
     QRectF rect(QPointF(x, y), QPointF(x, y));
     for (int i = 0; i < text.length(); ++i) {
-      CharData& c = createCharacter(text[i]);
+      CharData &c = createCharacter(text[i]);
 
       if (texture != c.textureId) {
         texture = c.textureId;
@@ -112,7 +112,7 @@ class Text : public OpenGLFuncs {
       float w = c.width * 2.0f / _window->width();
       float h = c.height * 2.0f / _window->height();
 
-      rect.setHeight(qMax(rect.height(), (qreal)c.height));
+      rect.setHeight(qMax(rect.height(), (qreal) c.height));
       rect.setWidth(rect.width() + c.width);
 
       glBegin(GL_QUADS);
@@ -138,7 +138,7 @@ class Text : public OpenGLFuncs {
     return rect;
   }
 
- private:
+  private:
   void allocateTexture() {
     GLuint texture;
     glGenTextures(1, &texture);
@@ -152,7 +152,7 @@ class Text : public OpenGLFuncs {
     textures += texture;
   }
 
-  CharData& createCharacter(QChar c) {
+  CharData &createCharacter(QChar c) {
     ushort unicodeC = c.unicode();
     if (characters.contains(unicodeC)) return characters[unicodeC];
 
@@ -190,7 +190,7 @@ class Text : public OpenGLFuncs {
     glTexSubImage2D(GL_TEXTURE_2D, 0, xOffset, yOffset, width, height, GL_RGBA,
                     GL_UNSIGNED_BYTE, image.bits());
 
-    CharData& character = characters[unicodeC];
+    CharData &character = characters[unicodeC];
     character.textureId = texture;
     character.width = fontMetrics.horizontalAdvance(c);
     character.height = fontMetrics.height();
@@ -203,8 +203,8 @@ class Text : public OpenGLFuncs {
     return character;
   }
 
-  QOpenGLContext* _context;
-  QWindow* _window;
+  QOpenGLContext *_context;
+  QWindow *_window;
 
   QFont font;
   QFontMetrics fontMetrics;
@@ -219,4 +219,4 @@ class Text : public OpenGLFuncs {
   GLint yOffset;
 };
 
-#endif  // __MI_OPENGL_TEXT_H__
+#endif// __MI_OPENGL_TEXT_H__

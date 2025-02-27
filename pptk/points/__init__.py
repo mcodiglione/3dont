@@ -1,2 +1,2 @@
-from .points import *
 from .expr import *
+from .points import *

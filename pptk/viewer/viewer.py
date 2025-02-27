@@ -1,10 +1,10 @@
-import subprocess
-import struct
-import socket
-import numpy
-import os
 import inspect
-import warnings
+import os
+import socket
+import struct
+import subprocess
+
+import numpy
 
 _viewer_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 if not os.path.isabs(_viewer_dir):
@@ -55,8 +55,8 @@ class viewer:
             stdout=subprocess.PIPE,
             stderr=(None if debug else subprocess.DEVNULL))
         if debug:
-            print ('Started viewer process: %s' \
-                % os.path.join(_viewer_dir, 'viewer'))
+            print('Started viewer process: %s' \
+                  % os.path.join(_viewer_dir, 'viewer'))
         x = s.accept()
         self._portNumber = struct.unpack('H', self._process.stdout.read(2))[0]
         # self._portNumber = struct.unpack('H',x[0].recv(2))[0]
@@ -222,8 +222,8 @@ class viewer:
                     raise ValueError(error_msg % i)
                 if x.shape[-1] == 3:
                     x = numpy.c_[x,
-                                 numpy.ones(x.shape[0], dtype=numpy.float32)]
-                msg += struct.pack('QQ', * x.shape) + x.tostring()
+                    numpy.ones(x.shape[0], dtype=numpy.float32)]
+                msg += struct.pack('QQ', *x.shape) + x.tostring()
             else:
                 raise ValueError('%d-th ' % i +
                                  'attribute array shape is not supported')
@@ -331,13 +331,13 @@ class viewer:
         if poses.size == 0:
             return
         msg = struct.pack('b', 8) \
-            + struct.pack('i', poses.shape[0]) + poses.tostring() \
-            + struct.pack('i', ts.size) + ts.tostring() \
-            + struct.pack('b', _interp_code[interp])
+              + struct.pack('i', poses.shape[0]) + poses.tostring() \
+              + struct.pack('i', ts.size) + ts.tostring() \
+              + struct.pack('b', _interp_code[interp])
         self.__send(msg)
         msg = struct.pack('b', 9) \
-            + struct.pack('2f', *tlim) \
-            + struct.pack('?', repeat)
+              + struct.pack('2f', *tlim) \
+              + struct.pack('?', repeat)
         self.__send(msg)
 
     def record(self, folder, poses, ts=[], tlim=[-numpy.inf, numpy.inf],
@@ -377,9 +377,9 @@ class viewer:
             return
         # load camera path
         msg = struct.pack('b', 8) + \
-            struct.pack('i', poses.shape[0])+poses.tostring() + \
-            struct.pack('i', ts.size)+ts.tostring() + \
-            struct.pack('b', _interp_code[interp])
+              struct.pack('i', poses.shape[0]) + poses.tostring() + \
+              struct.pack('i', ts.size) + ts.tostring() + \
+              struct.pack('b', _interp_code[interp])
         self.__send(msg)
 
         # clamp tlim[0] and tlim[1] to [ts[0],ts[-1]]
@@ -395,11 +395,11 @@ class viewer:
         for i in range(int(num_frames)):
             t = i * 1.0 / fps + t_beg
             msg = struct.pack('b', 9) + \
-                struct.pack('2f', t, t) + \
-                struct.pack('?', False)
+                  struct.pack('2f', t, t) + \
+                  struct.pack('?', False)
             self.__send(msg)
             filename = prefix \
-                + ('%0' + str(num_digits) + 'd') % (i + 1) + '.' + ext
+                       + ('%0' + str(num_digits) + 'd') % (i + 1) + '.' + ext
             filename = os.path.join(folder, filename)
             self.capture(filename)
             # todo: need to check whether write succeeded
@@ -436,7 +436,7 @@ class viewer:
         # construct message
         numPoints = int(positions.size / 3)
         msg = struct.pack('b', 1) \
-            + struct.pack('i', numPoints) + positions.tostring()
+              + struct.pack('i', numPoints) + positions.tostring()
         # send message to viewer
         self.__send(msg)
 
@@ -516,9 +516,10 @@ def _fix_poses_ts_input(poses, ts):
         d = numpy.diff(x)
         absd = numpy.abs(d)
         y = -absd - 2.0 * numpy.pi \
-                        * numpy.floor((-absd + numpy.pi) / 2.0 / numpy.pi)
+            * numpy.floor((-absd + numpy.pi) / 2.0 / numpy.pi)
         y *= -numpy.sign(d)
         return x[0] + numpy.r_[0, numpy.cumsum(y)]
+
     poses[:, 3] = correct_angles(poses[:, 3])
     poses[:, 4] = correct_angles(poses[:, 4])
 

@@ -16,7 +16,7 @@ class MainLayout : public QMainWindow {
   Q_OBJECT
 
   public:
-  explicit MainLayout(int clientPort = 4001, QWidget *parent = nullptr): QMainWindow(parent), ui(new Ui::MainLayout) {
+  explicit MainLayout(int clientPort = 4001, QWidget *parent = nullptr) : QMainWindow(parent), ui(new Ui::MainLayout) {
     ui->setupUi(this);
     ui->statusbar->showMessage(tr("Loading..."));
 
@@ -41,7 +41,6 @@ class MainLayout : public QMainWindow {
 
   private:
   Ui::MainLayout *ui;
-
 };
 
 

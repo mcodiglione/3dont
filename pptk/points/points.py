@@ -1,8 +1,9 @@
-import numpy
 import time
-import ctypes
-from ..kdtree import kdtree
+
+import numpy
+
 from . import expr
+from ..kdtree import kdtree
 
 __all__ = [
     'Points',
@@ -84,8 +85,7 @@ def load(file, **kwargs):
     return points(numpy.load(file, **kwargs))
 
 
-class Points (numpy.ndarray):
-
+class Points(numpy.ndarray):
     _last_modified = dict()
 
     # make Points non subclass-able to simplify write control
@@ -179,6 +179,7 @@ class Points (numpy.ndarray):
                     self.base.flags.writeable = False
             self._record_modify_time()  # record time *after* computation
             return ret
+
         return f_guarded
 
     # override methods that modify object content to

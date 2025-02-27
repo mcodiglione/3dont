@@ -1,21 +1,21 @@
 #ifndef __LOOKAT_H__
 #define __LOOKAT_H__
+#include "opengl_funcs.h"
+#include "qt_camera.h"
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
 #include <QWindow>
-#include "opengl_funcs.h"
-#include "qt_camera.h"
 
 class LookAt : protected OpenGLFuncs {
- public:
-  LookAt(QWindow* window, QOpenGLContext* context)
+  public:
+  LookAt(QWindow *window, QOpenGLContext *context)
       : _context(context), _window(window), _visible(true) {
     _context->makeCurrent(_window);
     initializeOpenGLFunctions();
     _context->doneCurrent();
     compileProgram();
   }
-  void draw(const QtCamera& camera) {
+  void draw(const QtCamera &camera) {
     if (!_visible) return;
 
     QVector3D lookat = camera.getLookAtPosition();
@@ -30,13 +30,13 @@ class LookAt : protected OpenGLFuncs {
     _program.setUniformValue("lookat", lookat);
 
     float positions[18] = {
-      0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-      0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-      0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
+            0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f};
     float colors[18] = {
-      1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-      0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-      0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+            1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f};
 
     GLuint buffer_positions;
     glGenBuffers(1, &buffer_positions);
@@ -65,26 +65,26 @@ class LookAt : protected OpenGLFuncs {
   void setVisible(bool visible) { _visible = visible; }
   bool getVisible() const { return _visible; }
 
- private:
+  private:
   void compileProgram() {
     std::string vsCode =
-        "#version 110\n"
-        "uniform float d;\n"
-        "uniform vec3 lookat;\n"
-        "uniform mat4 mvp;\n"
-        "attribute vec3 position;\n"
-        "attribute vec3 color;\n"
-        "varying vec3 vcolor;\n"
-        "void main() {\n"
-        "  gl_Position = mvp * vec4(d * position + lookat, 1);\n"
-        "  vcolor = color;\n"
-        "}\n";
+            "#version 110\n"
+            "uniform float d;\n"
+            "uniform vec3 lookat;\n"
+            "uniform mat4 mvp;\n"
+            "attribute vec3 position;\n"
+            "attribute vec3 color;\n"
+            "varying vec3 vcolor;\n"
+            "void main() {\n"
+            "  gl_Position = mvp * vec4(d * position + lookat, 1);\n"
+            "  vcolor = color;\n"
+            "}\n";
     std::string fsCode =
-        "#version 110\n"
-        "varying vec3 vcolor;\n"
-        "void main() {\n"
-        "  gl_FragColor = vec4(vcolor, 1);\n"
-        "}\n";
+            "#version 110\n"
+            "varying vec3 vcolor;\n"
+            "void main() {\n"
+            "  gl_FragColor = vec4(vcolor, 1);\n"
+            "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());
     _program.addShaderFromSourceCode(QOpenGLShader::Fragment, fsCode.c_str());
@@ -92,10 +92,10 @@ class LookAt : protected OpenGLFuncs {
     _context->doneCurrent();
   }
 
-  QOpenGLContext* _context;
-  QWindow* _window;
+  QOpenGLContext *_context;
+  QWindow *_window;
   QOpenGLShaderProgram _program;
   bool _visible;
 };
 
-#endif  // __LOOKAT_H__
+#endif// __LOOKAT_H__

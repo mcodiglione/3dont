@@ -4,10 +4,10 @@
 
 class OpenGLFuncs : public QOpenGLFunctions {
   // extends QOpenGLFunctions with some helper and error checking functions
- public:
+  public:
   OpenGLFuncs() : QOpenGLFunctions() {}
 
-  OpenGLFuncs(QOpenGLContext* context) : QOpenGLFunctions(context) {}
+  OpenGLFuncs(QOpenGLContext *context) : QOpenGLFunctions(context) {}
 
   GLint getBufferSize(GLuint bufferId) {
     GLint bufferSize = 0;
@@ -77,4 +77,4 @@ class OpenGLFuncs : public QOpenGLFunctions {
   }
 };
 
-#endif  // __OPENGLFUNCS_H__
+#endif// __OPENGLFUNCS_H__

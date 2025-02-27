@@ -9,22 +9,22 @@
 #include <type_traits>
 
 namespace pointkd {
-// specify how element types are converted to floating point number
-template <typename T, bool is_int = std::is_integral<T>::value>
-struct Accumulator {};
+  // specify how element types are converted to floating point number
+  template<typename T, bool is_int = std::is_integral<T>::value>
+  struct Accumulator {};
 
-template <typename T>
-struct Accumulator<T, true> {
-  typedef float Type;
-};
-template <>
-struct Accumulator<float, false> {
-  typedef float Type;
-};
-template <>
-struct Accumulator<double, false> {
-  typedef double Type;
-};
-}  // namespace pointkd
+  template<typename T>
+  struct Accumulator<T, true> {
+    typedef float Type;
+  };
+  template<>
+  struct Accumulator<float, false> {
+    typedef float Type;
+  };
+  template<>
+  struct Accumulator<double, false> {
+    typedef double Type;
+  };
+}// namespace pointkd
 
-#endif  //__ACCUMULATOR_H__
+#endif//__ACCUMULATOR_H__

@@ -1,17 +1,19 @@
 #ifndef __SELECTIONBOX_H__
 #define __SELECTIONBOX_H__
+#include "opengl_funcs.h"
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
 #include <QPointF>
 #include <QRectF>
 #include <QWindow>
-#include "opengl_funcs.h"
 
 class SelectionBox : protected OpenGLFuncs {
- public:
-  enum SelectMode { ADD = 0, SUB = 1, NONE = 2 };
+  public:
+  enum SelectMode { ADD = 0,
+                    SUB = 1,
+                    NONE = 2 };
 
-  SelectionBox(QWindow* window, QOpenGLContext* context)
+  SelectionBox(QWindow *window, QOpenGLContext *context)
       : _context(context), _window(window), _select_mode(NONE) {
     _context->makeCurrent(_window);
     initializeOpenGLFunctions();
@@ -31,7 +33,7 @@ class SelectionBox : protected OpenGLFuncs {
                         1.0f, 0.0f, 0.0f,
                         1.0f, 1.0f, 0.0f,
                         0.0f, 1.0f, 0.0f};
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, (GLvoid*)points,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 12, (GLvoid *) points,
                  GL_STATIC_DRAW);
 
     GLuint buffer_indices;
@@ -46,7 +48,7 @@ class SelectionBox : protected OpenGLFuncs {
     _program.setUniformValue("box_max", _box.bottomRight());
     _program.enableAttributeArray("position");
     _program.setAttributeArray("position", GL_FLOAT, 0, 3);
-    glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_INT, (GLvoid*)0);
+    glDrawElements(GL_LINE_STRIP, 5, GL_UNSIGNED_INT, (GLvoid *) 0);
     _program.disableAttributeArray("position");
     glDeleteBuffers(1, &buffer_square);
     glDeleteBuffers(1, &buffer_indices);
@@ -76,25 +78,25 @@ class SelectionBox : protected OpenGLFuncs {
 
   bool empty() const { return _box.isEmpty(); }
 
-  const QRectF& getBox() const { return _box; }
+  const QRectF &getBox() const { return _box; }
 
   SelectMode getType() const { return _select_mode; }
 
- private:
+  private:
   void compileProgram() {
     std::string vsCode =
-        "#version 110\n"
-        "uniform vec2 box_min;\n"
-        "uniform vec2 box_max;\n"
-        "attribute vec3 position;\n"
-        "void main() {\n"
-        "  gl_Position = vec4(position.xy * (box_max - box_min) + box_min, 0, 1);\n"
-        "}\n";
+            "#version 110\n"
+            "uniform vec2 box_min;\n"
+            "uniform vec2 box_max;\n"
+            "attribute vec3 position;\n"
+            "void main() {\n"
+            "  gl_Position = vec4(position.xy * (box_max - box_min) + box_min, 0, 1);\n"
+            "}\n";
     std::string fsCode =
-        "#version 110\n"
-        "void main() {\n"
-        "  gl_FragColor = vec4(1, 1, 0, 1);\n"
-        "}\n";
+            "#version 110\n"
+            "void main() {\n"
+            "  gl_FragColor = vec4(1, 1, 0, 1);\n"
+            "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());
     _program.addShaderFromSourceCode(QOpenGLShader::Fragment, fsCode.c_str());
@@ -102,8 +104,8 @@ class SelectionBox : protected OpenGLFuncs {
     _context->doneCurrent();
   }
 
-  QOpenGLContext* _context;
-  QWindow* _window;
+  QOpenGLContext *_context;
+  QWindow *_window;
   QOpenGLShaderProgram _program;
 
   SelectMode _select_mode;
@@ -111,4 +113,4 @@ class SelectionBox : protected OpenGLFuncs {
   QRectF _box;
 };
 
-#endif  // __SELECTIONBOX_H__
+#endif// __SELECTIONBOX_H__

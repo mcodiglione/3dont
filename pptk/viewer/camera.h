@@ -1,17 +1,17 @@
 #ifndef __CAMERA_H__
 #define __CAMERA_H__
-#include <math.h>
 #include <algorithm>
+#include <math.h>
 #define PI 3.14159265359f
 class Camera {
- public:
+  public:
   Camera()
       : _theta(0.0f),
         _phi(0.0f),
         _d(1.0f),
-        _panRate(2.0f / 300),  // 2.0 per 300 pixels
+        _panRate(2.0f / 300),// 2.0 per 300 pixels
         _zoomRate(0.8f),
-        _rotateRate(PI / 2 / 256)  // PI/2 per 256 pixels
+        _rotateRate(PI / 2 / 256)// PI/2 per 256 pixels
   {
     _lookAt[0] = _lookAt[1] = _lookAt[2] = 0.0f;
     save();
@@ -28,7 +28,7 @@ class Camera {
     _lookAt[2] = zmin;
 
     // set _d to length of widest span
-    _d = (std::max)(xmax - xmin, (std::max)(ymax - ymin, zmax - zmin));
+    _d = (std::max) (xmax - xmin, (std::max) (ymax - ymin, zmax - zmin));
 
     _panRate = _d / 300;
 
@@ -65,7 +65,7 @@ class Camera {
    *  Camera is zoomed based on scroll by dx amount.
    *  _d = _d * _zoomRate ^ dx
    */
-  void zoom(float dx) { _d = (std::max)(0.1f, _d * (float)pow(_zoomRate, dx)); }
+  void zoom(float dx) { _d = (std::max) (0.1f, _d * (float) pow(_zoomRate, dx)); }
 
   void save() {
     std::copy(_lookAt, _lookAt + 3, _saved_lookAt);
@@ -143,7 +143,7 @@ class Camera {
     v[2] = sin(theta);
   }
 
- private:
+  private:
   static void computeCameraPosition(float (&p)[3], const float (&lookAt)[3],
                                     const float theta, const float phi,
                                     const float d) {
@@ -194,9 +194,9 @@ class Camera {
   }
 
   float _lookAt[3];
-  float _theta;  // angle of elevation
-  float _phi;    // azimuthal angle
-  float _d;      // camera distance from _lookAt
+  float _theta;// angle of elevation
+  float _phi;  // azimuthal angle
+  float _d;    // camera distance from _lookAt
 
   float _saved_lookAt[3];
   float _saved_theta;
@@ -208,4 +208,4 @@ class Camera {
   float _rotateRate;
 };
 
-#endif  // __CAMERA_H__
+#endif// __CAMERA_H__

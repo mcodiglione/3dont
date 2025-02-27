@@ -1,19 +1,19 @@
 #ifndef __PYTHON_UTIL_H__
 #define __PYTHON_UTIL_H__
 
-#include <cstdint>
-#include <vector>
 #include "Python.h"
 #include "numpy/arrayobject.h"
+#include <cstdint>
+#include <vector>
 
 struct Array2D {
-  const unsigned char* data;
+  const unsigned char *data;
   std::vector<std::uint8_t> scalar;
-  npy_intp m;           // number of rows
-  npy_intp n;           // number of columns
-  npy_intp row_stride;  // in bytes
-  npy_intp col_stride;  // in bytes
-  npy_intp item_size;   // in bytes
+  npy_intp m;         // number of rows
+  npy_intp n;         // number of columns
+  npy_intp row_stride;// in bytes
+  npy_intp col_stride;// in bytes
+  npy_intp item_size; // in bytes
   int type_num;
   // see https://docs.scipy.org/doc/numpy/reference/c-api.dtype.html
 };
@@ -33,7 +33,7 @@ bool IsIntegral(int type_num) {
          type_num == NPY_ULONGLONG;
 }
 
-bool IsContiguous(const Array2D& x) {
+bool IsContiguous(const Array2D &x) {
   return (x.n <= 1 || x.item_size == x.col_stride) &&
          (x.m <= 1 || x.n * x.item_size == x.row_stride);
 }
@@ -41,8 +41,8 @@ bool IsContiguous(const Array2D& x) {
 /**
   * Assumes x.scalar and x.type_num has been filled.
 */
-void InitScalarStruct(Array2D& x) {
-  x.data = (const unsigned char*)&x.scalar[0];
+void InitScalarStruct(Array2D &x) {
+  x.data = (const unsigned char *) &x.scalar[0];
   x.m = x.n = 1;
   x.row_stride = x.col_stride = 0;
   x.item_size = x.scalar.size();
@@ -106,10 +106,10 @@ std::string TypeNameFromTypeNum(int type_num) {
   * Check ensures obj has a certain type.  Function pointer Extract proceeds
   * with scalar extraction assuming obj has the "right" type.
 */
-template <bool (*Check)(PyObject*),
-          void (*Extract)(std::vector<std::uint8_t>&, int&, PyObject*)>
-bool CheckAndExtractScalar_(std::vector<std::uint8_t>& scalar, int& type_num,
-                            PyObject* obj) {
+template<bool (*Check)(PyObject *),
+         void (*Extract)(std::vector<std::uint8_t> &, int &, PyObject *)>
+bool CheckAndExtractScalar_(std::vector<std::uint8_t> &scalar, int &type_num,
+                            PyObject *obj) {
   if (Check(obj)) {
     Extract(scalar, type_num, obj);
     if (PyErr_Occurred())
@@ -123,42 +123,42 @@ bool CheckAndExtractScalar_(std::vector<std::uint8_t>& scalar, int& type_num,
 /**
   * Wraps macro PyArray_Check into an actual function
 */
-bool CheckPyArray(PyObject* obj) { return PyArray_Check(obj); }
+bool CheckPyArray(PyObject *obj) { return PyArray_Check(obj); }
 
 /**
   * Wraps macro PyArray_IsScalar into an actual function
 */
-bool CheckArrayScalar(PyObject* obj) { return PyArray_IsScalar(obj, Generic); }
+bool CheckArrayScalar(PyObject *obj) { return PyArray_IsScalar(obj, Generic); }
 
 /**
   * Wraps macro PyFloat_CheckExact into an actual function
 */
-bool CheckPyFloat(PyObject* obj) { return PyFloat_CheckExact(obj); }
+bool CheckPyFloat(PyObject *obj) { return PyFloat_CheckExact(obj); }
 
 #if PY_MAJOR_VERSION < 3
 /**
   * Wraps macro PyInt_CheckExact into an actual function
 */
-bool CheckPyInt(PyObject* obj) { return PyInt_CheckExact(obj); }
+bool CheckPyInt(PyObject *obj) { return PyInt_CheckExact(obj); }
 #endif
 
 /**
   * Wraps macro PyBool_Check into an actual function
 */
-bool CheckPyBool(PyObject* obj) { return PyBool_Check(obj); }
+bool CheckPyBool(PyObject *obj) { return PyBool_Check(obj); }
 
 /**
   * Wraps macro PyLong_CheckExact into an actual function
 */
-bool CheckPyLong(PyObject* obj) { return PyLong_CheckExact(obj); }
+bool CheckPyLong(PyObject *obj) { return PyLong_CheckExact(obj); }
 
 /**
   * Assumes obj is an array scalar (i.e. PyArray_IsScalar(obj, Generic) == true)
   * E.g. np.r_[1][0]
 */
-void ExtractScalarFromArrayScalar(std::vector<std::uint8_t>& scalar,
-                                  int& type_num, PyObject* obj) {
-  PyArray_Descr* descr = PyArray_DescrFromScalar(obj);
+void ExtractScalarFromArrayScalar(std::vector<std::uint8_t> &scalar,
+                                  int &type_num, PyObject *obj) {
+  PyArray_Descr *descr = PyArray_DescrFromScalar(obj);
   if (descr->type_num == NPY_STRING || descr->type_num == NPY_UNICODE ||
       descr->type_num == NPY_VOID || descr->type_num == NPY_CFLOAT ||
       descr->type_num == NPY_CDOUBLE || descr->type_num == NPY_CLONGDOUBLE ||
@@ -180,10 +180,10 @@ void ExtractScalarFromArrayScalar(std::vector<std::uint8_t>& scalar,
   * Assumes obj is a 0-d array (i.e. PyArray_IsZeroDim(obj) == true)
   * E.g. np.ones([])
 */
-void ExtractScalarFromNumpy0DArray(std::vector<std::uint8_t>& scalar,
-                                   int& type_num, PyObject* obj) {
-  PyObject* temp = PyArray_NewCopy((PyArrayObject*)obj, NPY_ANYORDER);
-  temp = PyArray_Return((PyArrayObject*)temp);  // steals reference to temp
+void ExtractScalarFromNumpy0DArray(std::vector<std::uint8_t> &scalar,
+                                   int &type_num, PyObject *obj) {
+  PyObject *temp = PyArray_NewCopy((PyArrayObject *) obj, NPY_ANYORDER);
+  temp = PyArray_Return((PyArrayObject *) temp);// steals reference to temp
                                                 // temp is now an array scalar
   ExtractScalarFromArrayScalar(scalar, type_num, temp);
   Py_DECREF(temp);
@@ -192,22 +192,22 @@ void ExtractScalarFromNumpy0DArray(std::vector<std::uint8_t>& scalar,
 /**
   * Assumes obj is a Python float (i.e. PyFloat_CheckExact(obj) == true)
 */
-void ExtractScalarFromPyFloat(std::vector<std::uint8_t>& scalar, int& type_num,
-                              PyObject* obj) {
+void ExtractScalarFromPyFloat(std::vector<std::uint8_t> &scalar, int &type_num,
+                              PyObject *obj) {
   type_num = NPY_DOUBLE;
   scalar.resize(sizeof(double));
-  *(double*)&scalar[0] = PyFloat_AS_DOUBLE(obj);
+  *(double *) &scalar[0] = PyFloat_AS_DOUBLE(obj);
 }
 
 #if PY_MAJOR_VERSION < 3
 /**
   * Assumes obj is a Python int (i.e. PyInt_CheckExact(obj) == true)
 */
-void ExtractScalarFromPyInt(std::vector<std::uint8_t>& scalar, int& type_num,
-                            PyObject* obj) {
+void ExtractScalarFromPyInt(std::vector<std::uint8_t> &scalar, int &type_num,
+                            PyObject *obj) {
   type_num = NPY_LONG;
   scalar.resize(sizeof(long));
-  *(long*)&scalar[0] = PyInt_AS_LONG(obj);
+  *(long *) &scalar[0] = PyInt_AS_LONG(obj);
 }
 #endif
 
@@ -215,11 +215,11 @@ void ExtractScalarFromPyInt(std::vector<std::uint8_t>& scalar, int& type_num,
   * Assumes obj is a Python long (i.e. PyLong_CheckExact(obj) == true)
   * Raises OverflowError if long represented by obj is larger than Py_LLONG_MAX
 */
-void ExtractScalarFromPyLong(std::vector<std::uint8_t>& scalar, int& type_num,
-                             PyObject* obj) {
+void ExtractScalarFromPyLong(std::vector<std::uint8_t> &scalar, int &type_num,
+                             PyObject *obj) {
   int overflow;
   PY_LONG_LONG temp = PyLong_AsLongLongAndOverflow(obj, &overflow);
-  if (PyErr_Occurred()) {  // possibly TypeError or MemoryError
+  if (PyErr_Occurred()) {// possibly TypeError or MemoryError
     return;
   } else if (overflow != 0) {
     PyErr_SetString(PyExc_OverflowError,
@@ -228,29 +228,29 @@ void ExtractScalarFromPyLong(std::vector<std::uint8_t>& scalar, int& type_num,
   } else {
     type_num = NPY_LONGLONG;
     scalar.resize(sizeof(PY_LONG_LONG));
-    *(PY_LONG_LONG*)&scalar[0] = temp;
+    *(PY_LONG_LONG *) &scalar[0] = temp;
   }
 }
 
 /**
   * Assumes obj is a Python bool (i.e. PyBool_CheckExact(obj) == true)
 */
-void ExtractScalarFromPyBool(std::vector<std::uint8_t>& scalar, int& type_num,
-                             PyObject* obj) {
+void ExtractScalarFromPyBool(std::vector<std::uint8_t> &scalar, int &type_num,
+                             PyObject *obj) {
   type_num = NPY_BOOL;
   scalar.resize(sizeof(bool));
   if (obj == Py_True)
-    *(bool*)&scalar[0] = true;
+    *(bool *) &scalar[0] = true;
   else
-    *(bool*)&scalar[0] = false;
+    *(bool *) &scalar[0] = false;
 }
 
 /**
   * Assumes obj is a PyArrayObject and populates fields in x.
   * Raises ValueError if obj has ndim neither 0, 1 nor 2
 */
-void ExtractArray2DFromPyArray(Array2D& x, PyObject* obj) {
-  PyArrayObject* arr = (PyArrayObject*)obj;
+void ExtractArray2DFromPyArray(Array2D &x, PyObject *obj) {
+  PyArrayObject *arr = (PyArrayObject *) obj;
   int ndim = PyArray_NDIM(arr);
   if (ndim < 0 || ndim > 2) {
     PyErr_Format(PyExc_ValueError,
@@ -279,41 +279,41 @@ void ExtractArray2DFromPyArray(Array2D& x, PyObject* obj) {
   }
   if (x.m == 1) x.row_stride = 0;
   if (x.n == 1) x.col_stride = 0;
-  x.data = (const unsigned char*)PyArray_DATA(arr);
+  x.data = (const unsigned char *) PyArray_DATA(arr);
   x.type_num = PyArray_TYPE(arr);
   x.item_size = PyArray_ITEMSIZE(arr);
 }
 
-bool CheckAndExtractScalar(std::vector<uint8_t>& scalar, int& type_num,
-                           PyObject* obj) {
+bool CheckAndExtractScalar(std::vector<uint8_t> &scalar, int &type_num,
+                           PyObject *obj) {
   if (CheckAndExtractScalar_<CheckArrayScalar, ExtractScalarFromArrayScalar>(
-          scalar, type_num, obj)) {
+              scalar, type_num, obj)) {
     return true;
   } else if (PyErr_Occurred())
     return false;
 
   if (CheckAndExtractScalar_<CheckPyFloat, ExtractScalarFromPyFloat>(
-          scalar, type_num, obj)) {
+              scalar, type_num, obj)) {
     return true;
   } else if (PyErr_Occurred())
     return false;
 
 #if PY_MAJOR_VERSION < 3
   if (CheckAndExtractScalar_<CheckPyInt, ExtractScalarFromPyInt>(
-          scalar, type_num, obj)) {
+              scalar, type_num, obj)) {
     return true;
   } else if (PyErr_Occurred())
     return false;
 #endif
 
   if (CheckAndExtractScalar_<CheckPyBool, ExtractScalarFromPyBool>(
-          scalar, type_num, obj)) {
+              scalar, type_num, obj)) {
     return true;
   } else if (PyErr_Occurred())
     return false;
 
   if (CheckAndExtractScalar_<CheckPyLong, ExtractScalarFromPyLong>(
-          scalar, type_num, obj)) {
+              scalar, type_num, obj)) {
     return true;
   } else if (PyErr_Occurred())
     return false;
@@ -331,7 +331,7 @@ bool CheckAndExtractScalar(std::vector<uint8_t>& scalar, int& type_num,
   * but an exception was raised (e.g. OverflowError is raised if obj is a Python
   * long representing an integer greater than Py_LLONG_MAX.
 */
-bool CheckAndExtractArray2D(Array2D& x, PyObject* obj) {
+bool CheckAndExtractArray2D(Array2D &x, PyObject *obj) {
   x.scalar.clear();
 
   if (PyArray_Check(obj)) {
@@ -356,11 +356,11 @@ bool CheckAndExtractArray2D(Array2D& x, PyObject* obj) {
   * Equivalent to Python expression int(obj).
   * Returns true on success, and false on failure.
 */
-bool CastAsLong(long& number, PyObject* item) {
-  PyObject* number_obj = PyNumber_Long(item);
+bool CastAsLong(long &number, PyObject *item) {
+  PyObject *number_obj = PyNumber_Long(item);
   if (number_obj == nullptr) return false;
 
-  number = PyLong_AsLong(number_obj);  // may raise OverflowError
+  number = PyLong_AsLong(number_obj);// may raise OverflowError
   Py_DECREF(number_obj);
   if (PyErr_Occurred())
     return false;
@@ -373,11 +373,11 @@ bool CastAsLong(long& number, PyObject* item) {
   * Equivalent to Python expression int(obj).
   * Returns true on success, and false on failure.
 */
-bool CastAsLongLong(long long& number, PyObject* item) {
-  PyObject* number_obj = PyNumber_Long(item);
+bool CastAsLongLong(long long &number, PyObject *item) {
+  PyObject *number_obj = PyNumber_Long(item);
   if (number_obj == nullptr) return false;
 
-  number = PyLong_AsLongLong(number_obj);  // may raise OverflowError
+  number = PyLong_AsLongLong(number_obj);// may raise OverflowError
   Py_DECREF(number_obj);
   if (PyErr_Occurred())
     return false;
@@ -390,11 +390,11 @@ bool CastAsLongLong(long long& number, PyObject* item) {
   * Equivalent to Python expression float(obj).
   * Returns true on success, and false on failure.
 */
-bool CastAsDouble(double& number, PyObject* item) {
-  PyObject* number_obj = PyNumber_Float(item);
+bool CastAsDouble(double &number, PyObject *item) {
+  PyObject *number_obj = PyNumber_Float(item);
   if (number_obj == nullptr) return false;
 
-  number = (float)PyFloat_AS_DOUBLE(number_obj);
+  number = (float) PyFloat_AS_DOUBLE(number_obj);
   Py_DECREF(number_obj);
   return true;
 }
@@ -404,14 +404,14 @@ bool CastAsDouble(double& number, PyObject* item) {
   * Equivalent to Python expression obj.__index__().
   * Returns true on success, and false on failure.
 */
-template <typename T>  // assumes T is integral type
-bool CastAsIndex(T& index, PyObject* item) {
-  PyObject* index_obj = PyNumber_Index(item);
+template<typename T>// assumes T is integral type
+bool CastAsIndex(T &index, PyObject *item) {
+  PyObject *index_obj = PyNumber_Index(item);
   if (index_obj == nullptr) return false;
 
   long long temp;
   bool success = CastAsLongLong(temp, index_obj);
-  index = (T)temp;
+  index = (T) temp;
   Py_DECREF(index_obj);
   return success;
 }
@@ -420,21 +420,21 @@ bool CastAsIndex(T& index, PyObject* item) {
   * Assumes obj is a Python list (i.e. PyList_Check(obj) == true).
   * Raises exception if obj contains an item that cannot be cast as an index.
 */
-template <typename T, typename A>
-void ExtractIndicesFromPyList(std::vector<T, A>& indices, PyObject* obj) {
+template<typename T, typename A>
+void ExtractIndicesFromPyList(std::vector<T, A> &indices, PyObject *obj) {
   Py_ssize_t len = PyList_Size(obj);
   std::vector<T, A> temp;
   temp.reserve(len);
   for (Py_ssize_t i = 0; i < len; i++) {
     T index;
-    PyObject* item = PyList_GetItem(obj, i);
+    PyObject *item = PyList_GetItem(obj, i);
     if (CastAsIndex(index, item)) {
       temp.push_back(index);
     } else if (!PyErr_Occurred()) {
       PyErr_Format(PyExc_TypeError,
                    "ExtractIndicesFromPyList(): "
                    "Encountered non-index %s object at the %d-th item",
-                   item->ob_type->tp_name, (int)i);
+                   item->ob_type->tp_name, (int) i);
       return;
     }
   }
@@ -444,17 +444,17 @@ void ExtractIndicesFromPyList(std::vector<T, A>& indices, PyObject* obj) {
 /**
   * Reads numbers of type Ty from data into vector<Tx> v.
 */
-template <template <typename Tx, typename A> class V, typename Tx, typename A,
-          typename Ty>
-void VectorFromArray2D_(V<Tx, A>& v, const Ty* data, npy_intp rows,
+template<template<typename Tx, typename A> class V, typename Tx, typename A,
+         typename Ty>
+void VectorFromArray2D_(V<Tx, A> &v, const Ty *data, npy_intp rows,
                         npy_intp row_stride, npy_intp cols,
                         npy_intp col_stride) {
   v.clear();
   v.reserve(rows * cols);
-  const unsigned char* ptr = (const unsigned char*)data;
+  const unsigned char *ptr = (const unsigned char *) data;
   for (npy_intp i = 0; i < rows; i++) {
     for (npy_intp j = 0; j < cols; j++) {
-      v.push_back((Tx)(*(const Ty*)(ptr + j * col_stride)));
+      v.push_back((Tx) (*(const Ty *) (ptr + j * col_stride)));
     }
     ptr += row_stride;
   }
@@ -464,46 +464,46 @@ void VectorFromArray2D_(V<Tx, A>& v, const Ty* data, npy_intp rows,
   * Reads 2-d array x in row major order into vector<T> v.
   * Numbers in x are typecasted to type T before being written into v.
 */
-template <template <typename T, typename A> class V, typename T, typename A>
-bool VectorFromArray2D(V<T, A>& v, const Array2D& x) {
+template<template<typename T, typename A> class V, typename T, typename A>
+bool VectorFromArray2D(V<T, A> &v, const Array2D &x) {
   if (x.type_num == NPY_FLOAT || x.type_num == NPY_FLOAT32)
-    VectorFromArray2D_(v, (const npy_float*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_float *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_DOUBLE || x.type_num == NPY_FLOAT64)
-    VectorFromArray2D_(v, (const npy_double*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_double *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_INT || x.type_num == NPY_INT32)
-    VectorFromArray2D_(v, (const npy_int*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_int *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_LONG)
-    VectorFromArray2D_(v, (const npy_long*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_long *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_LONGLONG || x.type_num == NPY_INT64)
-    VectorFromArray2D_(v, (const npy_longlong*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_longlong *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_BYTE || x.type_num == NPY_INT8)
-    VectorFromArray2D_(v, (const npy_byte*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_byte *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_SHORT || x.type_num == NPY_INT16)
-    VectorFromArray2D_(v, (const npy_short*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_short *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_UINT || x.type_num == NPY_UINT32)
-    VectorFromArray2D_(v, (const npy_uint*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_uint *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_ULONG)
-    VectorFromArray2D_(v, (const npy_ulong*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_ulong *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_ULONGLONG || x.type_num == NPY_UINT64)
-    VectorFromArray2D_(v, (const npy_ulonglong*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_ulonglong *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_UBYTE || x.type_num == NPY_UINT8)
-    VectorFromArray2D_(v, (const npy_ubyte*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_ubyte *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_USHORT || x.type_num == NPY_UINT16)
-    VectorFromArray2D_(v, (const npy_ushort*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_ushort *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else if (x.type_num == NPY_BOOL)
-    VectorFromArray2D_(v, (const npy_bool*)x.data, x.m, x.row_stride, x.n,
+    VectorFromArray2D_(v, (const npy_bool *) x.data, x.m, x.row_stride, x.n,
                        x.col_stride);
   else {
     PyErr_Format(PyExc_ValueError,
@@ -519,9 +519,9 @@ bool VectorFromArray2D(V<T, A>& v, const Array2D& x) {
   * Raises ValueError if obj's dim is neither 0, 1 nor 2
   * Indices are extracted from obj in row-major order.
 */
-template <typename T, typename A>
-void ExtractIndicesFromPyArray(std::vector<T, A>& indices,
-                               PyObject* obj, int n) {
+template<typename T, typename A>
+void ExtractIndicesFromPyArray(std::vector<T, A> &indices,
+                               PyObject *obj, int n) {
   int dim = PyArray_NDIM(obj);
   if (dim > 1)
     PyErr_Format(PyExc_ValueError,
@@ -529,18 +529,18 @@ void ExtractIndicesFromPyArray(std::vector<T, A>& indices,
                  "PyArray has dim = %d (expected dim = 0 or 1).",
                  dim);
   Array2D x;
-  ExtractArray2DFromPyArray(x, obj);  // we know after this statement m == 1
+  ExtractArray2DFromPyArray(x, obj);// we know after this statement m == 1
   if (PyErr_Occurred()) return;
   if (x.type_num == NPY_BOOL) {
     if (x.n != n) {
       PyErr_Format(PyExc_ValueError,
                    "ExtractIndicesFromPyArray(): "
                    "binary indexing mask has incorrect size %d (expected %d).",
-                   (int)x.n, n);
+                   (int) x.n, n);
     } else {
       for (npy_intp i = 0; i < x.n; i++) {
-        if (*(npy_bool*)(x.data + i * x.col_stride))
-          indices.push_back((T)i);  // record indices where x is true
+        if (*(npy_bool *) (x.data + i * x.col_stride))
+          indices.push_back((T) i);// record indices where x is true
       }
     }
   } else if (IsIntegral(x.type_num)) {
@@ -554,8 +554,8 @@ void ExtractIndicesFromPyArray(std::vector<T, A>& indices,
   }
 }
 
-template <typename T, typename A>
-std::size_t FindInvalidIndex(const std::vector<T, A>& indices,
+template<typename T, typename A>
+std::size_t FindInvalidIndex(const std::vector<T, A> &indices,
                              const T max_index) {
   std::size_t i;
   for (i = 0; i < indices.size(); i++) {
@@ -566,15 +566,15 @@ std::size_t FindInvalidIndex(const std::vector<T, A>& indices,
   return i;
 }
 
-template <typename T, typename A>
-void FixNegativeIndices(std::vector<T, A>& indices, const npy_intp max_index) {
+template<typename T, typename A>
+void FixNegativeIndices(std::vector<T, A> &indices, const npy_intp max_index) {
   for (size_t i = 0; i < indices.size(); i++) {
-    if (indices[i] < 0) indices[i] += (T)max_index;
+    if (indices[i] < 0) indices[i] += (T) max_index;
   }
 }
 
-template <typename T, typename A>
-bool CheckAndExtractIndices(std::vector<T, A>& indices, PyObject* obj, int n) {
+template<typename T, typename A>
+bool CheckAndExtractIndices(std::vector<T, A> &indices, PyObject *obj, int n) {
   Array2D x;
   if (PyList_Check(obj)) {
     ExtractIndicesFromPyList(indices, obj);
@@ -603,7 +603,7 @@ bool CheckAndExtractIndices(std::vector<T, A>& indices, PyObject* obj, int n) {
                  "%lu-th query index is outside of [%d,%d]",
                  i, -n, n - 1);
     return false;
-  } else {  // all indices in [-n, n-1]
+  } else {// all indices in [-n, n-1]
     FixNegativeIndices(indices, n);
   }
   return true;

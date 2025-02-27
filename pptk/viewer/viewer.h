@@ -1,19 +1,19 @@
 #ifndef __VIEWER_H__
 #define __VIEWER_H__
+#include <QColor>
 #include <QCoreApplication>
-#include <QWindow>
-#include <QMouseEvent>
-#include <QWheelEvent>
-#include <QVector3D>
+#include <QImage>
 #include <QMatrix4x4>
+#include <QMouseEvent>
 #include <QOpenGLContext>
 #include <QOpenGLShaderProgram>
+#include <QString>
 #include <QTcpServer>
 #include <QTcpSocket>
 #include <QTimer>
-#include <QImage>
-#include <QColor>
-#include <QString>
+#include <QVector3D>
+#include <QWheelEvent>
+#include <QWindow>
 #include <QtCore/qmath.h>
 #include <fstream>
 #include <iostream>
@@ -35,13 +35,13 @@
 
 class Viewer : public QWindow, protected OpenGLFuncs {
   Q_OBJECT
- public:
+  public:
   explicit Viewer(quint16 clientPort) : QWindow() {
     setSurfaceType(QSurface::OpenGLSurface);
     QSurfaceFormat f;
     f.setDepthBufferSize(16);
     setFormat(f);
-    resize(1,1);
+    resize(1, 1);
     create();
 
     // create OpenGL context
@@ -88,7 +88,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     fflush(stdout);
 
     // send TCP server port number back to Python terminal (client)
-    QTcpSocket* socket = new QTcpSocket;
+    QTcpSocket *socket = new QTcpSocket;
     socket->connectToHost("localhost", clientPort);
     /*
     qDebug() << "Viewer: Connecting back to client at port "
@@ -117,8 +117,8 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     delete _server;
   }
 
- protected:
-  virtual void keyPressEvent(QKeyEvent* ev) {
+  protected:
+  virtual void keyPressEvent(QKeyEvent *ev) {
     _dolly->stop();
     if (ev->key() == Qt::Key_5) {
       if (_camera.getProjectionMode() == QtCamera::PERSPECTIVE)
@@ -144,14 +144,14 @@ class Viewer : public QWindow, protected OpenGLFuncs {
       _camera.setViewAxis(QtCamera::ARBITRARY_AXIS);
       _camera.setTheta(_camera.getTheta() + 30.0f * _camera.getRotateRate());
     } else if (ev->key() == Qt::Key_BracketLeft) {
-      int next_idx = (int)_points->getCurrentAttributeIndex();
+      int next_idx = (int) _points->getCurrentAttributeIndex();
       next_idx =
-          next_idx == 0 ? (int)_points->getNumAttributes() - 1 : next_idx - 1;
-      _points->setCurrentAttributeIndex((std::size_t)next_idx);
+              next_idx == 0 ? (int) _points->getNumAttributes() - 1 : next_idx - 1;
+      _points->setCurrentAttributeIndex((std::size_t) next_idx);
     } else if (ev->key() == Qt::Key_BracketRight) {
-      int next_idx = (int)_points->getCurrentAttributeIndex();
-      next_idx = (next_idx + 1) % (int)_points->getNumAttributes();
-      _points->setCurrentAttributeIndex((std::size_t)next_idx);
+      int next_idx = (int) _points->getCurrentAttributeIndex();
+      next_idx = (next_idx + 1) % (int) _points->getNumAttributes();
+      _points->setCurrentAttributeIndex((std::size_t) next_idx);
     } else if (ev->key() == Qt::Key_C) {
       _camera.setLookAtPosition(_points->computeSelectionCentroid());
       _camera.save();
@@ -159,7 +159,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
       renderPointsFine();
     } else if ((ev->key() == Qt::Key_Enter || ev->key() == Qt::Key_Return) &&
                _socket_waiting_on_enter_key) {
-      const char* msg = "x";
+      const char *msg = "x";
       comm::sendBytes(msg, 1, _socket_waiting_on_enter_key);
       _socket_waiting_on_enter_key->disconnectFromHost();
       _socket_waiting_on_enter_key = nullptr;
@@ -171,14 +171,14 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     renderPointsFine();
   }
 
-  virtual void mouseDoubleClickEvent(QMouseEvent* ev) {
+  virtual void mouseDoubleClickEvent(QMouseEvent *ev) {
     Q_UNUSED(ev);
     _dolly->stop();
     // center on a point near cursor
     std::vector<unsigned int> indices;
     _points->queryNearPoint(indices, ev->windowPos(), _camera);
     if (indices.empty()) return;
-    const std::vector<float> & ps = _points->getPositions();
+    const std::vector<float> &ps = _points->getPositions();
     QVector3D p(ps[3 * indices[0] + 0],
                 ps[3 * indices[0] + 1],
                 ps[3 * indices[0] + 2]);
@@ -188,7 +188,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     renderPointsFine();
   }
 
-  virtual void mousePressEvent(QMouseEvent* ev) {
+  virtual void mousePressEvent(QMouseEvent *ev) {
     _dolly->stop();
     if (ev->buttons() & Qt::LeftButton) {
       _pressPos = ev->windowPos();
@@ -207,7 +207,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     }
   }
 
-  virtual void mouseMoveEvent(QMouseEvent* ev) {
+  virtual void mouseMoveEvent(QMouseEvent *ev) {
     // note: +x right, +y down
     if (ev->buttons() & Qt::LeftButton) {
       if (_fine_render_state != INACTIVE) _fine_render_state = TERMINATE;
@@ -227,7 +227,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     }
   }
 
-  virtual void mouseReleaseEvent(QMouseEvent* ev) {
+  virtual void mouseReleaseEvent(QMouseEvent *ev) {
     Q_UNUSED(ev);
     QPointF releasePos = ev->windowPos();
     bool mouse_moved = releasePos != _pressPos;
@@ -250,7 +250,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     }
   }
 
-  virtual void wheelEvent(QWheelEvent* ev) {
+  virtual void wheelEvent(QWheelEvent *ev) {
     _dolly->stop();
     // note: angleDelta() is in units of 1/8 degree
     _camera.zoom(ev->angleDelta().y() / 120.0f);
@@ -259,24 +259,24 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     renderPointsFine(500);
   }
 
-  virtual void exposeEvent(QExposeEvent* ev) {
+  virtual void exposeEvent(QExposeEvent *ev) {
     Q_UNUSED(ev);
     renderPoints();
     renderPointsFine(1000);
   }
 
-  virtual void resizeEvent(QResizeEvent* ev) {
+  virtual void resizeEvent(QResizeEvent *ev) {
     Q_UNUSED(ev);
-    _camera.setAspectRatio((float)width() / height());
+    _camera.setAspectRatio((float) width() / height());
     _context->makeCurrent(this);
     qreal pixelRatio = this->devicePixelRatio();
     glViewport(0, 0, width() * pixelRatio, height() * pixelRatio);
     _context->doneCurrent();
   }
 
- private slots:
+  private slots:
   void reply() {
-    QTcpSocket* clientConnection = _server->nextPendingConnection();
+    QTcpSocket *clientConnection = _server->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()), clientConnection,
             SLOT(deleteLater()));
 
@@ -287,149 +287,149 @@ class Viewer : public QWindow, protected OpenGLFuncs {
 
     // switch on message type
     switch (msgType) {
-      case 1: {  // load points
+      case 1: {// load points
         // receive point count (next 4 bytes)
         qint32 numPoints;
-        comm::receiveBytes((char*)&numPoints, sizeof(qint32), clientConnection);
+        comm::receiveBytes((char *) &numPoints, sizeof(qint32), clientConnection);
         qDebug() << "Viewer: expecting" << numPoints << "points";
 
         // receive position vectors
         // (next 3 x numPoints x sizeof(float) bytes)
         std::vector<float> positions(3 * numPoints);
-        comm::receiveBytes((char*)&positions[0],
+        comm::receiveBytes((char *) &positions[0],
                            positions.size() * sizeof(float), clientConnection);
         qDebug() << "Viewer: received positions";
 
         _points->loadPoints(positions);
         _camera = QtCamera(_points->getBox());
-        _camera.setAspectRatio((float)width() / height());
+        _camera.setAspectRatio((float) width() / height());
         _floor_grid->setFloorLevel(_points->getFloor());
         renderPoints();
         renderPointsFine();
         break;
       }
-      case 2: {  // clear points
+      case 2: {// clear points
         _points->clearPoints();
         renderPoints();
         renderPointsFine();
         break;
       }
-      case 3: {  // reset view to fit all
+      case 3: {// reset view to fit all
         _camera = QtCamera(_points->getBox());
-        _camera.setAspectRatio((float)width() / height());
+        _camera.setAspectRatio((float) width() / height());
         renderPoints();
         renderPointsFine();
         break;
       }
-      case 4: {  // set viewer property
+      case 4: {// set viewer property
         // receive length of property name string
         quint64 stringLength;
-        comm::receiveBytes((char*)&stringLength, sizeof(quint64),
+        comm::receiveBytes((char *) &stringLength, sizeof(quint64),
                            clientConnection);
 
         // receive property name string
         std::string propertyName(stringLength, 'x');
-        comm::receiveBytes((char*)&propertyName[0], (qint64)stringLength,
+        comm::receiveBytes((char *) &propertyName[0], (qint64) stringLength,
                            clientConnection);
 
         //  receive length of payload
         quint64 payloadLength;
-        comm::receiveBytes((char*)&payloadLength, sizeof(quint64),
+        comm::receiveBytes((char *) &payloadLength, sizeof(quint64),
                            clientConnection);
 
         // receive payload
         std::vector<char> payload(payloadLength, 0);
-        comm::receiveBytes(&payload[0], (qint64)payloadLength,
+        comm::receiveBytes(&payload[0], (qint64) payloadLength,
                            clientConnection);
 
         // set viewer properties accordingly
         // ignore set requests with unexpected payload lengths
         if (!strcmp(propertyName.c_str(), "point_size")) {
           if (payloadLength != sizeof(GLfloat)) break;
-          GLfloat point_size = *(GLfloat*)&payload[0];
+          GLfloat point_size = *(GLfloat *) &payload[0];
           _points->setPointSize(point_size);
           glPointSize(point_size);
         } else if (!strcmp(propertyName.c_str(), "bg_color")) {
           if (payloadLength != 4 * sizeof(float)) break;
-          float* rgba = (GLfloat*)&payload[0];
+          float *rgba = (GLfloat *) &payload[0];
           QVector4D bg_color(rgba[0], rgba[1], rgba[2], rgba[3]);
           _background->setColorTop(bg_color);
           _background->setColorBottom(bg_color);
         } else if (!strcmp(propertyName.c_str(), "bg_color_top")) {
           if (payloadLength != 4 * sizeof(float)) break;
-          float* rgba = (float*)&payload[0];
+          float *rgba = (float *) &payload[0];
           QVector4D bg_color_top(rgba[0], rgba[1], rgba[2], rgba[3]);
           _background->setColorTop(bg_color_top);
         } else if (!strcmp(propertyName.c_str(), "bg_color_bottom")) {
           if (payloadLength != 4 * sizeof(float)) break;
-          float* rgba = (float*)&payload[0];
+          float *rgba = (float *) &payload[0];
           QVector4D bg_color_bottom(rgba[0], rgba[1], rgba[2], rgba[3]);
           _background->setColorBottom(bg_color_bottom);
         } else if (!strcmp(propertyName.c_str(), "show_grid")) {
           if (payloadLength != sizeof(bool)) break;
-          bool visible = *(bool*)&payload[0];
+          bool visible = *(bool *) &payload[0];
           _floor_grid->setVisible(visible);
         } else if (!strcmp(propertyName.c_str(), "show_info")) {
           if (payloadLength != sizeof(bool)) break;
-          _show_text = *(bool*)&payload[0];
+          _show_text = *(bool *) &payload[0];
         } else if (!strcmp(propertyName.c_str(), "show_axis")) {
           if (payloadLength != sizeof(bool)) break;
-          bool visible = *(bool*)&payload[0];
+          bool visible = *(bool *) &payload[0];
           _look_at->setVisible(visible);
         } else if (!strcmp(propertyName.c_str(), "floor_level")) {
           if (payloadLength != sizeof(float)) break;
-          float floor_level = *(float*)&payload[0];
+          float floor_level = *(float *) &payload[0];
           _floor_grid->setFloorLevel(floor_level);
         } else if (!strcmp(propertyName.c_str(), "floor_color")) {
           if (payloadLength != 4 * sizeof(float)) break;
-          float* rgba = (float*)&payload[0];
+          float *rgba = (float *) &payload[0];
           QVector4D floor_color(rgba[0], rgba[1], rgba[2], rgba[3]);
           _floor_grid->setFloorColor(floor_color);
         } else if (!strcmp(propertyName.c_str(), "floor_grid_color")) {
           if (payloadLength != 4 * sizeof(float)) break;
-          float* rgba = (float*)&payload[0];
+          float *rgba = (float *) &payload[0];
           QVector4D floor_grid_color(rgba[0], rgba[1], rgba[2], rgba[3]);
           _floor_grid->setLineColor(floor_grid_color);
         } else if (!strcmp(propertyName.c_str(), "lookat")) {
           if (payloadLength != 3 * sizeof(float)) break;
-          float* xyz = (float*)&payload[0];
+          float *xyz = (float *) &payload[0];
           QVector3D lookat(xyz[0], xyz[1], xyz[2]);
           _camera.setLookAtPosition(lookat);
         } else if (!strcmp(propertyName.c_str(), "phi")) {
           if (payloadLength != sizeof(float)) break;
-          float phi = *(float*)&payload[0];
+          float phi = *(float *) &payload[0];
           _camera.setPhi(phi);
         } else if (!strcmp(propertyName.c_str(), "theta")) {
           if (payloadLength != sizeof(float)) break;
-          float theta = *(float*)&payload[0];
+          float theta = *(float *) &payload[0];
           _camera.setTheta(theta);
         } else if (!strcmp(propertyName.c_str(), "r")) {
           if (payloadLength != sizeof(float)) break;
-          float r = *(float*)&payload[0];
+          float r = *(float *) &payload[0];
           _camera.setCameraDistance(qMax(0.1f, r));
         } else if (!strcmp(propertyName.c_str(), "selected")) {
           quint64 num_selected = payloadLength / sizeof(unsigned int);
           if (payloadLength != num_selected * sizeof(unsigned int)) break;
-          unsigned int* ptr = (unsigned int*)&payload[0];
+          unsigned int *ptr = (unsigned int *) &payload[0];
           std::vector<unsigned int> selected;
           selected.reserve(num_selected);
           for (quint64 i = 0; i < num_selected; i++)
             if (ptr[i] < _points->getNumPoints())
-              selected.push_back(ptr[i]);  // silently drop out of range indices
+              selected.push_back(ptr[i]);// silently drop out of range indices
           _points->setSelected(selected);
         } else if (!strcmp(propertyName.c_str(), "color_map")) {
           quint64 num_colors = payloadLength / sizeof(float) / 4;
           if (payloadLength != num_colors * sizeof(float) * 4) break;
-          float* ptr = (float*)&payload[0];
+          float *ptr = (float *) &payload[0];
           std::vector<float> color_map(ptr, ptr + num_colors * 4);
           _points->setColorMap(color_map);
         } else if (!strcmp(propertyName.c_str(), "color_map_scale")) {
           if (payloadLength != sizeof(float) * 2) break;
-          float* v = (float*)&payload[0];
+          float *v = (float *) &payload[0];
           _points->setColorMapScale(v[0], v[1]);
         } else if (!strcmp(propertyName.c_str(), "curr_attribute_id")) {
           if (payloadLength != sizeof(unsigned int)) break;
-          _points->setCurrentAttributeIndex(*(unsigned int*)&payload[0]);
+          _points->setCurrentAttributeIndex(*(unsigned int *) &payload[0]);
         } else {
           // unrecognized property name, do nothing
           // todo: consider doing something
@@ -438,15 +438,15 @@ class Viewer : public QWindow, protected OpenGLFuncs {
         renderPointsFine();
         break;
       }
-      case 5: {  // get viewer property
+      case 5: {// get viewer property
         // receive length of property name string
         quint64 stringLength;
-        comm::receiveBytes((char*)&stringLength, sizeof(quint64),
+        comm::receiveBytes((char *) &stringLength, sizeof(quint64),
                            clientConnection);
 
         // receive property name string
         std::string propertyName(stringLength, 'x');
-        comm::receiveBytes((char*)&propertyName[0], stringLength,
+        comm::receiveBytes((char *) &propertyName[0], stringLength,
                            clientConnection);
 
         // send property
@@ -485,70 +485,70 @@ class Viewer : public QWindow, protected OpenGLFuncs {
                                   clientConnection);
         } else if (!strcmp(propertyName.c_str(), "mvp")) {
           QMatrix4x4 mvp = _camera.computeMVPMatrix(_points->getBox());
-          comm::sendMatrix<float>((float*)mvp.data(), 4, 4, clientConnection);
+          comm::sendMatrix<float>((float *) mvp.data(), 4, 4, clientConnection);
         } else if (!strcmp(propertyName.c_str(), "num_points")) {
-          comm::sendScalar<unsigned int>((unsigned int)_points->getNumPoints(),
+          comm::sendScalar<unsigned int>((unsigned int) _points->getNumPoints(),
                                          clientConnection);
         } else if (!strcmp(propertyName.c_str(), "num_attributes")) {
           comm::sendScalar<unsigned int>(
-              (unsigned int)_points->getNumAttributes(), clientConnection);
+                  (unsigned int) _points->getNumAttributes(), clientConnection);
         } else if (!strcmp(propertyName.c_str(), "curr_attribute_id")) {
           comm::sendScalar<unsigned int>(
-              (unsigned int)_points->getCurrentAttributeIndex(),
-              clientConnection);
+                  (unsigned int) _points->getCurrentAttributeIndex(),
+                  clientConnection);
         } else {
           std::string msg =
-              "Unrecognized property name \"" + propertyName + "\"";
+                  "Unrecognized property name \"" + propertyName + "\"";
           comm::sendError(&msg[0], msg.length(), clientConnection);
         }
         break;
       }
-      case 6: {  // print screen
+      case 6: {// print screen
         // receive length of property name string
         quint64 stringLength;
-        comm::receiveBytes((char*)&stringLength, sizeof(quint64),
+        comm::receiveBytes((char *) &stringLength, sizeof(quint64),
                            clientConnection);
 
         // receive property name string
         std::string filename(stringLength, 'x');
-        comm::receiveBytes((char*)&filename[0], stringLength, clientConnection);
+        comm::receiveBytes((char *) &filename[0], stringLength, clientConnection);
         printScreen(filename);
         break;
       }
-      case 7: {  // wait for enter
+      case 7: {// wait for enter
         // save current connection socket and return
         _socket_waiting_on_enter_key = clientConnection;
         return;
       }
-      case 8: {  // load camera path animation
+      case 8: {// load camera path animation
         // receive number of poses (1 int)
         qint32 numPoses;
-        comm::receiveBytes((char*)&numPoses, sizeof(qint32), clientConnection);
+        comm::receiveBytes((char *) &numPoses, sizeof(qint32), clientConnection);
 
         // receive poses (6n floats)
         std::vector<float> poses(6 * numPoses);
-        comm::receiveBytes((char*)&poses[0], 6 * numPoses * sizeof(float),
+        comm::receiveBytes((char *) &poses[0], 6 * numPoses * sizeof(float),
                            clientConnection);
 
         // receive number of time stamps (1 int)
         qint32 numTimeStamps;
-        comm::receiveBytes((char*)&numTimeStamps, sizeof(qint32),
+        comm::receiveBytes((char *) &numTimeStamps, sizeof(qint32),
                            clientConnection);
 
         // receive time stamps (n floats)
         std::vector<float> ts(numTimeStamps);
-        comm::receiveBytes((char*)&ts[0], numTimeStamps * sizeof(float),
+        comm::receiveBytes((char *) &ts[0], numTimeStamps * sizeof(float),
                            clientConnection);
 
         // receive interpolation code (1 byte)
         quint8 interp;
-        comm::receiveBytes((char*)&interp, sizeof(quint8), clientConnection);
+        comm::receiveBytes((char *) &interp, sizeof(quint8), clientConnection);
 
         // reorganize poses into vector of CameraPoses
         std::vector<CameraPose> cam_poses(poses.size() / 6);
-        for (int i = 0; i < (int)poses.size() / 6; i++) {
+        for (int i = 0; i < (int) poses.size() / 6; i++) {
           cam_poses[i].setLookAt(
-              QVector3D(poses[6 * i], poses[6 * i + 1], poses[6 * i + 2]));
+                  QVector3D(poses[6 * i], poses[6 * i + 1], poses[6 * i + 2]));
           cam_poses[i].setPhi(poses[6 * i + 3]);
           cam_poses[i].setTheta(poses[6 * i + 4]);
           cam_poses[i].setD(poses[6 * i + 5]);
@@ -557,19 +557,19 @@ class Viewer : public QWindow, protected OpenGLFuncs {
         // create new camera dolly
         delete _dolly;
         _dolly = new CameraDolly(ts, cam_poses,
-                                 (CameraDolly::InterpolationType)interp);
+                                 (CameraDolly::InterpolationType) interp);
 
         break;
       }
-      case 9: {  // playback camera path animation
+      case 9: {// playback camera path animation
         // receive playback time range (2 float)
         float tmin, tmax;
-        comm::receiveBytes((char*)&tmin, sizeof(float), clientConnection);
-        comm::receiveBytes((char*)&tmax, sizeof(float), clientConnection);
+        comm::receiveBytes((char *) &tmin, sizeof(float), clientConnection);
+        comm::receiveBytes((char *) &tmax, sizeof(float), clientConnection);
 
         // receive repeat flag (1 bool)
         bool repeat;
-        comm::receiveBytes((char*)&repeat, sizeof(bool), clientConnection);
+        comm::receiveBytes((char *) &repeat, sizeof(bool), clientConnection);
 
         // start playback
         _dolly->setStartTime(tmin);
@@ -580,15 +580,15 @@ class Viewer : public QWindow, protected OpenGLFuncs {
 
         break;
       }
-      case 10: {  // set per point attributes
+      case 10: {// set per point attributes
         //  receive length of payload
         quint64 payloadLength;
-        comm::receiveBytes((char*)&payloadLength, sizeof(quint64),
+        comm::receiveBytes((char *) &payloadLength, sizeof(quint64),
                            clientConnection);
 
         // receive payload
         std::vector<char> payload(payloadLength, 0);
-        comm::receiveBytes(&payload[0], (qint64)payloadLength,
+        comm::receiveBytes(&payload[0], (qint64) payloadLength,
                            clientConnection);
 
         _points->loadAttributes(payload);
@@ -596,7 +596,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
         renderPointsFine();
         break;
       }
-      default:  // unrecognized message type
+      default:// unrecognized message type
         break;
         // do nothing
     }
@@ -660,7 +660,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
         _context->makeCurrent(this);
         if (chunk_size > 0)
           _points->draw(&_refined_indices[_chunk_offset],
-                        (unsigned int)chunk_size, _camera, _selection_box);
+                        (unsigned int) chunk_size, _camera, _selection_box);
         _context->doneCurrent();
 #endif
         _chunk_offset += chunk_size;
@@ -710,21 +710,21 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     QTimer::singleShot(15, this, SLOT(playCameraAnimation()));
   }
 
- private:
+  private:
   void dummyCalculation(int n) {
-    _dummy_accumulator /= (float)n;
+    _dummy_accumulator /= (float) n;
     for (int i = 0; i < n; i++)
-      _dummy_accumulator += sqrtf(pow(6.9f, log((float)i)));
+      _dummy_accumulator += sqrtf(pow(6.9f, log((float) i)));
   }
 
   void printScreen(std::string filename) {
     _context->makeCurrent(this);
     int w = width() * this->devicePixelRatio();
     int h = height() * this->devicePixelRatio();
-    GLubyte* pixels = new GLubyte[4 * w * h];
+    GLubyte *pixels = new GLubyte[4 * w * h];
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glReadBuffer(GL_FRONT);  // otherwise will read back buffer
+    glReadBuffer(GL_FRONT);// otherwise will read back buffer
     glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     QImage image(w, h, QImage::Format_ARGB32);
     for (int i = 0; i < h; i++) {
@@ -755,11 +755,11 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     // display look-at coordinates
     QVector3D p = _camera.getLookAtPosition();
     QString lookat_text = QString::asprintf("Look-at position: x = %.3f, y = %.3f, z = %.3f",
-                        p.x(), p.y(), p.z());
+                                            p.x(), p.y(), p.z());
     cursor_y += _text->renderText(cursor_x, cursor_y, lookat_text).height();
 
     // display # points loaded
-    QString numpoints_text = QString::asprintf("%d points loaded", (int)_points->getNumPoints());
+    QString numpoints_text = QString::asprintf("%d points loaded", (int) _points->getNumPoints());
     cursor_y += _text->renderText(cursor_x, cursor_y, numpoints_text).height();
 
     // display # points selected
@@ -767,7 +767,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     QString selected_text;
     if (num_selected == 1) {
       unsigned int selected_id = _points->getSelectedIds()[0];
-      const float* pos = &_points->getPositions()[3 * selected_id];
+      const float *pos = &_points->getPositions()[3 * selected_id];
       cursor_y += _text->renderText(cursor_x, cursor_y, selected_text).height();
       selected_text = QString::asprintf("   z = %.3f", pos[2]);
       cursor_y += _text->renderText(cursor_x, cursor_y, selected_text).height();
@@ -777,55 +777,55 @@ class Viewer : public QWindow, protected OpenGLFuncs {
       cursor_y += _text->renderText(cursor_x, cursor_y, selected_text).height();
 
       // display attribute value
-      const PointAttributes& attr = _points->getAttributes();
+      const PointAttributes &attr = _points->getAttributes();
       quint64 attr_dim = _points->getAttributes().dim(
-          (int)_points->getCurrentAttributeIndex());
+              (int) _points->getCurrentAttributeIndex());
       if (attr_dim == 1) {
         selected_text = QString::asprintf("   v = %.3f", attr(selected_id, 0));
         cursor_y +=
-            _text->renderText(cursor_x, cursor_y, selected_text).height();
+                _text->renderText(cursor_x, cursor_y, selected_text).height();
       } else if (attr_dim == 4) {
         selected_text = QString::asprintf("   a = %.3f", attr(selected_id, 3));
         cursor_y +=
-            _text->renderText(cursor_x, cursor_y, selected_text).height();
+                _text->renderText(cursor_x, cursor_y, selected_text).height();
         selected_text = QString::asprintf("   b = %.3f", attr(selected_id, 2));
         cursor_y +=
-            _text->renderText(cursor_x, cursor_y, selected_text).height();
+                _text->renderText(cursor_x, cursor_y, selected_text).height();
         selected_text = QString::asprintf("   g = %.3f", attr(selected_id, 1));
         cursor_y +=
-            _text->renderText(cursor_x, cursor_y, selected_text).height();
+                _text->renderText(cursor_x, cursor_y, selected_text).height();
         selected_text = QString::asprintf("   r = %.3f", attr(selected_id, 0));
         cursor_y +=
-            _text->renderText(cursor_x, cursor_y, selected_text).height();
+                _text->renderText(cursor_x, cursor_y, selected_text).height();
       }
       selected_text = QString::asprintf("Selected point:");
       _text->renderText(cursor_x, cursor_y, selected_text);
     } else if (num_selected > 1) {
-      selected_text = QString::asprintf("%d points selected", (int)num_selected);
+      selected_text = QString::asprintf("%d points selected", (int) num_selected);
       _text->renderText(cursor_x, cursor_y, selected_text);
     }
 
     // display grid scale
     cursor_x = pad;
     cursor_y =
-        height() - pad - _text->computeTextSize("log of grid size: ").height();
+            height() - pad - _text->computeTextSize("log of grid size: ").height();
     QVector4D grid_line_color = _floor_grid->getLineColor();
     int log_grid_size = qRound(qLn(_floor_grid->getCellSize()) / qLn(10.0f));
     cursor_x +=
-        _text->renderText(cursor_x, cursor_y, "log of grid size: ").width();
+            _text->renderText(cursor_x, cursor_y, "log of grid size: ").width();
     cursor_x +=
-        _text
-            ->renderText(
-                cursor_x, cursor_y, QString::number(log_grid_size),
-                qPow(_floor_grid->getLineWeight(), 0.25f) * grid_line_color)
-            .width();
+            _text
+                    ->renderText(
+                            cursor_x, cursor_y, QString::number(log_grid_size),
+                            qPow(_floor_grid->getLineWeight(), 0.25f) * grid_line_color)
+                    .width();
     cursor_x += _text->renderText(cursor_x, cursor_y, " | ").width();
     _text->renderText(cursor_x, cursor_y, QString::number(log_grid_size + 1),
                       grid_line_color);
 
     // display current attribute id
-    int curr_attr = (int)_points->getCurrentAttributeIndex();
-    int num_attr = (int)_points->getNumAttributes();
+    int curr_attr = (int) _points->getCurrentAttributeIndex();
+    int num_attr = (int) _points->getNumAttributes();
     QString attr_text = QString::asprintf("Attribute %d of %d", curr_attr + 1, num_attr);
     cursor_x = pad;
     cursor_y -= _text->computeTextSize(attr_text).height();
@@ -876,35 +876,39 @@ class Viewer : public QWindow, protected OpenGLFuncs {
 
   QPointF win2ndc(QPointF p) {
     QVector2D v = QVector2D(p) *
-                  QVector2D(2.0f / width(), -2.0f / height()) +
+                          QVector2D(2.0f / width(), -2.0f / height()) +
                   QVector2D(-1.0f, 1.0f);
     return QPointF(v.x(), v.y());
   }
 
-  QTcpServer* _server;
+  QTcpServer *_server;
   QPointF _pressPos;
-  QOpenGLContext* _context;
+  QOpenGLContext *_context;
 
   QtCamera _camera;
-  FloorGrid* _floor_grid;
-  SelectionBox* _selection_box;
-  PointCloud* _points;
-  Background* _background;
-  LookAt* _look_at;
-  Text* _text;
-  CameraDolly* _dolly;
+  FloorGrid *_floor_grid;
+  SelectionBox *_selection_box;
+  PointCloud *_points;
+  Background *_background;
+  LookAt *_look_at;
+  Text *_text;
+  CameraDolly *_dolly;
 
   float _dummy_accumulator;
-  enum FineRenderState { INACTIVE, INITIALIZE, CHUNK, FINALIZE, TERMINATE };
+  enum FineRenderState { INACTIVE,
+                         INITIALIZE,
+                         CHUNK,
+                         FINALIZE,
+                         TERMINATE };
   FineRenderState _fine_render_state;
-  QTimer* _timer_fine_render_delay;
+  QTimer *_timer_fine_render_delay;
   std::size_t _chunk_offset;
   std::size_t _max_chunk_size;
   std::vector<unsigned int> _refined_indices;
 
-  QTcpSocket* _socket_waiting_on_enter_key;
+  QTcpSocket *_socket_waiting_on_enter_key;
   double _render_time;
   bool _show_text;
 };
 
-#endif  // __VIEWER_H__
+#endif// __VIEWER_H__

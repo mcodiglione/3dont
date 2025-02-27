@@ -6,19 +6,19 @@
 #include <string>
 
 class ProgressWheel {
- public:
+  public:
   ProgressWheel() : c_("\\|/-"), counter_(0) {}
   void tick() { counter_ = (counter_ + 1) % 4; }
   char get_char() const { return c_[counter_]; }
 
- private:
+  private:
   const std::string c_;
   int counter_;
 };
 
-template <typename T>
+template<typename T>
 class ProgressBar {
- public:
+  public:
   ProgressBar(T num_iters) : len_(20), curr_iter_(0), num_iters_(num_iters) {}
   ProgressBar(T num_iters, int len)
       : len_(len), curr_iter_(0), num_iters_(num_iters) {}
@@ -29,22 +29,20 @@ class ProgressBar {
   }
 
   std::string get_string() const {
-    float p = (float)curr_iter_ / num_iters_;
+    float p = (float) curr_iter_ / num_iters_;
     if (num_iters_ == 0) p = 1.0f;
-    int n = std::max(0, std::min(len_, (int)(p * len_)));
+    int n = std::max(0, std::min(len_, (int) (p * len_)));
     if (curr_iter_ == num_iters_) n = len_;
     std::stringstream ss;
-    ss << (int)(p * 100);
-    return "[" + std::string(n, '=')
-               + std::string(len_ - n, '-')
-               + wheel_.get_char() + "] " + ss.str() + "%";
+    ss << (int) (p * 100);
+    return "[" + std::string(n, '=') + std::string(len_ - n, '-') + wheel_.get_char() + "] " + ss.str() + "%";
   }
 
- private:
+  private:
   ProgressWheel wheel_;
-  int len_;  // progress bar length (# char)
+  int len_;// progress bar length (# char)
   T curr_iter_;
   T num_iters_;
 };
 
-#endif  // __PROGRESS_BAR_H__
+#endif// __PROGRESS_BAR_H__

@@ -1,30 +1,30 @@
 #ifndef __CAMERADOLLY_H__
 #define __CAMERADOLLY_H__
+#include "splines.h"
+#include "timer.h"
 #include <QVector3D>
 #include <QtGlobal>
 #include <vector>
-#include "splines.h"
-#include "timer.h"
 
 class CameraPose {
- public:
+  public:
   CameraPose() : _look_at(), _phi(0.0f), _theta(0.0f), _d(1.0f) {}
-  CameraPose(const QVector3D& p, float phi, float theta, float d)
+  CameraPose(const QVector3D &p, float phi, float theta, float d)
       : _look_at(p), _phi(phi), _theta(theta), _d(d) {}
 
   // getter functions
-  const QVector3D& lookAt() const { return _look_at; }
+  const QVector3D &lookAt() const { return _look_at; }
   float phi() const { return _phi; }
   float theta() const { return _theta; }
   float d() const { return _d; }
 
   // setter functions
-  void setLookAt(const QVector3D& p) { _look_at = p; }
+  void setLookAt(const QVector3D &p) { _look_at = p; }
   void setPhi(float phi) { _phi = phi; }
   void setTheta(float theta) { _theta = theta; }
   void setD(float d) { _d = d; }
 
- private:
+  private:
   QVector3D _look_at;
   float _phi;
   float _theta;
@@ -32,14 +32,14 @@ class CameraPose {
 };
 
 struct CameraPosesSOA {
-  CameraPosesSOA(std::vector<CameraPose>& poses) {
+  CameraPosesSOA(std::vector<CameraPose> &poses) {
     x.resize(poses.size());
     y.resize(poses.size());
     z.resize(poses.size());
     phi.resize(poses.size());
     theta.resize(poses.size());
     d.resize(poses.size());
-    for (int i = 0; i < (int)poses.size(); i++) {
+    for (int i = 0; i < (int) poses.size(); i++) {
       x[i] = poses[i].lookAt().x();
       y[i] = poses[i].lookAt().y();
       z[i] = poses[i].lookAt().z();
@@ -57,8 +57,11 @@ struct CameraPosesSOA {
 };
 
 class CameraDolly {
- public:
-  enum InterpolationType { CONSTANT, LINEAR, CUBIC_NATURAL, CUBIC_PERIODIC };
+  public:
+  enum InterpolationType { CONSTANT,
+                           LINEAR,
+                           CUBIC_NATURAL,
+                           CUBIC_PERIODIC };
 
   CameraDolly() : _interp_type(LINEAR), _repeat(false), _active(false) {
     check_and_init();
@@ -72,8 +75,8 @@ class CameraDolly {
    *  TODO: consider introducing a CameraPose class
    *        i.e. for consolidating lookAt, phi, theta, d parameters
    */
-  CameraDolly(const std::vector<float>& ts,
-              const std::vector<CameraPose>& poses,
+  CameraDolly(const std::vector<float> &ts,
+              const std::vector<CameraPose> &poses,
               InterpolationType interp = LINEAR, bool repeat = false)
       : _ts(ts),
         _poses(poses),
@@ -98,12 +101,12 @@ class CameraDolly {
     _active = true;
     _timer = vltools::getTime();
     _current_time =
-        _start_time;  // this shouldn't be necessary, but just in case
+            _start_time;// this shouldn't be necessary, but just in case
   }
   void stop() { _active = false; }
 
   // dolly states
-  void getTimeAndPose(float& t, CameraPose& p) {
+  void getTimeAndPose(float &t, CameraPose &p) {
     step();
     t = _current_time;
     p = getPose(t);
@@ -130,8 +133,8 @@ class CameraDolly {
   bool done() const { return !_active; }
 
   // getters
-  const std::vector<float>& ts() const { return _ts; }
-  const std::vector<CameraPose>& poses() const { return _poses; }
+  const std::vector<float> &ts() const { return _ts; }
+  const std::vector<CameraPose> &poses() const { return _poses; }
   float startTime() const { return _start_time; }
   float endTime() const { return _end_time; }
 
@@ -156,7 +159,7 @@ class CameraDolly {
   }
   void setRepeat(bool b) { _repeat = b; }
 
- private:
+  private:
   void check_and_init() {
     if (_ts.size() == _poses.size() && !_ts.empty()) {
       _start_time = _ts.front();
@@ -176,7 +179,7 @@ class CameraDolly {
   void step() {
     // modifies _current_time and _active
     if (_active) {
-      float elapsed = (float)(vltools::getTime() - _timer);
+      float elapsed = (float) (vltools::getTime() - _timer);
       if (_repeat)
         _current_time = fmod(elapsed, _end_time - _start_time) + _start_time;
       else {
@@ -235,12 +238,12 @@ class CameraDolly {
   std::vector<float> _ts;
   std::vector<CameraPose> _poses;
 
-  Spline<float>* _look_at_x;
-  Spline<float>* _look_at_y;
-  Spline<float>* _look_at_z;
-  Spline<float>* _phi;
-  Spline<float>* _theta;
-  Spline<float>* _d;
+  Spline<float> *_look_at_x;
+  Spline<float> *_look_at_y;
+  Spline<float> *_look_at_z;
+  Spline<float> *_phi;
+  Spline<float> *_theta;
+  Spline<float> *_d;
 
   float _start_time;
   float _end_time;
@@ -252,4 +255,4 @@ class CameraDolly {
   bool _active;
 };
 
-#endif  // __CAMERADOLLY_H__
+#endif// __CAMERADOLLY_H__

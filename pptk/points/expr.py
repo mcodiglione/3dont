@@ -1,8 +1,10 @@
-from ..vfuncs import vfuncs
-from ..kdtree import kdtree
-import numpy as np
 import copy
 import math
+
+import numpy as np
+
+from ..kdtree import kdtree
+from ..vfuncs import vfuncs
 
 __all__ = [
     'MEAN',
@@ -121,13 +123,13 @@ class expression(object):
             # evaluate first and last 3 items in expression
             # todo: handle stateful expressions
             results_beg = self._evaluate_chunk(0, 3)
-            results_end = self._evaluate_chunk(num_items-3, 3)
+            results_end = self._evaluate_chunk(num_items - 3, 3)
             return '[\n' + ',\n'.join([repr(r) for r in results_beg]) + \
                 ',\n...\n' + ',\n'.join([repr(r) for r in results_end]) + '\n]'
         else:
             # evaluate all items in expression
             results = self._evaluate_chunk(0, num_items)
-            return '[\n' + ',\n'.join([repr(r) for r in results])+'\n]'
+            return '[\n' + ',\n'.join([repr(r) for r in results]) + '\n]'
 
     def __iter__(self):
         # todo: check efficiency
@@ -200,7 +202,7 @@ class expression(object):
         tuple_size = len(first_item)
         results = ()
         for i in xrange(tuple_size):
-            results += (select_op(self, i), )
+            results += (select_op(self, i),)
         return results
 
 

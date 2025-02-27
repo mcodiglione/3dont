@@ -3,10 +3,10 @@
 #include "Eigen/Dense"
 #include "Eigen/Sparse"
 
-template <typename T>
+template<typename T>
 class Spline {
- public:
-  Spline(const std::vector<T>& ts, const std::vector<T>& vs)
+  public:
+  Spline(const std::vector<T> &ts, const std::vector<T> &vs)
       : _ts(ts), _vs(vs) {
     checkAndInit();
   }
@@ -15,11 +15,11 @@ class Spline {
 
   virtual T eval(T t) const = 0;
 
-  const std::vector<T>& ts() const { return _ts; }
-  const std::vector<T>& vs() const { return _vs; }
+  const std::vector<T> &ts() const { return _ts; }
+  const std::vector<T> &vs() const { return _vs; }
 
- protected:
-  static bool checkTs(std::vector<T>& ts) {
+  protected:
+  static bool checkTs(std::vector<T> &ts) {
     // returns true if ts is:
     // 1. non-empty
     // 2. sorted in increasing order
@@ -44,16 +44,16 @@ class Spline {
   std::vector<T> _vs;
 };
 
-template <typename T>
+template<typename T>
 inline Spline<T>::~Spline() {}
 
-template <typename T>
+template<typename T>
 class ConstantSpline : public Spline<T> {
   using Spline<T>::_ts;
   using Spline<T>::_vs;
 
- public:
-  ConstantSpline(const std::vector<T>& ts, const std::vector<T>& vs)
+  public:
+  ConstantSpline(const std::vector<T> &ts, const std::vector<T> &vs)
       : Spline<T>(ts, vs) {}
 
   ~ConstantSpline() {}
@@ -62,7 +62,7 @@ class ConstantSpline : public Spline<T> {
     int idx = std::upper_bound(_ts.begin(), _ts.end(), t) - _ts.begin();
     if (idx == 0)
       return _vs.front();
-    else if (idx == (int)_ts.size())
+    else if (idx == (int) _ts.size())
       return _vs.back();
     else
       // at this point, we know ts.size() > 1 and  0 < idx < _ts.size()
@@ -70,13 +70,13 @@ class ConstantSpline : public Spline<T> {
   }
 };
 
-template <typename T>
+template<typename T>
 class LinearSpline : public Spline<T> {
   using Spline<T>::_ts;
   using Spline<T>::_vs;
 
- public:
-  LinearSpline(const std::vector<T>& ts, const std::vector<T>& vs)
+  public:
+  LinearSpline(const std::vector<T> &ts, const std::vector<T> &vs)
       : Spline<T>(ts, vs) {}
 
   ~LinearSpline() {}
@@ -85,7 +85,7 @@ class LinearSpline : public Spline<T> {
     int idx = std::upper_bound(_ts.begin(), _ts.end(), t) - _ts.begin();
     if (idx == 0)
       return _vs.front();
-    else if (idx == (int)_ts.size())
+    else if (idx == (int) _ts.size())
       return _vs.back();
     else {
       // at this point, we know ts.size() > 1 and  0 < idx < _ts.size()
@@ -95,16 +95,17 @@ class LinearSpline : public Spline<T> {
   }
 };
 
-template <typename T>
+template<typename T>
 class CubicSpline : public Spline<T> {
   using Spline<T>::_ts;
   using Spline<T>::_vs;
 
- public:
+  public:
   typedef Eigen::Triplet<float> Triplet;
   typedef Eigen::SparseMatrix<float, Eigen::RowMajor> SpMat;
-  enum BoundaryBehavior { NATURAL, PERIODIC };
-  CubicSpline(const std::vector<float>& ts, const std::vector<float>& vs,
+  enum BoundaryBehavior { NATURAL,
+                          PERIODIC };
+  CubicSpline(const std::vector<float> &ts, const std::vector<float> &vs,
               BoundaryBehavior boundaryBehavior = NATURAL)
       : Spline<T>(ts, vs), _boundary_behavior(boundaryBehavior) {
     calculateCoefficients();
@@ -116,7 +117,7 @@ class CubicSpline : public Spline<T> {
     int idx = std::upper_bound(_ts.begin(), _ts.end(), t) - _ts.begin();
     if (idx == 0)
       return _vs.front();
-    else if (idx == (int)_ts.size())
+    else if (idx == (int) _ts.size())
       return _vs.back();
     else {
       // at this point, we know ts.size() > 1 and  0 < idx < _ts.size()
@@ -128,16 +129,15 @@ class CubicSpline : public Spline<T> {
       float a[4] = {1.0f, 3.0f, 3.0f, 1.0f};
       float v = 0.0f;
       for (int i = 0; i < 4; i++)
-        v += c[i] * a[i] * powf(1.0f - dt,
-                                3.0f - (float)i) * powf(dt, (float)i);
+        v += c[i] * a[i] * powf(1.0f - dt, 3.0f - (float) i) * powf(dt, (float) i);
       return v;
     }
   }
 
- private:
-  void setupLinearSystem(SpMat& A, Eigen::VectorXf& b) {
+  private:
+  void setupLinearSystem(SpMat &A, Eigen::VectorXf &b) {
     // assumes _ts.size() > 1
-    int num_intervals = (int)_ts.size() - 1;
+    int num_intervals = (int) _ts.size() - 1;
     int num_knots = num_intervals - 1;
     int n = 2 * num_intervals;
 
@@ -163,11 +163,11 @@ class CubicSpline : public Spline<T> {
       // second derivative continuity
       triplets.push_back(Triplet(2 * i + 1, 2 * i, 6.0f * delta_inv_2[i]));
       triplets.push_back(
-          Triplet(2 * i + 1, 2 * i + 1, -12.0f * delta_inv_2[i]));
+              Triplet(2 * i + 1, 2 * i + 1, -12.0f * delta_inv_2[i]));
       triplets.push_back(
-          Triplet(2 * i + 1, 2 * (i + 1), 12.0f * delta_inv_2[i + 1]));
+              Triplet(2 * i + 1, 2 * (i + 1), 12.0f * delta_inv_2[i + 1]));
       triplets.push_back(
-          Triplet(2 * i + 1, 2 * (i + 1) + 1, -6.0f * delta_inv_2[i + 1]));
+              Triplet(2 * i + 1, 2 * (i + 1) + 1, -6.0f * delta_inv_2[i + 1]));
       b(2 * i + 1) = 6.0f * _vs[i + 1] * delta_inv_2[i + 1] -
                      6.0f * _vs[i + 1] * delta_inv_2[i];
     }
@@ -199,7 +199,7 @@ class CubicSpline : public Spline<T> {
   }
 
   void calculateCoefficients() {
-    int num_intervals = (int)_ts.size() - 1;
+    int num_intervals = (int) _ts.size() - 1;
     if (num_intervals > 0) {
       SpMat A;
       Eigen::VectorXf b, x;
@@ -224,4 +224,4 @@ class CubicSpline : public Spline<T> {
   BoundaryBehavior _boundary_behavior;
 };
 
-#endif  // __SPLINES_H__
+#endif// __SPLINES_H__
