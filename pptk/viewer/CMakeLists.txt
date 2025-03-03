@@ -1,7 +1,6 @@
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 
-
 add_executable(viewer
         main.cpp
         octree.h
@@ -24,7 +23,35 @@ add_executable(viewer
         main_layout.ui
 )
 
-target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen)
+target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen Python::NumPy)
 target_include_directories(viewer PRIVATE)
 
 install(TARGETS viewer DESTINATION pptk/viewer)
+
+# Gui python bindings
+add_library(gui MODULE
+        gui_wrapper.cpp
+        main_layout.h
+        main_layout.ui
+)
+
+if (WIN32)
+    target_compile_options(gui PRIVATE /bigobj)
+    target_link_libraries(gui ${PYTHON_LIBRARY})
+elseif (APPLE)
+    set_target_properties(gui PROPERTIES
+            LINK_FLAGS "-undefined dynamic_lookup")
+elseif (UNIX)
+    set_target_properties(gui PROPERTIES
+            PREFIX ""
+            LINK_FLAGS "-static-libstdc++")
+endif ()
+
+target_include_directories(gui PRIVATE
+        .
+        ${Python_INCLUDE_DIRS}
+)
+
+target_link_libraries(gui OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen)
+
+install(TARGETS gui DESTINATION pptk/viewer)

@@ -3,8 +3,11 @@ import os
 import socket
 import struct
 import subprocess
+from multiprocessing import Process
 
 import numpy
+
+from .gui import GuiWrapper
 
 _viewer_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 if not os.path.isabs(_viewer_dir):
@@ -46,20 +49,7 @@ class viewer:
         scale = kwargs.get('scale', None)
         debug = kwargs.get('debug', False)
 
-        # start up viewer in separate process
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind(('localhost', 0))
-        s.listen(0)
-        self._process = subprocess.Popen(
-            [os.path.join(_viewer_dir, 'viewer'), str(s.getsockname()[1])],
-            stdout=subprocess.PIPE,
-            stderr=(None if debug else subprocess.DEVNULL))
-        if debug:
-            print('Started viewer process: %s' \
-                  % os.path.join(_viewer_dir, 'viewer'))
-        x = s.accept()
-        self._portNumber = struct.unpack('H', self._process.stdout.read(2))[0]
-        # self._portNumber = struct.unpack('H',x[0].recv(2))[0]
+        self._portNumber = kwargs.get('port', 8080) # ?!
 
         # upload points to viewer
         self.__load(positions)

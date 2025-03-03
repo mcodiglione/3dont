@@ -4,6 +4,7 @@
 #include "ui_main_layout.h"
 #include "viewer.h"
 #include <QMainWindow>
+#include <utility>
 
 
 QT_BEGIN_NAMESPACE
@@ -16,11 +17,10 @@ class MainLayout : public QMainWindow {
   Q_OBJECT
 
   public:
-  explicit MainLayout(int clientPort = 4001, QWidget *parent = nullptr) : QMainWindow(parent), ui(new Ui::MainLayout) {
+  explicit MainLayout(int clientPort = 4001, std::function<void(std::string)> executeQueryCallback = ([](const auto& _){}), QWidget *parent = nullptr)
+          : QMainWindow(parent), ui(new Ui::MainLayout), executeQueryCallback(std::move(executeQueryCallback)) {
     ui->setupUi(this);
     ui->statusbar->showMessage(tr("Loading..."));
-
-    connect(ui->executeQueryButton, SIGNAL(clicked()), this, SLOT(on_pushButton_clicked()));
 
     QWindow *viewer = new Viewer(clientPort);
     viewer->setFlags(Qt::FramelessWindowHint);
@@ -34,13 +34,15 @@ class MainLayout : public QMainWindow {
   }
 
   private slots:
-  void on_pushButton_clicked() {
+  void on_executeQueryButton_clicked() {
     QString query = ui->queryTextBox->toPlainText();
+    executeQueryCallback(query.toStdString());
     qDebug() << query;
   }
 
   private:
   Ui::MainLayout *ui;
+  std::function<void(const std::string&)> executeQueryCallback;
 };
 
 

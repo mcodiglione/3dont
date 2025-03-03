@@ -6,3 +6,4 @@ result
 /.idea
 /dist
 *.autosave
+/CMakeLists.txt.user
