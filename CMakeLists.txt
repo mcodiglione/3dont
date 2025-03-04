@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(pptk)
+project(threedont)
 
 # set(CMAKE_BUILD_TYPE Release)
 
@@ -35,5 +35,5 @@ if (NOT TBB_FOUND)
 endif ()
 
 
-add_subdirectory(pptk)
+add_subdirectory(threedont)
 add_subdirectory(licenses)

@@ -1,5 +1,5 @@
 [project]
-name = "3D-ont"
+name = "threedont"
 version = "0.0.1"
 authors = [
   { name="Samuele Facenda", email="sfacenda@fbk.eu" },
@@ -22,10 +22,8 @@ requires = ["scikit-build-core"]
 build-backend = "scikit_build_core.build"
 
 [tool.scikit-build]
-wheel.packages = ["pptk"]
-
 wheel.exclude = [
-  "pptk/**/*.cpp",
-  "pptk/**/*.h",
-  "pptk/**/*.hpp"
+  "threedont/**/*.cpp",
+  "threedont/**/*.h",
+  "threedont/**/*.hpp"
 ]

@@ -17,9 +17,9 @@
       {
 
         packages = rec {
-          default = visualizer;
-          visualizer = pkgs.python3.pkgs.buildPythonPackage {
-            pname = "3D-ont";
+          default = threedont;
+          threedont = pkgs.python3.pkgs.buildPythonPackage {
+            pname = "threedont";
             src = ./.;
             inherit version;
             pyproject = true;
@@ -42,7 +42,7 @@
             #   makeWrapperArgs+=("''${qtWrapperArgs[@]}")
             # '';
             preFixup = ''
-                wrapQtApp "$out/lib/python3.12/site-packages/pptk/viewer/viewer"
+                wrapQtApp "$out/lib/python3.12/site-packages/threedont/viewer/viewer"
             '';
             
             buildInputs = with pkgs; [
@@ -62,7 +62,7 @@
           default = {
             type = "app";
             program = let
-              py = pkgs.python3.withPackages (_: [ self.packages.${system}.visualizer ]);
+              py = pkgs.python3.withPackages (_: [ self.packages.${system}.threedont ]);
             in
               "${py}/bin/python";
           };
@@ -70,7 +70,7 @@
 
         devShells = {
           default = pkgs.mkShell {
-            inputsFrom = [ self.packages.${system}.visualizer ];
+            inputsFrom = [ self.packages.${system}.threedont ];
             packages = with pkgs; [
               python3Packages.build
               qt6.qttools

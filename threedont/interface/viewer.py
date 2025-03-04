@@ -2,43 +2,41 @@ import inspect
 import os
 import socket
 import struct
-import subprocess
-from multiprocessing import Process
 
 import numpy
 
-from .gui import GuiWrapper
+from ..gui import GuiWrapper
 
 _viewer_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 if not os.path.isabs(_viewer_dir):
     _viewer_dir = os.path.abspath(_viewer_dir)
 
-__all__ = ['viewer']
+__all__ = ['Viewer']
 
 
-class viewer:
+class Viewer:
     def __init__(self, *args, **kwargs):
         """ Opens a point cloud viewer
 
         Examples:
             Create 100 random points
 
-            >>> xyz = pptk.rand(100, 3)
+            >>> xyz = np.rand(100, 3)
 
             Visualize the points
 
-            >>> v = pptk.viewer(xyz)
+            >>> v = pptk.Viewer(xyz)
             >>> v.set(point_size=0.005)
 
             Visualize points shaded by height
 
-            >>> v = pptk.viewer(xyz, xyz[:, 2])
+            >>> v = pptk.Viewer(xyz, xyz[:, 2])
             >>> v.set(point_size=0.005)
 
             Visualize points shaded by random RGB color
 
-            >>> rgb = pptk.rand(100, 3)
-            >>> pptk.viewer(xyz, rgb)
+            >>> rgb = np.rand(100, 3)
+            >>> pptk.Viewer(xyz, rgb)
             >>> v.set(point_size=0.005)
 
         """
@@ -122,7 +120,7 @@ class viewer:
 
         Examples:
 
-            >>> v = pptk.viewer(xyz)
+            >>> v = pptk.Viewer(xyz)
             >>> v.set(point_size = 0.01)
 
         """
@@ -152,7 +150,7 @@ class viewer:
 
         Examples:
 
-            >>> v = pptk.viewer(xyz)
+            >>> v = pptk.Viewer(xyz)
             >>> v.get('selected')
 
         """
@@ -184,14 +182,14 @@ class viewer:
 
         Examples:
 
-        >>> xyz = pptk.rand(100, 3)
-        >>> v = pptk.viewer(xyz)
-        >>> attr1 = pptk.rand(100)     # 100 random scalars
-        >>> attr2 = pptk.rand(100, 3)  # 100 random RGB colors
-        >>> attr3 = pptk.rand(100, 4)  # 100 random RGBA colors
-        >>> attr4 = pptk.rand(1)       # 1 random scalar
-        >>> attr5 = pptk.rand(1, 3)    # 1 random RGB color
-        >>> attr6 = pptk.rand(1, 4)    # 1 random RGBA color
+        >>> xyz = np.rand(100, 3)
+        >>> v = pptk.Viewer(xyz)
+        >>> attr1 = np.rand(100)     # 100 random scalars
+        >>> attr2 = np.rand(100, 3)  # 100 random RGB colors
+        >>> attr3 = np.rand(100, 4)  # 100 random RGBA colors
+        >>> attr4 = np.rand(1)       # 1 random scalar
+        >>> attr5 = np.rand(1, 3)    # 1 random RGB color
+        >>> attr6 = np.rand(1, 4)    # 1 random RGBA color
         >>> v.attributes(attr1, attr2, attr3, attr4, attr5, attr6)
         >>> v.set(point_size=0.005)
 
@@ -252,7 +250,7 @@ class viewer:
         Examples:
             >>> xyz = np.c_[np.arange(10), np.zeros(10), np.zeros(10)]
             >>> scalars = np.arange(10)
-            >>> v = pptk.viewer(xyz, scalars)
+            >>> v = pptk.Viewer(xyz, scalars)
             >>> v.set(point_size=0.1)
             >>> v.color_map('cool', scale=[0, 5])
             >>> v.color_map([[0, 0, 0], [1, 1, 1]])
@@ -280,7 +278,7 @@ class viewer:
 
         Examples:
 
-        >>> v = pptk.viewer(xyz)
+        >>> v = pptk.Viewer(xyz)
         >>> v.capture('screenshot.png')
 
         """
@@ -402,7 +400,7 @@ class viewer:
 
         Examples:
 
-            >>> v = pptk.viewer(xyz)
+            >>> v = pptk.Viewer(xyz)
             >>> v.wait()
 
         Press enter in viewer to return control to python terminal.

@@ -1,5 +1,5 @@
-#ifndef PPTK_MAIN_LAYOUT_H
-#define PPTK_MAIN_LAYOUT_H
+#ifndef THREEDONT_MAIN_LAYOUT_H
+#define THREEDONT_MAIN_LAYOUT_H
 
 #include "ui_main_layout.h"
 #include "viewer.h"
@@ -46,4 +46,4 @@ class MainLayout : public QMainWindow {
 };
 
 
-#endif//PPTK_MAIN_LAYOUT_H
+#endif//THREEDONT_MAIN_LAYOUT_H
