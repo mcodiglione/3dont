@@ -23,7 +23,7 @@ add_executable(viewer
         main_layout.ui
 )
 
-target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen Python::NumPy)
+target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen)
 target_include_directories(viewer PRIVATE)
 
 install(TARGETS viewer DESTINATION threedont/viewer)

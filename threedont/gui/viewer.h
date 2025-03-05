@@ -36,7 +36,7 @@
 class Viewer : public QWindow, protected OpenGLFuncs {
   Q_OBJECT
   public:
-  explicit Viewer(quint16 clientPort) : QWindow() {
+  explicit Viewer() : QWindow() {
     setSurfaceType(QSurface::OpenGLSurface);
     QSurfaceFormat f;
     f.setDepthBufferSize(16);
@@ -82,25 +82,6 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     }
     connect(_server, SIGNAL(newConnection()), this, SLOT(reply()));
     qDebug() << "Viewer: TCP server set up on port " << _server->serverPort();
-
-    quint16 serverPort = _server->serverPort();
-    fwrite(&serverPort, sizeof(quint16), 1, stdout);
-    fflush(stdout);
-
-    // send TCP server port number back to Python terminal (client)
-    QTcpSocket *socket = new QTcpSocket;
-    socket->connectToHost("localhost", clientPort);
-    /*
-    qDebug() << "Viewer: Connecting back to client at port "
-             << clientPort << "...";
-    if (!socket->waitForConnected()) {
-      std::cout << "Connection back to client failed" << std::endl;
-      exit(1);
-    }
-    quint16 serverPort = _server->serverPort();
-    comm::sendBytes((const char*)&serverPort, sizeof(quint16), socket);
-    */
-    socket->disconnectFromHost();
   }
 
   ~Viewer() {
@@ -115,6 +96,10 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     // deletion of context must occur after viewer objects
     delete _context;
     delete _server;
+  }
+
+  int getServerPort() {
+    return _server->serverPort();
   }
 
   protected:
@@ -283,7 +268,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     // read first byte of incoming message
     char msgType;
     comm::receiveBytes(&msgType, 1, clientConnection);
-    qDebug() << "Viewer: received message type " << msgType;
+    qDebug() << "Viewer: received message type " << ((int)msgType);
 
     // switch on message type
     switch (msgType) {

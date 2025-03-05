@@ -1,6 +1,5 @@
 #include <Python.h>
 #include <QApplication>
-#include <QDebug>
 #include <iostream>
 #include "main_layout.h"
 
@@ -29,11 +28,10 @@ static PyObject *GuiWrapper_new(PyTypeObject *type, PyObject *args, PyObject *kw
 }
 
 static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwds) {
-    static char *kwlist[] = {"executeQueryCallback", "portNumber", nullptr};
+    static char *kwlist[] = {"executeQueryCallback", nullptr};
     PyObject *executeQueryCallback = nullptr;
-    int portNumber;
 
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "Oi", kwlist, &executeQueryCallback, &portNumber)) {
+    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &executeQueryCallback)) {
         return -1;
     }
 
@@ -42,22 +40,22 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
         return -1;
     }
 
+    int zero = 0; // hack to get QApplication to work
+    self->app = new QApplication(zero, nullptr);
+
     self->executeQueryCallback = executeQueryCallback;
     Py_XINCREF(executeQueryCallback);
-    self->mainLayout = new MainLayout(portNumber, [self](const std::string& query) {
+    self->mainLayout = new MainLayout([self](const std::string& query) {
         PyObject *arglist = Py_BuildValue("(s)", query.c_str());
         PyObject *result = PyObject_CallObject(self->executeQueryCallback, arglist);
         Py_XDECREF(arglist);
         Py_XDECREF(result);
     });
 
-    int zero = 0; // hack to get QApplication to work
-    self->app = new QApplication(zero, nullptr);
-
     return 0;
 }
 
-static PyObject *GuiWrapper_exec(GuiWrapperObject *self, PyObject *args) {
+static PyObject *GuiWrapper_run(GuiWrapperObject *self, PyObject *args) {
     if (self->mainLayout == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
         return nullptr;
@@ -68,12 +66,40 @@ static PyObject *GuiWrapper_exec(GuiWrapperObject *self, PyObject *args) {
         return nullptr;
     }
 
-    QApplication::exec();
+    self->mainLayout->show();
+
+    self->app->exec(); // long running
+    return Py_None;
+}
+
+static PyObject *GuiWrapper_get_viewer_server_port(GuiWrapperObject *self, PyObject *args) {
+    if (self->mainLayout == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+        return nullptr;
+    }
+
+    return PyLong_FromLong(self->mainLayout->getViewerServerPort());
+}
+
+static PyObject *GuiWrapper_stop(GuiWrapperObject *self, PyObject *args) {
+    if (self->mainLayout == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+        return nullptr;
+    }
+
+    if (self->app == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "QApplication not initialized");
+        return nullptr;
+    }
+
+    self->app->quit();
     return Py_None;
 }
 
 static PyMethodDef GuiWrapper_methods[] = {
-        {"exec", (PyCFunction) GuiWrapper_exec, METH_NOARGS, "Starts the GUI event loop"},
+        {"run", (PyCFunction) GuiWrapper_run, METH_NOARGS, "Starts the GUI event loop"},
+        {"stop", (PyCFunction) GuiWrapper_stop, METH_NOARGS, "Stops the GUI event loop"},
+        {"get_viewer_server_port", (PyCFunction) GuiWrapper_get_viewer_server_port, METH_NOARGS, "Returns the server port of the viewer"},
         {nullptr}
 };
 

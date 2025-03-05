@@ -15,7 +15,7 @@ __all__ = ['Viewer']
 
 
 class Viewer:
-    def __init__(self, *args, **kwargs):
+    def __init__(self, port):
         """ Opens a point cloud viewer
 
         Examples:
@@ -40,19 +40,8 @@ class Viewer:
             >>> v.set(point_size=0.005)
 
         """
-        # ensure positions is 3-column array of float32s
-        positions = numpy.asarray(args[0], dtype=numpy.float32).reshape(-1, 3)
-        attr = args[1:]
-        color_map = kwargs.get('color_map', 'jet')
-        scale = kwargs.get('scale', None)
-        debug = kwargs.get('debug', False)
+        self._portNumber = port
 
-        self._portNumber = kwargs.get('port', 8080) # ?!
-
-        # upload points to viewer
-        self.__load(positions)
-        self.attributes(*attr)
-        self.color_map(color_map, scale)
 
     def close(self):
         """ Closes the point cloud viewer

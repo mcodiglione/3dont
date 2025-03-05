@@ -17,6 +17,9 @@ classifiers = [
 license = { text = "MIT" }
 license-files = ["LICEN[CS]E*"]
 
+[project.scripts]
+threedont = "threedont.__main__:main"
+
 [build-system]
 requires = ["scikit-build-core"]
 build-backend = "scikit_build_core.build"

@@ -2,7 +2,7 @@
 {
   description = "3dont, ontology pointcloud visualizer";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-24.11";
+  inputs.nixpkgs.url = "nixpkgs/nixos-unstable"; # 24.11
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -18,7 +18,7 @@
 
         packages = rec {
           default = threedont;
-          threedont = pkgs.python3.pkgs.buildPythonPackage {
+          threedont = pkgs.python3.pkgs.buildPythonApplication {
             pname = "threedont";
             src = ./.;
             inherit version;
@@ -37,14 +37,6 @@
               ninja
             ];
             
-            dontWrapQtApps = true;
-            # preFixup = ''
-            #   makeWrapperArgs+=("''${qtWrapperArgs[@]}")
-            # '';
-            preFixup = ''
-                wrapQtApp "$out/lib/python3.12/site-packages/threedont/viewer/viewer"
-            '';
-            
             buildInputs = with pkgs; [
               eigen
               tbb.dev
@@ -59,7 +51,7 @@
         };
 
         apps = {
-          default = {
+          python = {
             type = "app";
             program = let
               py = pkgs.python3.withPackages (_: [ self.packages.${system}.threedont ]);

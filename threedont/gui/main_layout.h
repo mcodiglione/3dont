@@ -17,12 +17,12 @@ class MainLayout : public QMainWindow {
   Q_OBJECT
 
   public:
-  explicit MainLayout(int clientPort = 4001, std::function<void(std::string)> executeQueryCallback = ([](const auto& _){}), QWidget *parent = nullptr)
+  explicit MainLayout(std::function<void(std::string)> executeQueryCallback = ([](const auto& _){}), QWidget *parent = nullptr)
           : QMainWindow(parent), ui(new Ui::MainLayout), executeQueryCallback(std::move(executeQueryCallback)) {
     ui->setupUi(this);
     ui->statusbar->showMessage(tr("Loading..."));
 
-    QWindow *viewer = new Viewer(clientPort);
+    viewer = new Viewer();
     viewer->setFlags(Qt::FramelessWindowHint);
     QWidget *container = createWindowContainer(viewer, this);
     setCentralWidget(container);
@@ -31,6 +31,10 @@ class MainLayout : public QMainWindow {
 
   ~MainLayout() override {
     delete ui;
+  }
+
+  int getViewerServerPort() {
+    return viewer->getServerPort();
   }
 
   private slots:
@@ -43,6 +47,7 @@ class MainLayout : public QMainWindow {
   private:
   Ui::MainLayout *ui;
   std::function<void(const std::string&)> executeQueryCallback;
+  Viewer *viewer;
 };
 
 

@@ -1,1 +1,3 @@
-from .viewer import *
+from .controller import *
+
+__all__ = ['Controller']
