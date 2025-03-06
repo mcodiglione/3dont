@@ -1,9 +1,11 @@
 #ifndef THREEDONT_MAIN_LAYOUT_H
 #define THREEDONT_MAIN_LAYOUT_H
 
+#include "controller_wrapper.h"
 #include "ui_main_layout.h"
-#include "viewer.h"
+#include "viewer/viewer.h"
 #include <QMainWindow>
+#include <QInputDialog>
 #include <utility>
 
 
@@ -17,8 +19,9 @@ class MainLayout : public QMainWindow {
   Q_OBJECT
 
   public:
-  explicit MainLayout(std::function<void(std::string)> executeQueryCallback = ([](const auto& _){}), QWidget *parent = nullptr)
-          : QMainWindow(parent), ui(new Ui::MainLayout), executeQueryCallback(std::move(executeQueryCallback)) {
+  explicit MainLayout(ControllerWrapper* controllerWrapper, QWidget *parent = nullptr): QMainWindow(parent), ui(new Ui::MainLayout) {
+    this->controllerWrapper = controllerWrapper;
+
     ui->setupUi(this);
     ui->statusbar->showMessage(tr("Loading..."));
 
@@ -40,14 +43,25 @@ class MainLayout : public QMainWindow {
   private slots:
   void on_executeQueryButton_clicked() {
     QString query = ui->queryTextBox->toPlainText();
-    executeQueryCallback(query.toStdString());
+    controllerWrapper->executeQuery(query.toStdString());
     qDebug() << query;
+  }
+
+  void on_actionConnect_to_server_triggered() {
+    bool ok;
+    QString text = QInputDialog::getText(this, tr("Connect to server"),
+                                         tr("Server URL:"), QLineEdit::Normal,
+                                         "localhost", &ok);
+    if (ok && !text.isEmpty()) {
+      qDebug() << "Connecting to server at " << text;
+      controllerWrapper->connectToServer(text.toStdString());
+    }
   }
 
   private:
   Ui::MainLayout *ui;
-  std::function<void(const std::string&)> executeQueryCallback;
   Viewer *viewer;
+  ControllerWrapper *controllerWrapper;
 };
 
 

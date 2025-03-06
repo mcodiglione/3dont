@@ -75,7 +75,7 @@
             # https://discourse.nixos.org/t/python-qt-woes/11808/10
             shellHook = ''
               setQtEnvironment=$(mktemp --suffix .setQtEnvironment.sh)
-              echo "shellHook: setQtEnvironment = $setQtEnvironment"
+              # echo "shellHook: setQtEnvironment = $setQtEnvironment"
               makeWrapper "/bin/sh" "$setQtEnvironment" "''${qtWrapperArgs[@]}"
               sed "/^exec/d" -i "$setQtEnvironment"
               source "$setQtEnvironment"

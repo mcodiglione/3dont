@@ -13,7 +13,7 @@ find_package(OpenMP REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Widgets Network OpenGL Core)
-find_package(Python COMPONENTS Interpreter Development.Module NumPy)
+find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
 find_package(TBB COMPONENTS tbb)
 if (NOT TBB_FOUND)

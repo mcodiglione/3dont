@@ -2,17 +2,18 @@
 #include <QApplication>
 #include <iostream>
 #include "main_layout.h"
+#include "controller_wrapper.h"
 
 typedef struct {
     PyObject_HEAD
-    PyObject *executeQueryCallback;
+    ControllerWrapper *controllerWrapper;
     MainLayout *mainLayout;
     QApplication *app;
 } GuiWrapperObject;
 
 static void GuiWrapper_dealloc(GuiWrapperObject *self) {
-    Py_XDECREF(self->executeQueryCallback);
     Py_TYPE(self)->tp_free((PyObject *) self);
+    delete self->controllerWrapper;
     delete self->mainLayout;
     delete self->app;
 }
@@ -21,37 +22,22 @@ static PyObject *GuiWrapper_new(PyTypeObject *type, PyObject *args, PyObject *kw
     GuiWrapperObject *self;
     self = (GuiWrapperObject *) type->tp_alloc(type, 0);
     if (self != nullptr) {
-        self->executeQueryCallback = nullptr;
         self->mainLayout = nullptr;
     }
     return (PyObject *) self;
 }
 
 static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwds) {
-    static char *kwlist[] = {"executeQueryCallback", nullptr};
-    PyObject *executeQueryCallback = nullptr;
-
-    if (!PyArg_ParseTupleAndKeywords(args, kwds, "O", kwlist, &executeQueryCallback)) {
+    // get the first argument, should be a Controller
+    PyObject *controller;
+    if (!PyArg_ParseTuple(args, "O", &controller)) {
         return -1;
     }
-
-    if (!PyCallable_Check(executeQueryCallback)) {
-        PyErr_SetString(PyExc_TypeError, "Parameter must be callable");
-        return -1;
-    }
+    self->controllerWrapper = new ControllerWrapper(controller);
 
     int zero = 0; // hack to get QApplication to work
     self->app = new QApplication(zero, nullptr);
-
-    self->executeQueryCallback = executeQueryCallback;
-    Py_XINCREF(executeQueryCallback);
-    self->mainLayout = new MainLayout([self](const std::string& query) {
-        PyObject *arglist = Py_BuildValue("(s)", query.c_str());
-        PyObject *result = PyObject_CallObject(self->executeQueryCallback, arglist);
-        Py_XDECREF(arglist);
-        Py_XDECREF(result);
-    });
-
+    self->mainLayout = new MainLayout(self->controllerWrapper);
     return 0;
 }
 
@@ -92,6 +78,7 @@ static PyObject *GuiWrapper_stop(GuiWrapperObject *self, PyObject *args) {
         return nullptr;
     }
 
+    self->mainLayout->close();
     self->app->quit();
     return Py_None;
 }

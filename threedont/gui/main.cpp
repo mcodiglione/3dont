@@ -7,7 +7,7 @@ int main(int argc, char *argv[]) {
 
   QApplication a(argc, argv);
 
-  auto *mainWidget = new MainLayout();
+  auto *mainWidget = new MainLayout(nullptr);
   mainWidget->show();
 
   return QApplication::exec();
