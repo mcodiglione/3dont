@@ -67,6 +67,8 @@
               python3Packages.build
               qt6.qttools
               gammaray
+              gdb
+              lldb
             ];
             nativeBuildInputs = with pkgs; [
               qt6.wrapQtAppsHook

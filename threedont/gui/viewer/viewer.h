@@ -261,6 +261,8 @@ class Viewer : public QWindow, protected OpenGLFuncs {
 
   private slots:
   void reply() {
+    qDebug() << "Viewer: received connection";
+
     QTcpSocket *clientConnection = _server->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()), clientConnection,
             SLOT(deleteLater()));
