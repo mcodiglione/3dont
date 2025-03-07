@@ -9,6 +9,8 @@ project(threedont)
 # adds -std=gnu++11 flag when compiling with gcc
 set(CMAKE_CXX_STANDARD 11)
 
+option(THREEDONT_DEVELOP_BUILD "Enable development build" OFF)
+
 find_package(OpenMP REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
@@ -33,7 +35,6 @@ if (NOT TBB_FOUND)
             INTERFACE_LINK_LIBRARIES "${TBB_LIBRARIES}"
     )
 endif ()
-
 
 add_subdirectory(threedont)
 add_subdirectory(licenses)

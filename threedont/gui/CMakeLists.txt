@@ -65,4 +65,11 @@ target_include_directories(gui PRIVATE ${Python_INCLUDE_DIRS})
 
 target_link_libraries(gui OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen ${Python_LIBRARIES})
 
-install(TARGETS gui DESTINATION threedont/gui)
+# install in source directory for development
+if (THREEDONT_DEVELOP_BUILD)
+    # send message
+    message(STATUS "Installing gui in source directory for development")
+    install(TARGETS gui DESTINATION ${CMAKE_SOURCE_DIR}/threedont/gui)
+else ()
+    install(TARGETS gui DESTINATION threedont/gui)
+endif ()

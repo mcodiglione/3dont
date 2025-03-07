@@ -7,3 +7,4 @@ result
 /dist
 *.autosave
 /CMakeLists.txt.user
+*.so
