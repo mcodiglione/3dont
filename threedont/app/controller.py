@@ -1,5 +1,6 @@
-from multiprocessing import Process, Queue, Pipe
+from multiprocessing import Process, Pipe
 import numpy as np
+import signal
 
 from .viewer import Viewer
 from ..gui import GuiWrapper
@@ -33,7 +34,7 @@ def run_gui(portNumberPipe, commands_pipe):
     print("Running GUI")
     gui.run()
     commands_pipe.close()
-    print("GUI stopped")
+    print("GUI run() exited")
 
 class Controller:
     def __init__(self):
@@ -52,6 +53,12 @@ class Controller:
         self.gui_process.join()
 
     def run(self):
+        def signal_handler(sig, frame):
+            self.stop()
+
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+
         print("Running controller")
         while True:
             try:

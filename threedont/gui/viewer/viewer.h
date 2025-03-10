@@ -261,8 +261,6 @@ class Viewer : public QWindow, protected OpenGLFuncs {
 
   private slots:
   void reply() {
-    qDebug() << "Viewer: received connection";
-
     QTcpSocket *clientConnection = _server->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()), clientConnection,
             SLOT(deleteLater()));
@@ -270,7 +268,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     // read first byte of incoming message
     char msgType;
     comm::receiveBytes(&msgType, 1, clientConnection);
-    qDebug() << "Viewer: received message type " << ((int)msgType);
+    qDebug() << "Viewer: received message type" << ((int)msgType);
 
     // switch on message type
     switch (msgType) {

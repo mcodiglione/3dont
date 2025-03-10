@@ -10,13 +10,8 @@ def main():
 
     controller = Controller()
 
-    def signal_handler(sig, frame):
-        controller.stop()
-
-    signal.signal(signal.SIGINT, signal_handler)
-    signal.signal(signal.SIGTERM, signal_handler)
-
     controller.run()
+    print("Application stopped gracefully")
 
 if __name__ == '__main__':
     main()

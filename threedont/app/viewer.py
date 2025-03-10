@@ -420,12 +420,9 @@ class Viewer:
 
     def __send(self, msg):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        print("connecting to localhost on port ", self._portNumber)
         s.connect(('localhost', self._portNumber))
-        print("Connected to localhost")
         totalSent = 0
         while totalSent < len(msg):
-            print("sending message ", totalSent)
             sent = s.send(msg)
             if sent == 0:
                 raise RuntimeError("socket connection broken")

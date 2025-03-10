@@ -3,6 +3,7 @@
 #include <iostream>
 #include "main_layout.h"
 #include "controller_wrapper.h"
+#include <csignal>
 
 typedef struct {
     PyObject_HEAD
@@ -38,6 +39,7 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
     int zero = 0; // hack to get QApplication to work
     self->app = new QApplication(zero, nullptr);
     self->mainLayout = new MainLayout(self->controllerWrapper);
+
     return 0;
 }
 
@@ -53,6 +55,16 @@ static PyObject *GuiWrapper_run(GuiWrapperObject *self, PyObject *args) {
     }
 
     self->mainLayout->show();
+
+    signal(SIGTERM, [](int) {
+      qDebug() << "Received SIGTERM, quitting";
+      QApplication::quit();
+    });
+
+    signal(SIGINT, [](int) {
+      qDebug() << "Received SIGINT, quitting";
+      QApplication::quit();
+    });
 
     self->app->exec(); // long running
     return Py_None;
