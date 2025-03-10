@@ -44,7 +44,6 @@ class MainLayout : public QMainWindow {
   void on_executeQueryButton_clicked() {
     QString query = ui->queryTextBox->toPlainText();
     controllerWrapper->executeQuery(query.toStdString());
-    qDebug() << query;
   }
 
   void on_actionConnect_to_server_triggered() {
@@ -53,7 +52,6 @@ class MainLayout : public QMainWindow {
                                          tr("Server URL:"), QLineEdit::Normal,
                                          "localhost", &ok);
     if (ok && !text.isEmpty()) {
-      qDebug() << "Connecting to server at " << text;
       controllerWrapper->connectToServer(text.toStdString());
     }
   }

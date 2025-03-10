@@ -7,43 +7,43 @@ from ..gui import GuiWrapper
 __all__ = ['Controller']
 
 """
-    The commandQueue will transport function calls from the GUI to the Controller.
+    The commands_pipe will transport function calls from the GUI to the Controller.
     A functions here is a tuple of the form (function_name, args).
     ActionController is just a middleman to help with the transport between the processes, a facade.
 """
 
 # Thi
 class ActionController:
-    def __init__(self, commandsQueue):
-        self.commandsQueue = commandsQueue
+    def __init__(self, commands_pipe):
+        self.commands_pipe = commands_pipe
 
     def execute_query(self, query):
-        self.commandsQueue.put(('execute_query', (query,)))
+        self.commands_pipe.send(('execute_query', (query,)))
 
     def connect_to_server(self, url):
-        self.commandsQueue.put(('connect_to_server', (url,)))
+        self.commands_pipe.send(('connect_to_server', (url,)))
 
-def run_gui(portNumberPipe, commandsQueue):
-    actionController = ActionController(commandsQueue)
-    gui = GuiWrapper(actionController)
+def run_gui(portNumberPipe, commands_pipe):
+    action_controller = ActionController(commands_pipe)
+    gui = GuiWrapper(action_controller)
     tcp_server_port = gui.get_viewer_server_port()
     portNumberPipe.send(tcp_server_port)
     portNumberPipe.close()
 
     print("Running GUI")
     gui.run()
-    commandsQueue.put(None)
-    commandsQueue.close()
+    commands_pipe.close()
     print("GUI stopped")
 
 class Controller:
     def __init__(self):
-        portNumberPipeReceiver, portNumberPipeSender = Pipe(duplex=False)
-        self.commandsQueue = Queue()
-        self.gui_process = Process(target=run_gui, args=(portNumberPipeSender, self.commandsQueue))
+        port_number_receiver, port_number_sender = Pipe(duplex=False)
+        commands_receiver, commands_sender = Pipe(duplex=False)
+        self.commands_pipe = commands_receiver
+        self.gui_process = Process(target=run_gui, args=(port_number_sender, commands_sender), daemon=True)
         self.gui_process.start()
 
-        tcp_server_port = portNumberPipeReceiver.recv()
+        tcp_server_port = port_number_receiver.recv()
         self.viewerClient = Viewer(tcp_server_port)
 
     def stop(self):
@@ -54,8 +54,10 @@ class Controller:
     def run(self):
         print("Running controller")
         while True:
-            command = self.commandsQueue.get()
-            if command is None:
+            try:
+                command = self.commands_pipe.recv()
+            except EOFError:
+                # raised when the pipe is closed
                 break
             function_name, args = command
             getattr(self, function_name)(*args)
@@ -66,6 +68,7 @@ class Controller:
 
     def connect_to_server(self, url):
         print("Sending points... ", url)
-        xyz = np.random.rand(100, 3)
+        xyz = np.random.rand(10000, 3)
         self.viewerClient.load(xyz, xyz)
+        self.viewerClient.set(point_size=0.005)
         # TODO
