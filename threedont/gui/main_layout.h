@@ -50,7 +50,7 @@ class MainLayout : public QMainWindow {
     bool ok;
     QString text = QInputDialog::getText(this, tr("Connect to server"),
                                          tr("Server URL:"), QLineEdit::Normal,
-                                         "localhost", &ok);
+                                         "http://localhost:8890/Nettuno", &ok);
     if (ok && !text.isEmpty()) {
       controllerWrapper->connectToServer(text.toStdString());
     }

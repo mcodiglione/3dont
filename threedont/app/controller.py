@@ -1,8 +1,8 @@
 from multiprocessing import Process, Pipe
-import numpy as np
 import signal
 
 from .viewer import Viewer
+from .db import SparqlEndpoint
 from ..gui import GuiWrapper
 
 __all__ = ['Controller']
@@ -13,23 +13,24 @@ __all__ = ['Controller']
     ActionController is just a middleman to help with the transport between the processes, a facade.
 """
 
-# Thi
 class ActionController:
     def __init__(self, commands_pipe):
         self.commands_pipe = commands_pipe
 
-    def execute_query(self, query):
-        self.commands_pipe.send(('execute_query', (query,)))
+    def __getattr__(self, item):
+        # check if controller has the function
+        if not hasattr(Controller, item) or not callable(getattr(Controller, item)):
+            raise AttributeError(f"Controller has no method {item}")
 
-    def connect_to_server(self, url):
-        self.commands_pipe.send(('connect_to_server', (url,)))
+        f = lambda *args: self.commands_pipe.send((item, args))
+        return f
 
-def run_gui(portNumberPipe, commands_pipe):
+def run_gui(port_number_pipe, commands_pipe):
     action_controller = ActionController(commands_pipe)
     gui = GuiWrapper(action_controller)
     tcp_server_port = gui.get_viewer_server_port()
-    portNumberPipe.send(tcp_server_port)
-    portNumberPipe.close()
+    port_number_pipe.send(tcp_server_port)
+    port_number_pipe.close()
 
     print("Running GUI")
     gui.run()
@@ -45,7 +46,8 @@ class Controller:
         self.gui_process.start()
 
         tcp_server_port = port_number_receiver.recv()
-        self.viewerClient = Viewer(tcp_server_port)
+        self.viewer_client = Viewer(tcp_server_port)
+        self.sparql_client = None
 
     def stop(self):
         print("Stopping application...")
@@ -71,11 +73,23 @@ class Controller:
 
     def execute_query(self, query):
         print("Controller: ", query)
-        # TODO
+        if self.sparql_client is None:
+            print("No connection to server")
+            return
+
+        colors = self.sparql_client.execute_select_query(query)
+        self.viewer_client.attributes(colors)
 
     def connect_to_server(self, url):
-        print("Sending points... ", url)
-        xyz = np.random.rand(10000, 3)
-        self.viewerClient.load(xyz, xyz)
-        self.viewerClient.set(point_size=0.005)
-        # TODO
+        """
+        ?p urban:Constitutes ?part.
+        ?part urban:Is_part_of ?obj.
+        ?obj a urban:Type_Building.
+        """
+        print("Loading all the points... ", url)
+        self.sparql_client = SparqlEndpoint(url)
+        print("Connected to server")
+        coords, colors = self.sparql_client.get_all()
+        print("Points received from db")
+        self.viewer_client.load(coords, colors)
+        self.viewer_client.set(point_size=0.005)

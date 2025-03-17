@@ -158,7 +158,7 @@ class Viewer:
     def attributes(self, *attr):
         """ Loads point attributes
 
-        The loaded attributes are used to clor the currently loaded point
+        The loaded attributes are used to color the currently loaded point
         cloud.  Supposing n points loaded, this function accepts attributes of
         the following forms:
 

@@ -8,3 +8,5 @@ result
 *.autosave
 /CMakeLists.txt.user
 *.so
+/virtuoso/
+/tmp.*.tdb
