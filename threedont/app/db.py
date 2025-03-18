@@ -47,7 +47,7 @@ class SparqlEndpoint:
     def get_all(self):
         query = SELECT_ALL_QUERY.format(graph=self.graph)
         self.sparql.setQuery(query)
-        results = self.sparql.query().convert()
+        results = self.sparql.queryAndConvert()
         results = results['results']['bindings']
         self.iri_to_id = {}
         self.id_to_iri = [0] * len(results)
@@ -68,7 +68,7 @@ class SparqlEndpoint:
         query = FILTER_QUERY.format(graph=self.graph, filter=where_clause)
         self.sparql.setQuery(query)
         try:
-            results = self.sparql.query().convert()
+            results = self.sparql.queryAndConvert()
         except Exception as e:
             print("Error executing query: ", e)
             return self.colors

@@ -1,29 +1,13 @@
-# pptk - Point Processing Toolkit
+# 3DONT viewer
 
-Copyright (C) 2011-2018 HERE Europe B.V.
+View, query and manually annotate pointclouds ontologies.
 
-The Point Processing Toolkit (pptk) is a Python package for visualizing and processing 2-d/3-d point clouds.
-
-At present, pptk consists of the following features.
-
-* A 3-d point cloud viewer that
-  - accepts any 3-column numpy array as input,
-  - renders tens of millions of points interactively using an octree-based level of detail mechanism,
-  - supports point selection for inspecting and annotating point data.
-* A fully parallelized point k-d tree that supports k-nearest neighbor queries and r-near range queries
-  (both build and queries have been parallelized).
-* A normal estimation routine based on principal component analysis of point cloud neighborhoods.
-
-[Homepage](https://heremaps.github.io/pptk/index.html)
-
-![pptk screenshots](/docs/source/tutorials/viewer/images/tutorial_banner.png)
-
-The screenshots above show various point datasets visualized using pptk.
-The `bildstein1` Lidar point cloud from Semantic3D (left),
-Beijing GPS trajectories from Geolife (middle left),
-`DistrictofColumbia.geojson` 2-d polygons from US building footprints (middle right),
-and a Mobius strip (right).
-For details, see the [tutorials](https://heremaps.github.io/pptk/tutorial.html).
+### TODO
+- [x] select query box
+- [ ] natural language query box
+- [ ] scalar query box
+- [ ] click to view properties of a point
+- [ ] manual annotation tool
 
 ## License
 
@@ -32,41 +16,12 @@ the [LICENSE](LICENSE) in the root applies to all content in this repository.
 
 ## Install
 
-One can either install pptk directly from PyPI
+You have to build the wheel from source.
 
+```bash
+python -m build --no-isolation --wheel
+pip install .
 ```
->> pip install pptk
-```
-
-or from the .whl file that results from [building pptk from source](#build).
-
-```
->> pip install <.whl file>
-```
-
-## Quickstart
-
-In Python, generate 100 random 3-d points.
-
-```
->> import numpy as np
->> x = np.random.rand(100, 3)
-```
-
-Visualize.
-
-```
->> import pptk
->> v = pptk.viewer(x)
-```
-
-Set point size to 0.01.
-
-```
->> v.set(point_size=0.01)
-```
-
-For more advanced examples, see [tutorials](https://heremaps.github.io/pptk/tutorial.html).
 
 ## Build
 

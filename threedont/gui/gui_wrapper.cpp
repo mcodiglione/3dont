@@ -36,7 +36,7 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
     }
     self->controllerWrapper = new ControllerWrapper(controller);
 
-    int zero = 0; // hack to get QApplication to work
+    int zero = 0;
     self->app = new QApplication(zero, nullptr);
     self->mainLayout = new MainLayout(self->controllerWrapper);
 
