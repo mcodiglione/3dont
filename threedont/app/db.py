@@ -1,6 +1,8 @@
-from SPARQLWrapper import SPARQLWrapper, JSON
+from SPARQLWrapper import SPARQLWrapper, JSON, TURTLE
 from urllib.parse import urlparse
 import numpy as np
+import re
+from time import time
 
 SELECT_ALL_QUERY = """
 PREFIX urban:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
@@ -27,10 +29,24 @@ FROM <{graph}>
 WHERE {{
 ?p 	urban:X ?x;
 	urban:Y ?y;
-	urban:Z ?z.
+	urban:Z ?z;
+	urban:R ?r;
+	urban:G ?g;
+	urban:B ?b.
 	{filter}
 }}
 """
+
+VARIABLE_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-z]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
+def parse_turtle_select(turtle):
+    results = {}
+    parsed = VARIABLE_REGEX.findall(turtle)
+    for var, value in parsed:
+        if var not in results:
+            results[var] = []
+        results[var].append(value)
+
+    return results
 
 class SparqlEndpoint:
     def __init__(self, url):
@@ -39,7 +55,7 @@ class SparqlEndpoint:
         # TODO generalize outside of virtuoso
         self.endpoint= parsed.scheme + "://" + parsed.netloc + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
-        self.sparql.setReturnFormat(JSON)
+        self.sparql.setReturnFormat(TURTLE)
         self.iri_to_id = {}
         self.id_to_iri = []
         self.colors = None
@@ -47,20 +63,27 @@ class SparqlEndpoint:
     def get_all(self):
         query = SELECT_ALL_QUERY.format(graph=self.graph)
         self.sparql.setQuery(query)
-        results = self.sparql.queryAndConvert()
-        results = results['results']['bindings']
+        start = time()
+        results = self.sparql.queryAndConvert().decode()
+        print("Time to query: ", time() - start)
+        start = time()
+        results = parse_turtle_select(results)
+        print("Time to parse query result: ", time() - start)
+        start = time()
+        n_res = len(results['p'])
         self.iri_to_id = {}
-        self.id_to_iri = [0] * len(results)
-        colors = np.empty((len(results), 3), dtype=np.float32)
-        coords = np.empty((len(results), 3), dtype=np.float32)
-        for i, result in enumerate(results):
-            self.iri_to_id[result['p']['value']] = i
-            self.id_to_iri[i] = result['p']['value']
-            coords[i] = [float(result['x']['value']), float(result['y']['value']), float(result['z']['value'])]
-            colors[i] = [float(result['r']['value']), float(result['g']['value']), float(result['b']['value'])]
+        self.id_to_iri = [0] * n_res
+        colors = np.empty((n_res, 3), dtype=np.float32)
+        coords = np.empty((n_res, 3), dtype=np.float32)
+        for i, (p, *vals) in enumerate(zip(results['p'], results['x'], results['y'], results['z'], results['r'], results['g'], results['b'])):
+            self.iri_to_id[p] = i
+            self.id_to_iri[i] = p
+            coords[i] = list(map(float, vals[:3]))
+            colors[i] = list(map(float, vals[3:]))
 
         colors = colors / (1<<16)
         self.colors = colors
+        print("Time to process query result: ", time() - start)
         return coords, colors
 
     # returns the colors with highlighted points
@@ -68,23 +91,30 @@ class SparqlEndpoint:
         query = FILTER_QUERY.format(graph=self.graph, filter=where_clause)
         self.sparql.setQuery(query)
         try:
-            results = self.sparql.queryAndConvert()
+            results = self.sparql.queryAndConvert().decode()
         except Exception as e:
             print("Error executing query: ", e)
             return self.colors
-        results = results['results']['bindings']
+        results = parse_turtle_select(results)
         colors = np.copy(self.colors)
-        for result in results:
+        not_found = []
+        for p in results['p']:
             try:
-                i = self.iri_to_id[result['p']['value']]
+                i = self.iri_to_id[p]
             except KeyError:
-                print("Point not found: ", result['p']['value'])
+                print("Point not found: ", p)
+                not_found.append(p)
+                # This happens every time, it's a mistery for me why
                 continue
             colors[i] = [1.0, 0.0, 0.0]
+        # print(self.iri_to_id)
+        print("Points not found: ", not_found)
 
         return colors
 
 if __name__ == "__main__":
     sparql = SparqlEndpoint("http://localhost:8890/Nettuno")
+    sparql.sparql.setReturnFormat(TURTLE)
     coords, colors = sparql.get_all()
-    print(coords)
+    print(len(coords))
+    # print(coords)
