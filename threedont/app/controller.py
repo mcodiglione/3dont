@@ -92,4 +92,4 @@ class Controller:
         coords, colors = self.sparql_client.get_all()
         print("Points received from db")
         self.viewer_client.load(coords, colors)
-        self.viewer_client.set(point_size=0.005)
+        self.viewer_client.set(point_size=0.01)

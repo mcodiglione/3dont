@@ -70,16 +70,11 @@ class SparqlEndpoint:
         results = parse_turtle_select(results)
         print("Time to parse query result: ", time() - start)
         start = time()
-        n_res = len(results['p'])
-        self.iri_to_id = {}
-        self.id_to_iri = [0] * n_res
-        colors = np.empty((n_res, 3), dtype=np.float32)
-        coords = np.empty((n_res, 3), dtype=np.float32)
-        for i, (p, *vals) in enumerate(zip(results['p'], results['x'], results['y'], results['z'], results['r'], results['g'], results['b'])):
-            self.iri_to_id[p] = i
-            self.id_to_iri[i] = p
-            coords[i] = list(map(float, vals[:3]))
-            colors[i] = list(map(float, vals[3:]))
+
+        coords = np.array((results['x'], results['y'], results['z'])).T.astype(np.float32)
+        colors = np.array((results['r'], results['g'], results['b'])).T.astype(np.float32)
+        self.iri_to_id = {p: i for i, p in enumerate(results['p'])}
+        self.id_to_iri = results['p']
 
         colors = colors / (1<<16)
         self.colors = colors
