@@ -56,6 +56,13 @@ class MainLayout : public QMainWindow {
     this->deleteLater(); // schedule for deletion in the right thread
   }
 
+  void setStatusbarContent(QString content) {
+    qDebug() << "Updating status bar content";
+    qDebug() << content;
+
+    ui->statusbar->showMessage(content, 5000);
+  }
+
   void on_executeSelectQueryButton_clicked() {
     QString query = ui->selectQueryTextBox->toPlainText();
     controllerWrapper->executeQuery(query.toStdString());

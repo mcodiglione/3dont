@@ -2,7 +2,6 @@
 #include "main_layout.h"
 #include <Python.h>
 #include <QApplication>
-#include <csignal>
 #include <iostream>
 #include <thread>
 #include <mutex>
@@ -47,16 +46,6 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
 
       self->mainLayout = new MainLayout(self->controllerWrapper);
       self->initLock.unlock(); // when the viewer is ready the port number will be available
-
-//      signal(SIGTERM, [](int) {
-//        qDebug() << "Received SIGTERM, quitting";
-//        self->mainLayout->close();
-//      });
-//
-//      signal(SIGINT, [](int) {
-//        qDebug() << "Received SIGINT, quitting";
-//        QApplication::quit();
-//      });
 
       qDebug() << "Starting GUI event loop";
 
@@ -129,12 +118,28 @@ static PyObject *GuiWrapper_view_point_details(GuiWrapperObject* self, PyObject 
         return nullptr;
     }
 
-    // or QueuedBlockingConnection
     QMetaObject::invokeMethod(self->mainLayout, "displayPointDetails", Qt::QueuedConnection, Q_ARG(QString, data));
     return Py_None;
 }
 
+static PyObject  *GuiWrapper_set_statusbar_content(GuiWrapperObject *self, PyObject *args) {
+    if (self->mainLayout == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+        return nullptr;
+    }
+
+    QString content;
+    if (!PyArg_ParseTuple(args, "s", &content)) {
+        return nullptr;
+    }
+    // TODO the string is always empty
+
+    QMetaObject::invokeMethod(self->mainLayout, "setStatusbarContent", Qt::QueuedConnection, Q_ARG(QString, content));
+    return Py_None;
+}
+
 static PyMethodDef GuiWrapper_methods[] = {
+        {"set_statusbar_content", (PyCFunction) GuiWrapper_set_statusbar_content, METH_VARARGS, "Sets the content of the status bar"},
         {"stop", (PyCFunction) GuiWrapper_stop, METH_NOARGS, "Stops the GUI event loop"},
         {"wait_init", (PyCFunction) GuiWrapper_wait_init, METH_NOARGS, "Waits for the GUI to be initialized"},
         {"get_viewer_server_port", (PyCFunction) GuiWrapper_get_viewer_server_port, METH_NOARGS, "Returns the server port of the viewer"},

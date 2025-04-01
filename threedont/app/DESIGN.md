@@ -42,7 +42,7 @@ interface, that works well, for other stuff
 it was impossible to extend the TCP interface
 with new capabilities, so I wrote a wrapper for
 the ui that can call ui's slots from another thread.
-This is the responsible code:
+This is an example of the responsible code:
 ```
 QMetaObject::invokeMethod(mainWindow, "addButton", Qt::QueuedConnection, Q_ARG(QString, "New Button"));
 ```

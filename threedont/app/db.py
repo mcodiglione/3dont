@@ -4,43 +4,12 @@ import numpy as np
 import re
 from time import time
 
-SELECT_ALL_QUERY = """
-PREFIX urban:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
-PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?p ?x ?y ?z ?r ?g ?b
-FROM <{graph}>
-WHERE {{
-?p 	urban:X ?x;
-	urban:Y ?y;
-	urban:Z ?z;
-	urban:R ?r;
-	urban:G ?g;
-	urban:B ?b.
-}}
-"""
+from .queries import SELECT_ALL_QUERY, FILTER_QUERY
 
-FILTER_QUERY = """
-PREFIX urban:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
-PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?p
-FROM <{graph}>
-WHERE {{
-?p 	urban:X ?x;
-	urban:Y ?y;
-	urban:Z ?z;
-	urban:R ?r;
-	urban:G ?g;
-	urban:B ?b.
-	{filter}
-}}
-"""
-
-VARIABLE_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-z]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
+VARIABLES_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-z]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
 def parse_turtle_select(turtle):
     results = {}
-    parsed = VARIABLE_REGEX.findall(turtle)
+    parsed = VARIABLES_REGEX.findall(turtle)
     for var, value in parsed:
         if var not in results:
             results[var] = []
@@ -99,13 +68,13 @@ class SparqlEndpoint:
                 print("Point not found: ", p)
                 # This happens every time, it's a mistery for me why, probably virtuoso is misconfigured or something
                 continue
-            colors[i] = [1.0, 0.0, 0.0]
+            colors[i] = [1.0, 0.0, 0.0] # TODO make this a parameter
 
         return colors
 
 if __name__ == "__main__":
     sparql = SparqlEndpoint("http://localhost:8890/Nettuno")
     sparql.sparql.setReturnFormat(TURTLE)
-    coords, colors = sparql.get_all()
-    print(len(coords))
+    # coords, colors = sparql.get_all()
+    # print(len(coords))
     # print(coords)

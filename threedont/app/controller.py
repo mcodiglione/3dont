@@ -73,10 +73,13 @@ class Controller:
         ?obj a urban:Type_Building.
         """
         print("Loading all the points... ", url)
+        self.gui.set_statusbar_content("Connecting to server...")
         self.sparql_client = SparqlEndpoint(url)
         print("Connected to server")
+        self.gui.set_statusbar_content("Loading points from server...")
         coords, colors = self.sparql_client.get_all()
         print("Points received from db")
+        self.gui.set_statusbar_content("Points loaded")
         self.viewer_client.load(coords, colors)
         self.viewer_client.set(point_size=0.01)
 
