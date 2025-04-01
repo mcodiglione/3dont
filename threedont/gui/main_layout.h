@@ -22,6 +22,8 @@ class MainLayout : public QMainWindow {
   explicit MainLayout(ControllerWrapper* controllerWrapper, QWidget *parent = nullptr): QMainWindow(parent), ui(new Ui::MainLayout) {
     this->controllerWrapper = controllerWrapper;
 
+    connect(qApp, &QCoreApplication::aboutToQuit, this, &MainLayout::cleanupOnExit);
+
     ui->setupUi(this);
     ui->statusbar->showMessage(tr("Loading..."));
 
@@ -33,6 +35,7 @@ class MainLayout : public QMainWindow {
   }
 
   ~MainLayout() override {
+    qDebug() << "Destroying main layout";
     delete ui;
   }
 
@@ -40,9 +43,21 @@ class MainLayout : public QMainWindow {
     return viewer->getServerPort();
   }
 
+  protected:
+  void closeEvent(QCloseEvent *event) override {
+    qDebug() << "Closing main layout";
+    controllerWrapper->stop();
+    event->accept();
+  }
+
   private slots:
-  void on_executeQueryButton_clicked() {
-    QString query = ui->queryTextBox->toPlainText();
+  void cleanupOnExit() {
+    qDebug() << "Scheduling cleaning up main layout";
+    this->deleteLater(); // schedule for deletion in the right thread
+  }
+
+  void on_executeSelectQueryButton_clicked() {
+    QString query = ui->selectQueryTextBox->toPlainText();
     controllerWrapper->executeQuery(query.toStdString());
   }
 
@@ -54,6 +69,10 @@ class MainLayout : public QMainWindow {
     if (ok && !text.isEmpty()) {
       controllerWrapper->connectToServer(text.toStdString());
     }
+  }
+
+  void displayPointDetails(QString data) {
+    ui->statusbar->showMessage(data, 5000);
   }
 
   private:

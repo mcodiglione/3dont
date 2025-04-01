@@ -92,18 +92,14 @@ class SparqlEndpoint:
             return self.colors
         results = parse_turtle_select(results)
         colors = np.copy(self.colors)
-        not_found = []
         for p in results['p']:
             try:
                 i = self.iri_to_id[p]
             except KeyError:
                 print("Point not found: ", p)
-                not_found.append(p)
-                # This happens every time, it's a mistery for me why
+                # This happens every time, it's a mistery for me why, probably virtuoso is misconfigured or something
                 continue
             colors[i] = [1.0, 0.0, 0.0]
-        # print(self.iri_to_id)
-        print("Points not found: ", not_found)
 
         return colors
 

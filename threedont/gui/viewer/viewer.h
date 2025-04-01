@@ -163,6 +163,8 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     std::vector<unsigned int> indices;
     _points->queryNearPoint(indices, ev->windowPos(), _camera);
     if (indices.empty()) return;
+
+    // TODO signal to Python that a point was double clicked
     const std::vector<float> &ps = _points->getPositions();
     QVector3D p(ps[3 * indices[0] + 0],
                 ps[3 * indices[0] + 1],

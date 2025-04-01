@@ -1,5 +1,5 @@
-from multiprocessing import Process, Pipe
 import signal
+from queue import Queue
 
 from .viewer import Viewer
 from .db import SparqlEndpoint
@@ -14,62 +14,48 @@ __all__ = ['Controller']
 """
 
 class ActionController:
-    def __init__(self, commands_pipe):
-        self.commands_pipe = commands_pipe
+    def __init__(self, commands_queue):
+        self.commands_queue = commands_queue
 
     def __getattr__(self, item):
         # check if controller has the function
         if not hasattr(Controller, item) or not callable(getattr(Controller, item)):
             raise AttributeError(f"Controller has no method {item}")
 
-        f = lambda *args: self.commands_pipe.send((item, args))
+        f = lambda *args: self.commands_queue.put((item, args))
         return f
-
-def run_gui(port_number_pipe, commands_pipe):
-    action_controller = ActionController(commands_pipe)
-    gui = GuiWrapper(action_controller)
-    tcp_server_port = gui.get_viewer_server_port()
-    port_number_pipe.send(tcp_server_port)
-    port_number_pipe.close()
-
-    print("Running GUI")
-    gui.run()
-    commands_pipe.close()
-    print("GUI run() exited")
 
 class Controller:
     def __init__(self):
-        port_number_receiver, port_number_sender = Pipe(duplex=False)
-        commands_receiver, commands_sender = Pipe(duplex=False)
-        self.commands_pipe = commands_receiver
-        self.gui_process = Process(target=run_gui, args=(port_number_sender, commands_sender), daemon=True)
-        self.gui_process.start()
-
-        tcp_server_port = port_number_receiver.recv()
-        self.viewer_client = Viewer(tcp_server_port)
+        self.commands_queue = Queue()
+        action_controller = ActionController(self.commands_queue)
+        self.gui = GuiWrapper(action_controller)
+        self.gui.wait_init()
+        viewer_server_port = self.gui.get_viewer_server_port()
+        self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None
 
     def stop(self):
-        print("Stopping application...")
-        self.gui_process.terminate()
-        self.gui_process.join()
+        print("Stopping controller...")
+        self.commands_queue.put(None)
 
     def run(self):
         def signal_handler(sig, frame):
+            print("Cli received quit signal")
             self.stop()
+            self.gui.stop()
 
         signal.signal(signal.SIGINT, signal_handler)
         signal.signal(signal.SIGTERM, signal_handler)
 
         print("Running controller")
-        while True:
-            try:
-                command = self.commands_pipe.recv()
-            except EOFError:
-                # raised when the pipe is closed
-                break
+        command = self.commands_queue.get()
+        while command is not None:
             function_name, args = command
             getattr(self, function_name)(*args)
+
+            command = self.commands_queue.get()
+
 
     def execute_query(self, query):
         print("Controller: ", query)
@@ -93,3 +79,6 @@ class Controller:
         print("Points received from db")
         self.viewer_client.load(coords, colors)
         self.viewer_client.set(point_size=0.01)
+
+    def view_point_details(self, id):
+        self.gui_wrapper.view_point_details('dettagli del punto')

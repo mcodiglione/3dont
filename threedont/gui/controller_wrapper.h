@@ -2,8 +2,8 @@
 #define THREEDONT_CONTROLLER_WRAPPER_H
 
 #include <Python.h>
-#include <string>
 #include <stdexcept>
+#include <string>
 
 class ControllerWrapper {
   private:
@@ -11,6 +11,7 @@ class ControllerWrapper {
     inline static std::string neededMethods[] = {
             "execute_query",
             "connect_to_server",
+            "stop"
     };
 
   public:
@@ -31,13 +32,24 @@ class ControllerWrapper {
       }
 
       void executeQuery(const std::string &query) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
         PyObject *result = PyObject_CallMethod(controller, "execute_query", "s", query.c_str());
         Py_XDECREF(result);
+        PyGILState_Release(gil_state);
       }
 
       void connectToServer(const std::string& url) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
         PyObject *result = PyObject_CallMethod(controller, "connect_to_server", "s", url.c_str());
         Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
+
+      void stop() {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "stop", nullptr);
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
       }
 };
 
