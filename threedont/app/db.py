@@ -4,7 +4,7 @@ import numpy as np
 import re
 from time import time
 
-from .queries import SELECT_ALL_QUERY, FILTER_QUERY
+from .queries import *
 
 VARIABLES_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-z]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
 def parse_turtle_select(turtle):
@@ -72,9 +72,24 @@ class SparqlEndpoint:
 
         return colors
 
+    def get_point_details(self, point_id):
+        iri = self.id_to_iri[point_id]
+        print(iri)
+        query = GET_POINT_DETAILS.format(graph=self.graph, point=iri)
+        self.sparql.setQuery(query)
+        results = self.sparql.queryAndConvert().decode()
+        results = parse_turtle_select(results)
+        out = list(zip(results['p'], results['o']))
+
+        return out
+
+
 if __name__ == "__main__":
     sparql = SparqlEndpoint("http://localhost:8890/Nettuno")
     sparql.sparql.setReturnFormat(TURTLE)
+    sparql.get_all()
+    details = sparql.get_point_details(0)
+    print(details)
     # coords, colors = sparql.get_all()
     # print(len(coords))
     # print(coords)

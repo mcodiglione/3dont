@@ -21,6 +21,7 @@ add_executable(viewer
         viewer/point_attributes.h
         main_layout.h
         main_layout.ui
+        types.h
 )
 
 target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen ${Python_LIBRARIES})
@@ -50,6 +51,7 @@ add_library(gui MODULE
         viewer/point_attributes.h
         main_layout.h
         main_layout.ui
+        types.h
 )
 
 if (WIN32)

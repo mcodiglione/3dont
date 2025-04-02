@@ -2,10 +2,13 @@
 #define THREEDONT_MAIN_LAYOUT_H
 
 #include "controller_wrapper.h"
+#include "types.h"
 #include "ui_main_layout.h"
 #include "viewer/viewer.h"
-#include <QMainWindow>
 #include <QInputDialog>
+#include <QMainWindow>
+#include <QTableWidget>
+#include <QHeaderView>
 #include <utility>
 
 
@@ -62,9 +65,6 @@ class MainLayout : public QMainWindow {
   }
 
   void setStatusbarContent(QString content, int seconds) {
-    qDebug() << "Updating status bar content";
-    qDebug() << content;
-
     ui->statusbar->showMessage(content, seconds * 1000);
   }
 
@@ -83,9 +83,28 @@ class MainLayout : public QMainWindow {
     }
   }
 
-  void displayPointDetails(QString data) {
+  void displayPointDetails(QVectorOfQStringPairs details) {
     qDebug() << "Displaying point details";
-    ui->statusbar->showMessage(data, 5000);
+
+    QDockWidget *dock = new QDockWidget(tr("Point details"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+    QTableWidget *table = new QTableWidget(details.size(), 2, dock);
+    dock->setWidget(table);
+
+    int row = 0;
+    for (const auto &pair : details) {
+      table->setItem(row, 0, new QTableWidgetItem(pair.first));
+      table->setItem(row, 1, new QTableWidgetItem(pair.second));
+      row++;
+    }
+
+    table->verticalHeader()->hide();
+    QStringList headerLabels;
+    headerLabels << "Predicate" << "Object";
+    table->setHorizontalHeaderLabels(headerLabels);
+
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
   }
 
   private:

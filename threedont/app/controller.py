@@ -84,4 +84,5 @@ class Controller:
         self.viewer_client.set(point_size=0.01)
 
     def view_point_details(self, id):
-        self.gui.view_point_details('dettagli del punto')
+        details = self.sparql_client.get_point_details(id)
+        self.gui.view_point_details(details)

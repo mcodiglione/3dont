@@ -1,5 +1,6 @@
 #include "controller_wrapper.h"
 #include "main_layout.h"
+#include "types.h"
 #include <Python.h>
 #include <QApplication>
 #include <iostream>
@@ -43,6 +44,8 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
     auto runApp = [self]() {
       int zero = 0;
       self->app = new QApplication(zero, nullptr);
+
+      declareAllMetaTypes();
 
       self->mainLayout = new MainLayout(self->controllerWrapper);
       self->initLock.unlock(); // when the viewer is ready the port number will be available
@@ -113,12 +116,34 @@ static PyObject *GuiWrapper_view_point_details(GuiWrapperObject* self, PyObject 
         return nullptr;
     }
 
-    const char *data;
-    if (!PyArg_ParseTuple(args, "s", &data)) {
+    // details are a list of tuples
+    PyObject *details;
+    if (!PyArg_ParseTuple(args, "O", &details)) {
         return nullptr;
     }
 
-    QMetaObject::invokeMethod(self->mainLayout, "displayPointDetails", Qt::QueuedConnection, Q_ARG(QString, QString(data)));
+    QVectorOfQStringPairs detailsVector;
+
+    Py_ssize_t size = PyList_Size(details);
+    for (Py_ssize_t i = 0; i < size; i++) {
+        PyObject *tuple = PyList_GetItem(details, i);
+        if (!PyTuple_Check(tuple) || PyTuple_Size(tuple) != 2) {
+            PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples");
+            return nullptr;
+        }
+
+        PyObject *key = PyTuple_GetItem(tuple, 0);
+        PyObject *value = PyTuple_GetItem(tuple, 1);
+
+        if (!PyUnicode_Check(key) || !PyUnicode_Check(value)) {
+            PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples of strings");
+            return nullptr;
+        }
+
+        detailsVector.emplace_back(QString(PyUnicode_AsUTF8(key)), QString(PyUnicode_AsUTF8(value)));
+    }
+
+    QMetaObject::invokeMethod(self->mainLayout, "displayPointDetails", Qt::QueuedConnection, Q_ARG(QVectorOfQStringPairs, detailsVector));
     return Py_None;
 }
 
