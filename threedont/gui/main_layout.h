@@ -22,8 +22,6 @@ class MainLayout : public QMainWindow {
   explicit MainLayout(ControllerWrapper* controllerWrapper, QWidget *parent = nullptr): QMainWindow(parent), ui(new Ui::MainLayout) {
     this->controllerWrapper = controllerWrapper;
 
-    connect(qApp, &QCoreApplication::aboutToQuit, this, &MainLayout::cleanupOnExit);
-
     ui->setupUi(this);
     ui->statusbar->showMessage(tr("Loading..."));
 
@@ -32,6 +30,9 @@ class MainLayout : public QMainWindow {
     QWidget *container = createWindowContainer(viewer, this);
     setCentralWidget(container);
     ui->statusbar->showMessage(tr("Ready"), 5000);
+
+    connect(qApp, &QCoreApplication::aboutToQuit, this, &MainLayout::cleanupOnExit);
+    connect(viewer, &Viewer::singlePointSelected, this, &MainLayout::singlePointSelected);
   }
 
   ~MainLayout() override {
@@ -56,11 +57,15 @@ class MainLayout : public QMainWindow {
     this->deleteLater(); // schedule for deletion in the right thread
   }
 
-  void setStatusbarContent(QString content) {
+  void singlePointSelected(unsigned int index) {
+    controllerWrapper->viewPointDetails(index);
+  }
+
+  void setStatusbarContent(QString content, int seconds) {
     qDebug() << "Updating status bar content";
     qDebug() << content;
 
-    ui->statusbar->showMessage(content, 5000);
+    ui->statusbar->showMessage(content, seconds * 1000);
   }
 
   void on_executeSelectQueryButton_clicked() {
@@ -79,6 +84,7 @@ class MainLayout : public QMainWindow {
   }
 
   void displayPointDetails(QString data) {
+    qDebug() << "Displaying point details";
     ui->statusbar->showMessage(data, 5000);
   }
 

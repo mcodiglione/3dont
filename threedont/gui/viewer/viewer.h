@@ -102,6 +102,9 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     return _server->serverPort();
   }
 
+  signals:
+      void singlePointSelected(unsigned int);
+
   protected:
   virtual void keyPressEvent(QKeyEvent *ev) {
     _dolly->stop();
@@ -164,7 +167,6 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     _points->queryNearPoint(indices, ev->windowPos(), _camera);
     if (indices.empty()) return;
 
-    // TODO signal to Python that a point was double clicked
     const std::vector<float> &ps = _points->getPositions();
     QVector3D p(ps[3 * indices[0] + 0],
                 ps[3 * indices[0] + 1],
@@ -225,6 +227,11 @@ class Viewer : public QWindow, protected OpenGLFuncs {
       } else {
         _points->selectInBox(*_selection_box, _camera);
       }
+
+      qDebug() << "Viewer: selected" << _points->getNumSelected() << "points";
+      if (_points->getNumSelected() == 1)
+        emit singlePointSelected(_points->getSelectedIds()[0]);
+
       _selection_box->release();
       renderPoints();
       renderPointsFine();

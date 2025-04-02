@@ -51,6 +51,13 @@ class ControllerWrapper {
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }
+
+      void viewPointDetails(unsigned int index) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "view_point_details", "I", index);
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
 };
 
 #endif//THREEDONT_CONTROLLER_WRAPPER_H

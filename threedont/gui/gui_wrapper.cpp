@@ -113,12 +113,12 @@ static PyObject *GuiWrapper_view_point_details(GuiWrapperObject* self, PyObject 
         return nullptr;
     }
 
-    QString data;
+    const char *data;
     if (!PyArg_ParseTuple(args, "s", &data)) {
         return nullptr;
     }
 
-    QMetaObject::invokeMethod(self->mainLayout, "displayPointDetails", Qt::QueuedConnection, Q_ARG(QString, data));
+    QMetaObject::invokeMethod(self->mainLayout, "displayPointDetails", Qt::QueuedConnection, Q_ARG(QString, QString(data)));
     return Py_None;
 }
 
@@ -128,13 +128,13 @@ static PyObject  *GuiWrapper_set_statusbar_content(GuiWrapperObject *self, PyObj
         return nullptr;
     }
 
-    QString content;
-    if (!PyArg_ParseTuple(args, "s", &content)) {
+    const char *content;
+    int seconds;
+    if (!PyArg_ParseTuple(args, "si", &content, &seconds)) {
         return nullptr;
     }
-    // TODO the string is always empty
 
-    QMetaObject::invokeMethod(self->mainLayout, "setStatusbarContent", Qt::QueuedConnection, Q_ARG(QString, content));
+    QMetaObject::invokeMethod(self->mainLayout, "setStatusbarContent", Qt::QueuedConnection, Q_ARG(QString, QString(content)), Q_ARG(int, seconds));
     return Py_None;
 }
 
