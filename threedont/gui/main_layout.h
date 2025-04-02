@@ -93,9 +93,12 @@ class MainLayout : public QMainWindow {
     dock->setWidget(table);
 
     int row = 0;
+    QFlags itemFlags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
     for (const auto &pair : details) {
       table->setItem(row, 0, new QTableWidgetItem(pair.first));
       table->setItem(row, 1, new QTableWidgetItem(pair.second));
+      table->item(row, 0)->setFlags(itemFlags);
+      table->item(row, 1)->setFlags(itemFlags);
       row++;
     }
 
