@@ -41,8 +41,8 @@
               eigen
               tbb.dev
               qt6.qtbase
-              libGL
-            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland ];
+            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland libGL ]
+            ++ lib.optionals stdenv.hostPlatform.isDarwin [ llvmPackages.openmp ];# darwin.apple_sdk.frameworks.OpenGL ];
             
             dependencies = with pkgs.python3Packages; [
               numpy

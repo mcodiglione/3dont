@@ -24,7 +24,15 @@ add_executable(viewer
         types.h
 )
 
-target_link_libraries(viewer OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen ${Python_LIBRARIES})
+# if on APPLE instead of linking to OpenGL use "-framework OpenGL"
+if (APPLE)
+    target_link_libraries(viewer "-framework OpenGL")
+else ()
+    target_link_libraries(viewer OpenGL)
+endif ()
+
+
+target_link_libraries(viewer Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen ${Python_LIBRARIES})
 target_include_directories(viewer PRIVATE ${Python_INCLUDE_DIRS})
 
 install(TARGETS viewer DESTINATION threedont/viewer)
@@ -56,16 +64,19 @@ add_library(gui MODULE
 
 if (WIN32)
     target_compile_options(gui PRIVATE /bigobj)
-elseif (APPLE)
-    set_target_properties(gui PROPERTIES
-            LINK_FLAGS "-undefined dynamic_lookup")
 elseif (UNIX)
     set_target_properties(gui PROPERTIES PREFIX "")
 endif ()
 
 target_include_directories(gui PRIVATE ${Python_INCLUDE_DIRS})
 
-target_link_libraries(gui OpenGL Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen ${Python_LIBRARIES})
+if (APPLE)
+    target_link_libraries(viewer "-framework OpenGL")
+else ()
+    target_link_libraries(viewer OpenGL)
+endif ()
+
+target_link_libraries(gui Qt6::Widgets Qt6::Network Qt6::OpenGL Eigen3::Eigen ${Python_LIBRARIES})
 
 # install in source directory for development
 if (THREEDONT_DEVELOP_BUILD)
