@@ -41,7 +41,7 @@
             
             buildInputs = with pkgs; [
               eigen
-              tbb.dev
+              # tbb.dev
               qt6.qtbase
               llvmPackages.openmp
             ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland libGL ]

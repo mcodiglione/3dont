@@ -11,12 +11,6 @@ Description: Bundled as dynamically linked library
 Availability: https://www.qt.io/
 SPDX-License-Identifier: LGPL-3.0-or-later
 
-Name: Intel Threading Building Blocks 4.3 Update 2
-Files: tbb.dll, tbbmalloc.dll
-Description: Bundled as dynamically linked library
-Availability: https://www.threadingbuildingblocks.org/
-SPDX-License-Identifier: Apache-2.0
-
 Name: Visual C++ runtime libraries
 Files: msvcp120.dll, msvcr120.dll, vcomp120.dll
 Description: Bundled as dynamically linked library

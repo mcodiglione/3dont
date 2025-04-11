@@ -35,11 +35,6 @@ in the following CMake cache variables.
 * `PYTHON_INCLUDE_DIR`
 * `PYTHON_LIBRARY`
 * `Eigen_INCLUDE_DIR`
-* `TBB_INCLUDE_DIR`
-* `TBB_tbb_LIBRARY`
-* `TBB_tbb_RUNTIME`
-* `TBB_tbbmalloc_LIBRARY`
-* `TBB_tbbmalloc_RUNTIME`
 * `Qt5_DIR`
 
 To set these variables, either use one of CMake's GUIs (ccmake or cmake-gui),
@@ -52,7 +47,6 @@ Listed are versions of libraries used to develop pptk, though earlier versions
 of these libraries may also work.
 
 * [QT](https://www.qt.io/) 5.4
-* [TBB](https://www.threadingbuildingblocks.org/) 4.3
 * [Eigen](http://eigen.tuxfamily.org) 3.2.9
 * [Python](https://www.python.org/) 2.7+ or 3.6+
 * [Numpy](http://www.numpy.org/) 1.13

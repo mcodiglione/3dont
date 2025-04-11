@@ -13,12 +13,6 @@ Description: Bundled as dynamically linked library
 Availability: https://www.qt.io/
 SPDX-License-Identifier: LGPL-3.0-or-later
 
-Name: Intel Threading Building Blocks 4.3 Update 2
-Files: libtbb.so.2, libtbbmalloc.so.2
-Description: Bundled as dynamically linked library
-Availability: https://www.threadingbuildingblocks.org/
-SPDX-License-Identifier: Apache-2.0
-
 Name: zlib
 Files: zlib.so.1
 Description: Bundled as dynamically linked library
