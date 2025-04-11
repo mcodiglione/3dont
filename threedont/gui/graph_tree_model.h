@@ -11,7 +11,6 @@ class GraphTreeItem {
 public:
     GraphTreeItem(const QString &object, const QString &predicate, GraphTreeItem *parent = nullptr)
         : predicate(predicate), object(object), parentItem(parent) {
-      qDebug() << "Creating GraphTreeItem with object" << object << "and predicate" << predicate;
     }
 
     void appendChild(GraphTreeItem *child) {
