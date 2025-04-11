@@ -110,7 +110,7 @@ static PyObject *GuiWrapper_stop(GuiWrapperObject *self, PyObject *args) {
  * @param args
  * @return
  */
-static PyObject *GuiWrapper_view_point_details(GuiWrapperObject* self, PyObject *args) {
+static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *args) {
     if (self->mainLayout == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
         return nullptr;
@@ -118,7 +118,8 @@ static PyObject *GuiWrapper_view_point_details(GuiWrapperObject* self, PyObject 
 
     // details are a list of tuples
     PyObject *details;
-    if (!PyArg_ParseTuple(args, "O", &details)) {
+    const char* parentId;
+    if (!PyArg_ParseTuple(args, "Os", &details, &parentId)) {
         return nullptr;
     }
 
@@ -143,7 +144,9 @@ static PyObject *GuiWrapper_view_point_details(GuiWrapperObject* self, PyObject 
         detailsVector.emplace_back(QString(PyUnicode_AsUTF8(key)), QString(PyUnicode_AsUTF8(value)));
     }
 
-    QMetaObject::invokeMethod(self->mainLayout, "displayPointDetails", Qt::QueuedConnection, Q_ARG(QVectorOfQStringPairs, detailsVector));
+    QString parentIdString = QString(parentId);
+
+    QMetaObject::invokeMethod(self->mainLayout, "displayNodeDetails", Qt::QueuedConnection, Q_ARG(QVectorOfQStringPairs, detailsVector), Q_ARG(QString, parentIdString));
     return Py_None;
 }
 
@@ -168,7 +171,7 @@ static PyMethodDef GuiWrapper_methods[] = {
         {"stop", (PyCFunction) GuiWrapper_stop, METH_NOARGS, "Stops the GUI event loop"},
         {"wait_init", (PyCFunction) GuiWrapper_wait_init, METH_NOARGS, "Waits for the GUI to be initialized"},
         {"get_viewer_server_port", (PyCFunction) GuiWrapper_get_viewer_server_port, METH_NOARGS, "Returns the server port of the viewer"},
-        {"view_point_details", (PyCFunction) GuiWrapper_view_point_details, METH_VARARGS, "Displays the details of a point"},
+        {"view_node_details", (PyCFunction) GuiWrapper_view_node_details, METH_VARARGS, "Displays the details of a point"},
         {nullptr}
 };
 

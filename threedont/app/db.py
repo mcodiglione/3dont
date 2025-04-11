@@ -7,10 +7,31 @@ from time import time
 from .queries import *
 
 VARIABLES_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-z]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
+
+PREFIXES_REGEX = re.compile(r"^@prefix\s+([a-zA-Z0-9_]+):\s*<([^>]+)>\s*\.\s*", re.MULTILINE)
+
+def substitute_prefix(prefixes, var):
+    if not ':' in var:
+        return var
+
+    if var.startswith("<") and var.endswith(">"):
+        return var[1:-1]
+
+    prefix, suffix = var.split(":")
+    try:
+        return prefixes[prefix] + suffix
+    except KeyError:
+        # it's not possible to distinguish between iri with prefix and simple string with a colon
+        return var
+
 def parse_turtle_select(turtle):
     results = {}
     parsed = VARIABLES_REGEX.findall(turtle)
+    prefixes = PREFIXES_REGEX.findall(turtle)
+    prefixes = {prefix: iri for prefix, iri in prefixes}
     for var, value in parsed:
+        var = substitute_prefix(prefixes, var)
+        value = substitute_prefix(prefixes, value)
         if var not in results:
             results[var] = []
         results[var].append(value)
@@ -72,13 +93,20 @@ class SparqlEndpoint:
 
         return colors
 
-    def get_point_details(self, point_id):
-        iri = self.id_to_iri[point_id]
-        print(iri)
-        query = GET_POINT_DETAILS.format(graph=self.graph, point=iri)
+
+    def get_point_iri(self, point_id):
+        return self.id_to_iri[point_id]
+
+    def get_node_details(self, iri):
+        query = GET_NODE_DETAILS.format(graph=self.graph, point=iri)
         self.sparql.setQuery(query)
         results = self.sparql.queryAndConvert().decode()
         results = parse_turtle_select(results)
+
+        if 'p' not in results or 'o' not in results:
+            # assume empty result
+            return []
+
         out = list(zip(results['p'], results['o']))
 
         return out

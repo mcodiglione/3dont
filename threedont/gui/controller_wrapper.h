@@ -58,6 +58,13 @@ class ControllerWrapper {
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }
+
+      void viewNodeDetails(const std::string &node_id) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "view_node_details", "s", node_id.c_str());
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
 };
 
 #endif//THREEDONT_CONTROLLER_WRAPPER_H

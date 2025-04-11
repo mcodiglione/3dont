@@ -5,10 +5,12 @@
 #include "types.h"
 #include "ui_main_layout.h"
 #include "viewer/viewer.h"
+#include "graph_tree_model.h"
+#include <QHeaderView>
 #include <QInputDialog>
 #include <QMainWindow>
 #include <QTableWidget>
-#include <QHeaderView>
+#include <QTreeView>
 #include <utility>
 
 
@@ -29,7 +31,7 @@ class MainLayout : public QMainWindow {
     ui->statusbar->showMessage(tr("Loading..."));
 
     viewer = new Viewer();
-    viewer->setFlags(Qt::FramelessWindowHint);
+    viewer->setFlags(Qt::FramelessWindowHint); // TODO is not enough
     QWidget *container = createWindowContainer(viewer, this);
     setCentralWidget(container);
     ui->statusbar->showMessage(tr("Ready"), 5000);
@@ -83,37 +85,47 @@ class MainLayout : public QMainWindow {
     }
   }
 
-  void displayPointDetails(QVectorOfQStringPairs details) {
-    qDebug() << "Displaying point details";
+  void displayNodeDetails(QVectorOfQStringPairs details, QString parentId) {
+    qDebug() << "Displaying point details for " << parentId;
 
-    QDockWidget *dock = new QDockWidget(tr("Point details"), this);
-    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
-    QTableWidget *table = new QTableWidget(details.size(), 2, dock);
-    dock->setWidget(table);
+    if (!isDetailsOpen) {
+      QDockWidget *dock = new QDockWidget(tr("Point details"), this);
+      dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+      dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+      // on dock close call detailsClosed
+      connect(dock, &QDockWidget::visibilityChanged, this, &MainLayout::detailsClosed);
 
-    int row = 0;
-    QFlags itemFlags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
-    for (const auto &pair : details) {
-      table->setItem(row, 0, new QTableWidgetItem(pair.first));
-      table->setItem(row, 1, new QTableWidgetItem(pair.second));
-      table->item(row, 0)->setFlags(itemFlags);
-      table->item(row, 1)->setFlags(itemFlags);
-      row++;
+      graphTreeModel = new GraphTreeModel(controllerWrapper, this);
+      QTreeView *treeView = new QTreeView(dock);
+      treeView->setModel(graphTreeModel);
+
+      dock->setWidget(treeView);
+
+      isDetailsOpen = true;
+      addDockWidget(Qt::LeftDockWidgetArea, dock);
     }
 
-    table->verticalHeader()->hide();
-    QStringList headerLabels;
-    headerLabels << "Predicate" << "Object";
-    table->setHorizontalHeaderLabels(headerLabels);
+    graphTreeModel->onChildrenLoaded(std::move(parentId), std::move(details));
 
-    addDockWidget(Qt::LeftDockWidgetArea, dock);
   }
 
   private:
   Ui::MainLayout *ui;
   Viewer *viewer;
   ControllerWrapper *controllerWrapper;
+  GraphTreeModel *graphTreeModel;
+  bool isDetailsOpen = false;
+
+  private slots:
+      void detailsClosed(bool visible) {
+          if (visible)
+              return;
+
+          qDebug() << "Details closed";
+          isDetailsOpen = false;
+      }
+
+
 };
 
 

@@ -23,6 +23,8 @@
             src = ./.;
             inherit version;
             pyproject = true;
+
+            stdenv = pkgs.clangStdenv;
             
             build-system = with pkgs.python3Packages; [
               scikit-build-core
@@ -41,8 +43,9 @@
               eigen
               tbb.dev
               qt6.qtbase
+              llvmPackages.openmp
             ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland libGL ]
-            ++ lib.optionals stdenv.hostPlatform.isDarwin [ llvmPackages.openmp ];# darwin.apple_sdk.frameworks.OpenGL ];
+            ++ lib.optionals stdenv.hostPlatform.isDarwin [ llvmPackages.openmp ];
             
             dependencies = with pkgs.python3Packages; [
               numpy

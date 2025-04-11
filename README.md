@@ -4,10 +4,12 @@ View, query and manually annotate pointclouds ontologies.
 
 ### TODO
 - [x] select query box
-- [ ] natural language query box
-- [ ] scalar query box
-- [ ] click to view properties of a point
+- [x] natural language query box
+- [x] scalar query box
+- [x] click to view properties of a point
+- [x] tree view for details
 - [ ] manual annotation tool
+- [ ] check if points are selected right
 
 ## License
 
