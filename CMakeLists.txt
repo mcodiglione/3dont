@@ -6,8 +6,7 @@ project(threedont)
 # Qt5::QXcbGlxIntegrationPlugin
 # Qt5::QXcbIntegrationPlugin
 
-# adds -std=gnu++11 flag when compiling with gcc
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
 
 option(THREEDONT_DEVELOP_BUILD "Enable development build" OFF)
 

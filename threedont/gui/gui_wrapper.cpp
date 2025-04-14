@@ -3,9 +3,8 @@
 #include "types.h"
 #include <Python.h>
 #include <QApplication>
-#include <iostream>
 #include <thread>
-#include <mutex>
+#include <latch>
 
 typedef struct {
     PyObject_HEAD
@@ -13,7 +12,7 @@ typedef struct {
     MainLayout *mainLayout;
     QApplication *app;
     std::thread guiThread;
-    std::mutex initLock;
+    std::unique_ptr<std::latch> initLatch;
 
 } GuiWrapperObject;
 
@@ -39,7 +38,7 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
         return -1;
     }
     self->controllerWrapper = new ControllerWrapper(controller);
-    self->initLock.lock();
+    self->initLatch = std::make_unique<std::latch>(1);
 
     auto runApp = [self]() {
       int zero = 0;
@@ -48,7 +47,7 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
       declareAllMetaTypes();
 
       self->mainLayout = new MainLayout(self->controllerWrapper);
-      self->initLock.unlock(); // when the viewer is ready the port number will be available
+      self->initLatch->count_down(); // when the viewer is ready the port number will be available
 
       qDebug() << "Starting GUI event loop";
 
@@ -64,7 +63,7 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
 }
 
 static PyObject *GuiWrapper_wait_init(GuiWrapperObject *self, PyObject *args) {
-    std::lock_guard<std::mutex> lock(self->initLock);
+    self->initLatch->wait(); // wait for the GUI to be initialized
 
     return Py_None;
 }

@@ -25,6 +25,10 @@
             pyproject = true;
 
             stdenv = pkgs.clangStdenv;
+
+#            cmakeFlags = [
+#              "-DCMAKE_BUILD_TYPE=Debug"
+#            ];
             
             build-system = with pkgs.python3Packages; [
               scikit-build-core
@@ -70,10 +74,9 @@
             packages = with pkgs; [
               python3Packages.build
               qt6.qttools
-              gammaray
               gdb
               lldb
-            ];
+            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ gammaray ];
             nativeBuildInputs = with pkgs; [
               qt6.wrapQtAppsHook
               makeWrapper

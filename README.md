@@ -10,6 +10,9 @@ View, query and manually annotate pointclouds ontologies.
 - [x] tree view for details
 - [ ] manual annotation tool
 - [ ] check if points are selected right
+- [ ] scalar field query
+- [ ] right click: select all subjects
+- [ ] right click: plot feature
 
 ## License
 

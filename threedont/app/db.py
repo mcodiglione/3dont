@@ -24,12 +24,12 @@ def substitute_prefix(prefixes, var):
         # it's not possible to distinguish between iri with prefix and simple string with a colon
         return var
 
+# TODO speed up this function
 def parse_turtle_select(turtle):
     results = {}
-    parsed = VARIABLES_REGEX.findall(turtle)
-    prefixes = PREFIXES_REGEX.findall(turtle)
-    prefixes = {prefix: iri for prefix, iri in prefixes}
-    for var, value in parsed:
+    prefixes = {match.group(1): match.group(2) for match in PREFIXES_REGEX.finditer(turtle)}
+    for match in VARIABLES_REGEX.finditer(turtle):
+        var, value = match.groups()
         var = substitute_prefix(prefixes, var)
         value = substitute_prefix(prefixes, value)
         if var not in results:
