@@ -1,4 +1,5 @@
 from queue import Queue
+import sys
 
 from .viewer import Viewer
 from .db import SparqlEndpoint
@@ -32,7 +33,7 @@ class Controller:
     def __init__(self):
         self.commands_queue = Queue()
         action_controller = ActionController(self.commands_queue, self.run_event_loop)
-        self.gui = GuiWrapper(action_controller)
+        self.gui = GuiWrapper(action_controller, sys.argv)
         viewer_server_port = self.gui.get_viewer_server_port()
         self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None

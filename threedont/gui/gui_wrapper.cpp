@@ -31,9 +31,10 @@ static PyObject *GuiWrapper_new(PyTypeObject *type, PyObject *args, PyObject *kw
 }
 
 static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwds) {
-    // get the first argument, should be a Controller
-    PyObject *controller;
-    if (!PyArg_ParseTuple(args, "O", &controller)) {
+    // the first argument is a controller, the second the argv
+    PyObject *controller, *argv;
+    if (!PyArg_ParseTuple(args, "OO", &controller, &argv)) {
+        PyErr_SetString(PyExc_TypeError, "GuiWrapper requires a controller and argv");
         return -1;
     }
 
@@ -41,8 +42,34 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
     // run the python stuff in a separate thread
     self->guiThread = std::thread([&self]() {self->controllerWrapper->start();});
 
-    int zero = 0;
-    self->app = new QApplication(zero, nullptr);
+    Py_ssize_t size = PyList_Size(argv);
+    int* argc = new int(static_cast<int>(size + 1));  // +1 for program name
+
+    // Allocate argv array on heap
+    char** argvRaw = new char*[*argc];
+
+    // Set argv[0] as program name
+    const char* progName = "threedont";
+    argvRaw[0] = new char[strlen(progName) + 1];
+    std::strcpy(argvRaw[0], progName);
+
+    // Fill in the rest from Python list
+    for (Py_ssize_t i = 0; i < size; ++i) {
+      PyObject* item = PyList_GetItem(argv, i);
+      if (!PyUnicode_Check(item)) {
+        PyErr_SetString(PyExc_TypeError, "argv must be a list of strings");
+        return -1;
+      }
+
+      const char* arg = PyUnicode_AsUTF8(item);
+      if (!arg) return -1;
+
+      argvRaw[i + 1] = new char[strlen(arg) + 1];
+      std::strcpy(argvRaw[i + 1], arg);
+    }
+
+    // This memory is intentionally leaked (it's fine if only done once)
+    self->app = new QApplication(*argc, argvRaw);
 
     declareAllMetaTypes();
 
