@@ -65,6 +65,13 @@ class ControllerWrapper {
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }
+
+      void start() {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "start", nullptr);
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
 };
 
 #endif//THREEDONT_CONTROLLER_WRAPPER_H

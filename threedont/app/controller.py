@@ -1,4 +1,3 @@
-import signal
 from queue import Queue
 
 from .viewer import Viewer
@@ -14,8 +13,12 @@ __all__ = ['Controller']
 """
 
 class ActionController:
-    def __init__(self, commands_queue):
+    def __init__(self, commands_queue, start_func):
         self.commands_queue = commands_queue
+        self._start = start_func
+
+    def start(self):
+        self._start()
 
     def __getattr__(self, item):
         # check if controller has the function
@@ -28,9 +31,8 @@ class ActionController:
 class Controller:
     def __init__(self):
         self.commands_queue = Queue()
-        action_controller = ActionController(self.commands_queue)
+        action_controller = ActionController(self.commands_queue, self.run_event_loop)
         self.gui = GuiWrapper(action_controller)
-        self.gui.wait_init()
         viewer_server_port = self.gui.get_viewer_server_port()
         self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None
@@ -39,15 +41,12 @@ class Controller:
         print("Stopping controller...")
         self.commands_queue.put(None)
 
+
     def run(self):
-        def signal_handler(sig, frame):
-            print("Cli received quit signal")
-            self.stop()
-            self.gui.stop()
+        # this will create a thread that runs `run_event_loop`
+        self.gui.run()
 
-        signal.signal(signal.SIGINT, signal_handler)
-        signal.signal(signal.SIGTERM, signal_handler)
-
+    def run_event_loop(self):
         print("Running controller")
         command = self.commands_queue.get()
         while command is not None:
@@ -55,7 +54,6 @@ class Controller:
             getattr(self, function_name)(*args)
 
             command = self.commands_queue.get()
-
 
     def execute_query(self, query):
         print("Controller: ", query)
