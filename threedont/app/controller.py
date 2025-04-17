@@ -67,9 +67,9 @@ class Controller:
 
     def connect_to_server(self, url, namespace):
         """
-        ?p urban:Constitutes ?part.
-        ?part urban:Is_part_of ?obj.
-        ?obj a urban:Type_Building.
+        ?p base:Constitutes ?part.
+        ?part base:Is_part_of ?obj.
+        ?obj a base:Type_Building.
         """
         print("Loading all the points... ", url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
