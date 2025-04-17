@@ -13,6 +13,7 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] scalar field query
 - [ ] right click: select all subjects
 - [ ] right click: plot feature
+- [ ] configure page (namespace)
 
 ## License
 
