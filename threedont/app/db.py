@@ -81,7 +81,10 @@ class SparqlEndpoint:
         self.iri_to_id = {p: i for i, p in enumerate(results['p'])}
         self.id_to_iri = results['p']
 
-        colors = colors / (1<<16)
+        if colors.max() > 255:
+            colors = colors / (1<<16) # 16 bit color
+        else:
+            colors = colors / (1<<8) # 8 bit color
         self.colors = colors
         print("Time to process query result: ", time() - start)
         return coords, colors
