@@ -221,12 +221,19 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     QPointF releasePos = ev->windowPos();
     bool mouse_moved = releasePos != _pressPos;
     if (_selection_box->active()) {
+      // if one was selected, deselect it
+      if (_points->getNumSelected() == 1) {
+        std::vector<unsigned int> selected_ids(0);
+        _points->setSelected(selected_ids);
+      }
       if (_selection_box->empty()) {
         bool deselect = _selection_box->getType() == SelectionBox::SUB;
         _points->selectNearPoint(releasePos, _camera, deselect);
       } else {
         _points->selectInBox(*_selection_box, _camera);
       }
+
+
 
       qDebug() << "Viewer: selected" << _points->getNumSelected() << "points";
       if (_points->getNumSelected() == 1)

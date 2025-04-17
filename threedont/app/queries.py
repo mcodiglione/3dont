@@ -55,6 +55,7 @@ PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?s ?x 
 FROM <http://localhost:8890/Nettuno>
 WHERE {
-    ?s base:X ?x.
+    ?s base:Constitutes ?part.
+    ?part base:Has_Y_Max ?x.
 }
 """
