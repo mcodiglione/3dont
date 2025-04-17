@@ -65,7 +65,7 @@ class Controller:
         colors = self.sparql_client.execute_select_query(query)
         self.viewer_client.attributes(colors)
 
-    def connect_to_server(self, url):
+    def connect_to_server(self, url, namespace):
         """
         ?p urban:Constitutes ?part.
         ?part urban:Is_part_of ?obj.
@@ -73,7 +73,7 @@ class Controller:
         """
         print("Loading all the points... ", url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
-        self.sparql_client = SparqlEndpoint(url)
+        self.sparql_client = SparqlEndpoint(url, namespace)
         print("Connected to server")
         self.gui.set_statusbar_content("Loading points from server...", 20)
         coords, colors = self.sparql_client.get_all()

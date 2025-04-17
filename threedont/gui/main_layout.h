@@ -77,12 +77,18 @@ class MainLayout : public QMainWindow {
 
   void on_actionConnect_to_server_triggered() {
     bool ok;
-    QString text = QInputDialog::getText(this, tr("Connect to server"),
+    QString dbUrl = QInputDialog::getText(this, tr("Connect to server"),
                                          tr("Server URL:"), QLineEdit::Normal,
                                          "http://localhost:8890/Nettuno", &ok);
-    if (ok && !text.isEmpty()) {
-      controllerWrapper->connectToServer(text.toStdString());
-    }
+    if (!ok || dbUrl.isEmpty())
+      return;
+    QString ontologyNamespace = QInputDialog::getText(this, tr("Connect to server"),
+                                         tr("Ontology namespace:"), QLineEdit::Normal,
+                                         "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
+    if (!ok || ontologyNamespace.isEmpty())
+      return;
+
+    controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
   }
 
   void displayNodeDetails(QVectorOfQStringPairs details, QString parentId) {

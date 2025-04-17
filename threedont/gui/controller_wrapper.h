@@ -38,9 +38,9 @@ class ControllerWrapper {
         PyGILState_Release(gil_state);
       }
 
-      void connectToServer(const std::string& url) {
+      void connectToServer(const std::string& url, const std::string& ontologyNamespace) {
         PyGILState_STATE gil_state = PyGILState_Ensure();
-        PyObject *result = PyObject_CallMethod(controller, "connect_to_server", "s", url.c_str());
+        PyObject *result = PyObject_CallMethod(controller, "connect_to_server", "ss", url.c_str(), ontologyNamespace.c_str());
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }

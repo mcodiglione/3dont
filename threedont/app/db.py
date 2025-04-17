@@ -57,8 +57,12 @@ class SPARQLWrapperWithTurtle(SPARQLWrapper):
 
 
 class SparqlEndpoint:
-    def __init__(self, url):
+    def __init__(self, url, namespace):
         self.graph = url
+        if namespace.endswith('#'):
+            self.namespace = namespace
+        else:
+            self.namespace = namespace + "#"
         parsed = urlparse(url)
         # TODO generalize outside of virtuoso
         self.endpoint= parsed.scheme + "://" + parsed.netloc + "/sparql"
@@ -69,7 +73,7 @@ class SparqlEndpoint:
         self.colors = None
 
     def get_all(self):
-        query = SELECT_ALL_QUERY.format(graph=self.graph)
+        query = SELECT_ALL_QUERY.format(graph=self.graph, namespace=self.namespace)
         self.sparql.setQuery(query)
         start = time()
         results = self.sparql.queryAndConvert()
@@ -91,7 +95,7 @@ class SparqlEndpoint:
 
     # returns the colors with highlighted points
     def execute_select_query(self, where_clause):
-        query = FILTER_QUERY.format(graph=self.graph, filter=where_clause)
+        query = FILTER_QUERY.format(graph=self.graph, filter=where_clause, namespace=self.namespace)
         self.sparql.setQuery(query)
         try:
             results = self.sparql.queryAndConvert()
@@ -116,7 +120,7 @@ class SparqlEndpoint:
         return self.id_to_iri[point_id]
 
     def get_node_details(self, iri):
-        query = GET_NODE_DETAILS.format(graph=self.graph, point=iri)
+        query = GET_NODE_DETAILS.format(graph=self.graph, point=iri, namespace=self.namespace)
         self.sparql.setQuery(query)
         results = self.sparql.queryAndConvert()
 
