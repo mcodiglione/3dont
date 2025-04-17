@@ -65,6 +65,25 @@ class SparqlEndpoint:
 
         return colors
 
+    def execute_scalar_query(self, query):
+        self.sparql.setQuery(query)
+        results = self.sparql.queryAndConvert()
+        if 's' not in results:
+            # assume empty result
+            return None
+
+        scalars = np.empty(len(self.colors), dtype=np.float32)
+        for subject, scalar in zip(results['s'], results['x']):
+            try:
+                i = self.iri_to_id[subject]
+            except KeyError:
+                print("Point not found: ", subject)
+                # This happens every time, it's a mistery for me why, probably virtuoso is misconfigured or something
+                continue
+            scalars[i] = scalar
+
+        return scalars
+
 
     def get_point_iri(self, point_id):
         return self.id_to_iri[point_id]

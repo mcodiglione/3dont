@@ -75,6 +75,11 @@ class MainLayout : public QMainWindow {
     controllerWrapper->executeQuery(query.toStdString());
   }
 
+  void on_executeScalarQueryButton_clicked() {
+    QString query = ui->scalarQueryTextBox->toPlainText();
+    controllerWrapper->scalarQuery(query.toStdString());
+  }
+
   void on_actionConnect_to_server_triggered() {
     bool ok;
     QString dbUrl = QInputDialog::getText(this, tr("Connect to server"),

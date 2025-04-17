@@ -65,6 +65,17 @@ class Controller:
         colors = self.sparql_client.execute_select_query(query)
         self.viewer_client.attributes(colors)
 
+    def scalar_query(self, query):
+        print("Controller: ", query)
+        if self.sparql_client is None:
+            print("No connection to server")
+            return
+
+        scalars = self.sparql_client.execute_scalar_query(query)
+        self.viewer_client.attributes(self.sparql_client.colors, scalars)
+        self.viewer_client.set(curr_attribute_id=1)
+        # self.viewer_client.color_map("jet")
+
     def connect_to_server(self, url, namespace):
         """
         ?p base:Constitutes ?part.

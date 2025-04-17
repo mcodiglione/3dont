@@ -38,6 +38,13 @@ class ControllerWrapper {
         PyGILState_Release(gil_state);
       }
 
+      void scalarQuery(const std::string &query) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "scalar_query", "s", query.c_str());
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
+
       void connectToServer(const std::string& url, const std::string& ontologyNamespace) {
         PyGILState_STATE gil_state = PyGILState_Ensure();
         PyObject *result = PyObject_CallMethod(controller, "connect_to_server", "ss", url.c_str(), ontologyNamespace.c_str());
