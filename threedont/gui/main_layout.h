@@ -72,7 +72,7 @@ class MainLayout : public QMainWindow {
 
   void on_executeSelectQueryButton_clicked() {
     QString query = ui->selectQueryTextBox->toPlainText();
-    controllerWrapper->executeQuery(query.toStdString());
+    controllerWrapper->selectQuery(query.toStdString());
   }
 
   void on_executeScalarQueryButton_clicked() {

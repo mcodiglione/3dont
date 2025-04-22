@@ -20,20 +20,6 @@ WHERE {{
 }}
 """
 
-FILTER_QUERY = """
-PREFIX base:<{namespace}>
-PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?p
-FROM <{graph}>
-WHERE {{
-?p 	base:X ?x;
-	base:Y ?y;
-	base:Z ?z.
-	{filter}
-}}
-"""
-
 # get all the predicates and objects of a point, given its id
 GET_NODE_DETAILS = """
 PREFIX base:<{namespace}>
@@ -57,5 +43,22 @@ FROM <http://localhost:8890/Nettuno>
 WHERE {
     ?s base:Constitutes ?part.
     ?part base:Has_Y_Max ?x.
+}
+"""
+
+# sample select
+"""
+PREFIX base:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?p
+FROM <http://localhost:8890/Nettuno>
+WHERE {
+?p 	base:X ?x;
+	base:Y ?y;
+	base:Z ?z.
+	?p base:Constitutes ?part.
+    ?part base:Is_part_of ?obj.
+    ?obj a base:Type_Building.
 }
 """

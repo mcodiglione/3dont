@@ -44,8 +44,7 @@ class SparqlEndpoint:
         return coords, colors
 
     # returns the colors with highlighted points
-    def execute_select_query(self, where_clause):
-        query = FILTER_QUERY.format(graph=self.graph, filter=where_clause, namespace=self.namespace)
+    def execute_select_query(self, query):
         self.sparql.setQuery(query)
         try:
             results = self.sparql.queryAndConvert()

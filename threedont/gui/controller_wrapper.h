@@ -9,9 +9,13 @@ class ControllerWrapper {
   private:
     PyObject *controller;
     inline static std::string neededMethods[] = {
-            "execute_query",
+            "select_query",
+            "scalar_query",
             "connect_to_server",
-            "stop"
+            "stop",
+            "view_point_details",
+            "view_node_details",
+            "start"
     };
 
   public:
@@ -31,9 +35,9 @@ class ControllerWrapper {
         Py_XDECREF(controller);
       }
 
-      void executeQuery(const std::string &query) {
+      void selectQuery(const std::string &query) {
         PyGILState_STATE gil_state = PyGILState_Ensure();
-        PyObject *result = PyObject_CallMethod(controller, "execute_query", "s", query.c_str());
+        PyObject *result = PyObject_CallMethod(controller, "select_query", "s", query.c_str());
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }

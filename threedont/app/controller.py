@@ -56,7 +56,7 @@ class Controller:
 
             command = self.commands_queue.get()
 
-    def execute_query(self, query):
+    def select_query(self, query):
         print("Controller: ", query)
         if self.sparql_client is None:
             print("No connection to server")
@@ -77,11 +77,6 @@ class Controller:
         # self.viewer_client.color_map("jet")
 
     def connect_to_server(self, url, namespace):
-        """
-        ?p base:Constitutes ?part.
-        ?part base:Is_part_of ?obj.
-        ?obj a base:Type_Building.
-        """
         print("Loading all the points... ", url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
         self.sparql_client = SparqlEndpoint(url, namespace)
