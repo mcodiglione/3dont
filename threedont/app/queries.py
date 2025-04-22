@@ -30,8 +30,6 @@ FROM <${graph}>
 WHERE {
     ?s <${predicate}> ?x.
 }
-"""
-"""
 OFFSET ${offset} LIMIT ${limit}
 """
 

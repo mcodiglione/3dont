@@ -29,7 +29,7 @@ class SparqlEndpoint:
         offset = 0
         all_results = {}
         while True:
-            chunked_query = Template(query).substitute(offset=offset, limit=CHUNK_SIZE)
+            chunked_query = Template(query).safe_substitute(offset=offset, limit=CHUNK_SIZE)
             self.sparql.setQuery(chunked_query)
             results = self.sparql.queryAndConvert()
             for key in results.keys():
@@ -38,7 +38,7 @@ class SparqlEndpoint:
                 all_results[key].extend(results[key])
             any_key = next(iter(results.keys()))
             # print("Chunk size: ", len(results[any_key]), " offset: ", offset)
-            if len(results[any_key]) < CHUNK_SIZE:
+            if len(results[any_key]) < CHUNK_SIZE or chunked_query == query: # if offset is present
                 break
             offset += CHUNK_SIZE
         return all_results
@@ -84,8 +84,7 @@ class SparqlEndpoint:
         return colors
 
     def execute_scalar_query(self, query):
-        self.sparql.setQuery(query)
-        results = self.sparql.queryAndConvert()
+        results = self._execute_chunked_query(query)
         if 's' not in results:
             # assume empty result
             return None
@@ -119,7 +118,7 @@ class SparqlEndpoint:
         return out
 
     def execute_predicate_query(self, predicate):
-        query = Template(PREDICATE_QUERY).substitute(graph=self.graph, predicate=predicate, namespace=self.namespace)
+        query = Template(PREDICATE_QUERY).safe_substitute(graph=self.graph, predicate=predicate, namespace=self.namespace)
         return self.execute_scalar_query(query)
 
 
