@@ -54,6 +54,12 @@ class SparqlEndpoint:
         print("Time to query: ", time() - start)
         start = time()
 
+        # fix values in form '"2.48e-05"^^xsd:decimal'
+        for k, v  in results.items():
+            for i, x in enumerate(v):
+                if x.endswith('^^xsd:decimal'):
+                    v[i] = x.split('"')[1]
+
         coords = np.array((results['x'], results['y'], results['z'])).T.astype(np.float32)
         colors = np.array((results['r'], results['g'], results['b'])).T.astype(np.float32)
         self.iri_to_id = {p: i for i, p in enumerate(results['p'])}
