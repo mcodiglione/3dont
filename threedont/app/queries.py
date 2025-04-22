@@ -1,5 +1,5 @@
 SELECT_ALL_QUERY = """
-PREFIX base:<{namespace}>
+PREFIX base:<${namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7,17 +7,18 @@ SELECT DISTINCT ?p ?x ?y ?z
        (COALESCE(?r, 0) AS ?r) 
        (COALESCE(?g, 0) AS ?g) 
        (COALESCE(?b, 0) AS ?b)
-FROM <{graph}>
-WHERE {{
+FROM <${graph}>
+WHERE {
     ?p base:X ?x;
         base:Y ?y;
         base:Z ?z.
-    OPTIONAL {{
+    OPTIONAL {
         ?p base:R ?r.
         ?p base:G ?g.
         ?p base:B ?b.
-    }}
-}}
+    }
+}
+OFFSET ${offset} LIMIT ${limit}
 """
 
 # get all the predicates and objects of a point, given its id

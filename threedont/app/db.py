@@ -2,9 +2,12 @@ from SPARQLWrapper import TURTLE
 from urllib.parse import urlparse
 import numpy as np
 from time import time
+from string import Template
 
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 from .queries import *
+
+CHUNK_SIZE = 1000000
 
 class SparqlEndpoint:
     def __init__(self, url, namespace):
@@ -22,11 +25,32 @@ class SparqlEndpoint:
         self.id_to_iri = []
         self.colors = None
 
+    def _execute_chunked_query(self, query):
+        offset = 0
+        all_results = {}
+        while True:
+            chunked_query = Template(query).substitute(offset=offset, limit=CHUNK_SIZE)
+            self.sparql.setQuery(chunked_query)
+            results = self.sparql.queryAndConvert()
+            for key in results.keys():
+                if key not in all_results:
+                    all_results[key] = []
+                all_results[key].extend(results[key])
+            any_key = next(iter(results.keys()))
+            # print("Chunk size: ", len(results[any_key]), " offset: ", offset)
+            if len(results[any_key]) < CHUNK_SIZE:
+                break
+            offset += CHUNK_SIZE
+        return all_results
+
     def get_all(self):
-        query = SELECT_ALL_QUERY.format(graph=self.graph, namespace=self.namespace)
-        self.sparql.setQuery(query)
+        query = Template(SELECT_ALL_QUERY).safe_substitute(graph=self.graph, namespace=self.namespace)
         start = time()
-        results = self.sparql.queryAndConvert()
+        try:
+            results = self._execute_chunked_query(query)
+        except Exception as e:
+            print("Error executing query: ", e)
+            return None, None
         print("Time to query: ", time() - start)
         start = time()
 
