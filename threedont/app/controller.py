@@ -109,3 +109,11 @@ class Controller:
     def view_node_details(self, iri):
         details = self.sparql_client.get_node_details(iri)
         self.gui.view_node_details(details, iri)
+
+    def annotate_node(self, iri, predicate, value):
+        print("Controller: ", iri, predicate, value)
+        if self.sparql_client is None:
+            print("No connection to server")
+            return
+
+        self.sparql_client.annotate_node(iri, predicate, value)

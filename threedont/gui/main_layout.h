@@ -158,8 +158,19 @@ class MainLayout : public QMainWindow {
               controllerWrapper->scalarWithPredicate(predicate.toStdString());
           });
           QAction *annotate = contextMenu.addAction("Annotate");
-          connect(annotate, &QAction::triggered, [this, index]() {
-              // TODO
+          connect(annotate, &QAction::triggered, [this, object]() {
+              QString subject = object;
+              bool ok;
+              QString predicate = QInputDialog::getText(this, tr("Annotate"),
+                                                           tr("Predicate:"), QLineEdit::Normal,
+                                                           "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
+              if (!ok || predicate.isEmpty())
+                  return;
+              QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Object:"), QLineEdit::Normal,
+                                                    "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
+              if (!ok || newObject.isEmpty())
+                  return;
+              controllerWrapper->annotateNode(subject.toStdString(), predicate.toStdString(), newObject.toStdString());
           });
           contextMenu.exec(treeView->viewport()->mapToGlobal(pos));
       }

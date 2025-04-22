@@ -15,7 +15,8 @@ class ControllerWrapper {
             "stop",
             "view_point_details",
             "view_node_details",
-            "start"
+            "start",
+            "annotate_node"
     };
 
   public:
@@ -87,6 +88,13 @@ class ControllerWrapper {
       void start() {
         PyGILState_STATE gil_state = PyGILState_Ensure();
         PyObject *result = PyObject_CallMethod(controller, "start", nullptr);
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
+
+      void annotateNode(const std::string& subject, const std::string& predicate, const std::string& object) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "annotate_node", "sss", subject.c_str(), predicate.c_str(), object.c_str());
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }

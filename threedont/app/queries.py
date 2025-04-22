@@ -46,6 +46,19 @@ WHERE {{
 ORDER BY ?o
 """
 
+# insert a triple with subject, predicate and object
+ANNOTATE_NODE = """
+PREFIX base:<${namespace}>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+INSERT DATA
+{
+    GRAPH <${graph}> {
+        <${subject}> <${predicate}> ${object}.
+    }
+}
+"""
+
 # sample scalar
 """
 PREFIX base:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>

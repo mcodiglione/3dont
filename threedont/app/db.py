@@ -121,6 +121,11 @@ class SparqlEndpoint:
         query = Template(PREDICATE_QUERY).safe_substitute(graph=self.graph, predicate=predicate, namespace=self.namespace)
         return self.execute_scalar_query(query)
 
+    def annotate_node(self, subject, predicate, object):
+        query = Template(ANNOTATE_NODE).safe_substitute(graph=self.graph, subject=subject, predicate=predicate, object=object, namespace=self.namespace)
+        self.sparql.setQuery(query)
+        self.sparql.query()
+
 
 if __name__ == "__main__":
     sparql = SparqlEndpoint("http://localhost:8890/Nettuno")
