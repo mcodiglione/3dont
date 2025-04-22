@@ -118,6 +118,10 @@ class SparqlEndpoint:
 
         return out
 
+    def execute_predicate_query(self, predicate):
+        query = Template(PREDICATE_QUERY).substitute(graph=self.graph, predicate=predicate, namespace=self.namespace)
+        return self.execute_scalar_query(query)
+
 
 if __name__ == "__main__":
     sparql = SparqlEndpoint("http://localhost:8890/Nettuno")

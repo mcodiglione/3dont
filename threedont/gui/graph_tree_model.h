@@ -37,13 +37,19 @@ public:
         return str;
     }
 
-    QVariant data(int column) const {
-        if (column == 0) {
-            return removeNamespace(predicate);
-        } else if (column == 1) {
-            return removeNamespace(object);
-        }
-        return QVariant();
+    QVariant data(int column, bool removeNS = true) const {
+        QString out;
+        if (column == 0)
+            out = predicate;
+        else if (column == 1)
+            out = object;
+        else
+          return QVariant();
+
+        if (removeNS)
+            out = removeNamespace(out);
+
+        return out;
     }
 
     GraphTreeItem *parent() {
@@ -254,6 +260,24 @@ public:
 
           endInsertRows();
         }
+    }
+
+    QString getPredicate(const QModelIndex &index) const {
+        if (!index.isValid()) {
+            return QString();
+        }
+
+        GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+        return item->data(0, false).toString();
+    }
+
+    QString getObject(const QModelIndex &index) const {
+        if (!index.isValid()) {
+            return QString();
+        }
+
+        GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+        return item->data(1, false).toString();
     }
 
 private:

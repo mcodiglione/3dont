@@ -77,6 +77,13 @@ class ControllerWrapper {
         PyGILState_Release(gil_state);
       }
 
+      void scalarWithPredicate(const std::string &predicate) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "scalar_with_predicate", "s", predicate.c_str());
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
+
       void start() {
         PyGILState_STATE gil_state = PyGILState_Ensure();
         PyObject *result = PyObject_CallMethod(controller, "start", nullptr);

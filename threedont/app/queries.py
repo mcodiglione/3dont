@@ -21,6 +21,20 @@ WHERE {
 OFFSET ${offset} LIMIT ${limit}
 """
 
+PREDICATE_QUERY = """
+PREFIX base:<${namespace}>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?s ?x
+FROM <${graph}>
+WHERE {
+    ?s <${predicate}> ?x.
+}
+"""
+"""
+OFFSET ${offset} LIMIT ${limit}
+"""
+
 # get all the predicates and objects of a point, given its id
 GET_NODE_DETAILS = """
 PREFIX base:<{namespace}>

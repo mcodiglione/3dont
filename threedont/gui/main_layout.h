@@ -108,7 +108,11 @@ class MainLayout : public QMainWindow {
 
       graphTreeModel = new GraphTreeModel(controllerWrapper, this);
       QTreeView *treeView = new QTreeView(dock);
+      treeView->setContextMenuPolicy(Qt::CustomContextMenu);
+      connect(treeView, &QTreeView::customContextMenuRequested, this, &MainLayout::onTreeViewContexMenuRequested);
+
       treeView->setModel(graphTreeModel);
+
 
       dock->setWidget(treeView);
 
@@ -134,6 +138,30 @@ class MainLayout : public QMainWindow {
 
           qDebug() << "Details closed";
           isDetailsOpen = false;
+      }
+
+      void onTreeViewContexMenuRequested(const QPoint &pos) {
+          QTreeView *treeView = qobject_cast<QTreeView *>(sender());
+          if (!treeView)
+              return;
+
+          QModelIndex index = treeView->indexAt(pos);
+          if (!index.isValid())
+              return;
+
+          QString predicate = graphTreeModel->getPredicate(index);
+          QString object = graphTreeModel->getObject(index);
+
+          QMenu contextMenu;
+          QAction *plotAction = contextMenu.addAction("Plot predicate");
+          connect(plotAction, &QAction::triggered, [this, predicate]() {
+              controllerWrapper->scalarWithPredicate(predicate.toStdString());
+          });
+          QAction *annotate = contextMenu.addAction("Annotate");
+          connect(annotate, &QAction::triggered, [this, index]() {
+              // TODO
+          });
+          contextMenu.exec(treeView->viewport()->mapToGlobal(pos));
       }
 
 

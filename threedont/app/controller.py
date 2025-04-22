@@ -52,7 +52,10 @@ class Controller:
         command = self.commands_queue.get()
         while command is not None:
             function_name, args = command
-            getattr(self, function_name)(*args)
+            try:
+                getattr(self, function_name)(*args)
+            except Exception as e:
+                print("Controller error: ", e)
 
             command = self.commands_queue.get()
 
@@ -75,6 +78,16 @@ class Controller:
         self.viewer_client.attributes(self.sparql_client.colors, scalars)
         self.viewer_client.set(curr_attribute_id=1)
         # self.viewer_client.color_map("jet")
+
+    def scalar_with_predicate(self, predicate):
+        print("Controller: ", predicate)
+        if self.sparql_client is None:
+            print("No connection to server")
+            return
+
+        scalars = self.sparql_client.execute_predicate_query(predicate)
+        self.viewer_client.attributes(self.sparql_client.colors, scalars)
+        self.viewer_client.set(curr_attribute_id=1)
 
     def connect_to_server(self, url, namespace):
         print("Loading all the points... ", url)
