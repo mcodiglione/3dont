@@ -14,6 +14,7 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] right click: select all subjects with this predicate and object
 - [ ] right click: plot predicate (scalar)
 - [ ] configure page (namespace)
+- [ ] add default to scalar queries equal to color
 
 ## License
 

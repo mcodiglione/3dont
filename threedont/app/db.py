@@ -78,12 +78,7 @@ class SparqlEndpoint:
 
         colors = np.copy(self.colors)
         for p in results['p']:
-            try:
-                i = self.iri_to_id[p]
-            except KeyError:
-                print("Point not found: ", p)
-                # This happens every time, it's a mistery for me why, probably virtuoso is misconfigured or something
-                continue
+            i = self.iri_to_id[p]
             colors[i] = [1.0, 0.0, 0.0] # TODO make this a parameter
 
         return colors
@@ -95,16 +90,15 @@ class SparqlEndpoint:
             # assume empty result
             return None
 
-        scalars = np.empty(len(self.colors), dtype=np.float32)
+        minimum = float(min(results['x']))
+        maximum = float(max(results['x']))
+        print(minimum, maximum)
+        default = minimum - (maximum - minimum) / 10
+        # scalars = np.empty(len(self.colors), dtype=np.float32)
+        scalars = np.full(len(self.colors), default, dtype=np.float32)
         for subject, scalar in zip(results['s'], results['x']):
-            try:
-                i = self.iri_to_id[subject]
-            except KeyError:
-                print("Point not found: ", subject)
-                # This happens every time, it's a mistery for me why, probably virtuoso is misconfigured or something
-                continue
+            i = self.iri_to_id[subject]
             scalars[i] = scalar
-
         return scalars
 
 
