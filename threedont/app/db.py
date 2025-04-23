@@ -36,6 +36,10 @@ class SparqlEndpoint:
                 if key not in all_results:
                     all_results[key] = []
                 all_results[key].extend(results[key])
+
+            if len(results) == 0:
+                raise Exception("Empty result set for query: ", query)
+
             any_key = next(iter(results.keys()))
             # print("Chunk size: ", len(results[any_key]), " offset: ", offset)
             if len(results[any_key]) < CHUNK_SIZE or chunked_query == query: # if offset is present
@@ -90,7 +94,10 @@ class SparqlEndpoint:
         return colors
 
     def execute_scalar_query(self, query):
-        results = self._execute_chunked_query(query)
+        try:
+            results = self._execute_chunked_query(query)
+        except Exception as e:
+            raise Exception("Error executing scalar query!") from e
         if not 's' in results or not 'x' in results:
             raise Exception("Select query should return 's' and 'x' variables, but got: ", results.keys())
 
