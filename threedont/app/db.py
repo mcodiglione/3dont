@@ -2,7 +2,6 @@ from SPARQLWrapper import TURTLE
 from urllib.parse import urlparse
 import numpy as np
 from time import time
-from string import Template
 
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 from .queries import *
@@ -29,7 +28,7 @@ class SparqlEndpoint:
         offset = 0
         all_results = {}
         while True:
-            chunked_query = Template(query).safe_substitute(offset=offset, limit=CHUNK_SIZE)
+            chunked_query = query + " OFFSET " + str(offset) + " LIMIT " + str(CHUNK_SIZE)
             self.sparql.setQuery(chunked_query)
             results = self.sparql.queryAndConvert()
             for key in results.keys():
@@ -41,13 +40,13 @@ class SparqlEndpoint:
                 raise Exception("Empty result set for query: ", query)
 
             any_key = next(iter(results.keys()))
-            if len(results[any_key]) < CHUNK_SIZE or chunked_query == query: # if placeholders were present
+            if len(results[any_key]) < CHUNK_SIZE:
                 break
             offset += CHUNK_SIZE
         return all_results
 
     def get_all(self):
-        query = Template(SELECT_ALL_QUERY).safe_substitute(graph=self.graph, namespace=self.namespace)
+        query = SELECT_ALL_QUERY.format(graph=self.graph, namespace=self.namespace)
         start = time()
         try:
             results = self._execute_chunked_query(query)
@@ -132,16 +131,16 @@ class SparqlEndpoint:
         return out
 
     def execute_predicate_query(self, predicate):
-        query = Template(PREDICATE_QUERY).safe_substitute(graph=self.graph, predicate=predicate, namespace=self.namespace)
+        query =PREDICATE_QUERY.format(graph=self.graph, predicate=predicate, namespace=self.namespace)
         return self.execute_scalar_query(query)
 
     def annotate_node(self, subject, predicate, object):
-        query = Template(ANNOTATE_NODE).safe_substitute(graph=self.graph, subject=subject, predicate=predicate, object=object, namespace=self.namespace)
+        query = ANNOTATE_NODE.format(graph=self.graph, subject=subject, predicate=predicate, object=object, namespace=self.namespace)
         self.sparql.setQuery(query)
         self.sparql.query()
 
     def select_all_subjects(self, predicate, object):
-        query = Template(SELECT_ALL_WITH_PREDICATE).safe_substitute(graph=self.graph, predicate=predicate, object=object, namespace=self.namespace)
+        query = SELECT_ALL_WITH_PREDICATE.format(graph=self.graph, predicate=predicate, object=object, namespace=self.namespace)
         iris = self._execute_chunked_query(query)['p']
         colors = np.copy(self.colors)
         for p in iris:
@@ -151,14 +150,3 @@ class SparqlEndpoint:
                 continue # not all the results of a select are points
             colors[i] = [1.0, 0.0, 0.0]
         return colors
-
-
-if __name__ == "__main__":
-    sparql = SparqlEndpoint("http://localhost:8890/Nettuno")
-    sparql.sparql.setReturnFormat(TURTLE)
-    sparql.get_all()
-    details = sparql.get_point_details(0)
-    print(details)
-    # coords, colors = sparql.get_all()
-    # print(len(coords))
-    # print(coords)

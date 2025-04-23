@@ -1,5 +1,5 @@
 SELECT_ALL_QUERY = """
-PREFIX base:<${namespace}>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 
@@ -7,30 +7,28 @@ SELECT DISTINCT ?p ?x ?y ?z
        (COALESCE(?r, 0) AS ?r) 
        (COALESCE(?g, 0) AS ?g) 
        (COALESCE(?b, 0) AS ?b)
-FROM <${graph}>
-WHERE {
+FROM <{graph}>
+WHERE {{
     ?p base:X ?x;
         base:Y ?y;
         base:Z ?z.
-    OPTIONAL {
+    OPTIONAL {{
         ?p base:R ?r.
         ?p base:G ?g.
         ?p base:B ?b.
-    }
-}
-OFFSET ${offset} LIMIT ${limit}
+    }}
+}}
 """
 
 PREDICATE_QUERY = """
-PREFIX base:<${namespace}>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?s ?x
-FROM <${graph}>
-WHERE {
-    ?s ${predicate} ?x.
-}
-OFFSET ${offset} LIMIT ${limit}
+FROM <{graph}>
+WHERE {{
+    ?s {predicate} ?x.
+}}
 """
 
 # get all the predicates and objects of a point, given its id
@@ -47,28 +45,27 @@ ORDER BY ?o
 """
 
 SELECT_ALL_WITH_PREDICATE = """
-PREFIX base:<${namespace}>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?p
-FROM <${graph}>
-WHERE {
-    ?p ${predicate} ${object}.
-}
-OFFSET ${offset} LIMIT ${limit}
+FROM <{graph}>
+WHERE {{
+    ?p {predicate} {object}.
+}}
 """
 
 # insert a triple with subject, predicate and object
 ANNOTATE_NODE = """
-PREFIX base:<${namespace}>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 INSERT DATA
-{
-    GRAPH <${graph}> {
-        ${subject} ${predicate} ${object}.
-    }
-}
+{{
+    GRAPH <{graph}> {{
+        {subject} {predicate} {object}.
+    }}
+}}
 """
 
 # sample scalar
