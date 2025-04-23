@@ -87,7 +87,10 @@ class SparqlEndpoint:
             raise Exception("Select query should return 'p' variable, but got: ", results.keys())
 
         for p in results['p']:
-            i = self.iri_to_id[p]
+            try:
+                i = self.iri_to_id[p]
+            except KeyError:
+                continue # not all the results of a select are points
             colors[i] = [1.0, 0.0, 0.0] # TODO make this a parameter
 
         return colors
@@ -142,7 +145,10 @@ class SparqlEndpoint:
         iris = self._execute_chunked_query(query)['p']
         colors = np.copy(self.colors)
         for p in iris:
-            i = self.iri_to_id[p]
+            try:
+                i = self.iri_to_id[p]
+            except KeyError:
+                continue # not all the results of a select are points
             colors[i] = [1.0, 0.0, 0.0]
         return colors
 
