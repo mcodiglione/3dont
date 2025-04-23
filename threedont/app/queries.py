@@ -28,7 +28,7 @@ PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?s ?x
 FROM <${graph}>
 WHERE {
-    ?s <${predicate}> ?x.
+    ?s ${predicate} ?x.
 }
 OFFSET ${offset} LIMIT ${limit}
 """
@@ -41,7 +41,7 @@ PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?p ?o
 FROM <{graph}>
 WHERE {{
-<{point}> ?p ?o.
+{point} ?p ?o.
 }}
 ORDER BY ?o
 """
@@ -53,8 +53,9 @@ PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?p
 FROM <${graph}>
 WHERE {
-    ?p <${predicate}> <${object}>.
+    ?p ${predicate} ${object}.
 }
+OFFSET ${offset} LIMIT ${limit}
 """
 
 # insert a triple with subject, predicate and object
@@ -65,7 +66,7 @@ PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 INSERT DATA
 {
     GRAPH <${graph}> {
-        <${subject}> <${predicate}> ${object}.
+        ${subject} ${predicate} ${object}.
     }
 }
 """

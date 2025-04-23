@@ -13,11 +13,11 @@ class QueryResultWithTurtle(QueryResult):
             return var
 
         if var.startswith("<") and var.endswith(">"):
-            return var[1:-1]
+            return var
 
         prefix, suffix = var.split(":")
         try:
-            return self._prefixes[prefix] + suffix
+            return '<' + self._prefixes[prefix] + suffix + '>'
         except KeyError:
             # it's not possible to distinguish between iri with prefix and simple string with a colon
             return var

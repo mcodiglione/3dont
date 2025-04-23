@@ -68,6 +68,7 @@ class Controller:
 
         colors = self.sparql_client.execute_select_query(query)
         self.viewer_client.attributes(colors)
+        self.viewer_client.set(curr_attribute_id=0)
 
     def scalar_query(self, query):
         print("Controller: ", query)
@@ -118,3 +119,8 @@ class Controller:
             return
 
         self.sparql_client.annotate_node(iri, predicate, value)
+
+    def select_all_subjects(self, predicate, object):
+        colors = self.sparql_client.select_all_subjects(predicate, object)
+        self.viewer_client.attributes(colors)
+        self.viewer_client.set(curr_attribute_id=0)

@@ -172,6 +172,11 @@ class MainLayout : public QMainWindow {
                   return;
               controllerWrapper->annotateNode(subject.toStdString(), predicate.toStdString(), newObject.toStdString());
           });
+          QAction *selectAll = contextMenu.addAction("Select all");
+          connect(selectAll, &QAction::triggered, [this, predicate, object]() {
+              controllerWrapper->selectAllSubjects(predicate.toStdString(), object.toStdString());
+          });
+
           contextMenu.exec(treeView->viewport()->mapToGlobal(pos));
       }
 

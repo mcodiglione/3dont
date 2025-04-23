@@ -11,11 +11,12 @@ View, query and manually annotate pointclouds ontologies.
 - [x] check if points are selected right
 - [x] manual annotation tool
 - [x] scalar field query
-- [ ] right click: select all subjects with this predicate and object
+- [x] right click: select all subjects with this predicate and object
 - [x] right click: plot predicate (scalar)
 - [ ] configure page (namespace)
 - [ ] add default to scalar queries equal to color
 - [ ] refactor input dialogs
+- [ ] append OFFSET and LIMIT instead of using template
 
 ## License
 

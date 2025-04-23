@@ -137,6 +137,15 @@ class SparqlEndpoint:
         self.sparql.setQuery(query)
         self.sparql.query()
 
+    def select_all_subjects(self, predicate, object):
+        query = Template(SELECT_ALL_WITH_PREDICATE).safe_substitute(graph=self.graph, predicate=predicate, object=object, namespace=self.namespace)
+        iris = self._execute_chunked_query(query)['p']
+        colors = np.copy(self.colors)
+        for p in iris:
+            i = self.iri_to_id[p]
+            colors[i] = [1.0, 0.0, 0.0]
+        return colors
+
 
 if __name__ == "__main__":
     sparql = SparqlEndpoint("http://localhost:8890/Nettuno")

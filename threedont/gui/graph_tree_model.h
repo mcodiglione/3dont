@@ -32,7 +32,7 @@ public:
     static QString removeNamespace(const QString &str) {
         int index = str.lastIndexOf('#');
         if (index != -1) {
-            return str.mid(index + 1);
+          return str.mid(index + 1, str.length() - index - 2);
         }
         return str;
     }
