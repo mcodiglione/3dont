@@ -12,6 +12,15 @@
 #include <QWindow>
 #include <vector>
 
+inline void checkOpenGLError(const char* context) {
+  GLenum error = glGetError();
+  if (error != GL_NO_ERROR) {
+    qWarning() << "OpenGL Error after" << context << ":" << error;
+    // You might want to map 'error' to a string representation for better debugging
+  }
+}
+
+
 class PointCloud : protected OpenGLFuncs {
   public:
   PointCloud(QWindow *window, QOpenGLContext *context)
@@ -130,7 +139,7 @@ class PointCloud : protected OpenGLFuncs {
     if (_num_points == 0) return;
 
     // box should be in normalized device coordinates
-    glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    glEnable(GL_PROGRAM_POINT_SIZE);
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);
     glEnable(GL_BLEND);
@@ -217,7 +226,7 @@ class PointCloud : protected OpenGLFuncs {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDisable(GL_BLEND);
-    glDisable(GL_VERTEX_PROGRAM_POINT_SIZE);
+    glDisable(GL_PROGRAM_POINT_SIZE);
   }
 
   void queryLOD(std::vector<unsigned int> &indices, const QtCamera &camera,
@@ -247,22 +256,35 @@ class PointCloud : protected OpenGLFuncs {
     bool use_color_map = _attributes.dim(curr_attr_idx) == 1;
     bool broadcast_attr = _attributes.size(curr_attr_idx) == 1;
     const std::vector<float> &attr = _attributes[curr_attr_idx];
-    glEnable(GL_TEXTURE_1D);
+    // glEnable(GL_TEXTURE_1D);
+    checkOpenGLError("before active texture");
     glActiveTexture(GL_TEXTURE0 + 0);
+    checkOpenGLError("active texture");
     glDeleteTextures(1, &_texture_color_map);
+    checkOpenGLError("delete texture");
     glGenTextures(1, &_texture_color_map);
+    checkOpenGLError("gen texture");
     glBindTexture(GL_TEXTURE_1D, _texture_color_map);
+    checkOpenGLError("bind texture");
     if (use_color_map) {
       // use client provided color map
       glTexImage1D(GL_TEXTURE_1D, 0, 4, (int) _color_map.size() / 4, 0, GL_RGBA,
                    GL_FLOAT, (GLvoid *) &_color_map[0]);
+      checkOpenGLError("tex image");
+      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       // not sure why this is needed, but it is
-      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
+      //glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
     } else {
       // use color map that always returns white
       float white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
       glTexImage1D(GL_TEXTURE_1D, 0, GL_RGBA, 1, 0, GL_RGBA, GL_FLOAT,
                    (GLvoid *) white);
+      checkOpenGLError("tex image");
+      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+      glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
     // load color/scalar buffer if size > 1
     GLuint attr_buffer = use_color_map ? _buffer_scalars : _buffer_colors;
@@ -271,6 +293,8 @@ class PointCloud : protected OpenGLFuncs {
       glBufferData(GL_ARRAY_BUFFER, sizeof(float) * attr.size(),
                    (GLvoid *) &attr[0], GL_STATIC_DRAW);
     }
+
+    glBindTexture(GL_TEXTURE_1D, 0);
     _context->doneCurrent();
     if (_color_map_auto) {
       setColorMapScale(1.0f, 0.0f);
@@ -438,7 +462,9 @@ class PointCloud : protected OpenGLFuncs {
   private:
   void compileProgram() {
     std::string vsCode =
-            "#version 120\n"
+            "#version 330 core\n"
+            // "precision highp float;\n"
+            // "precision highp int;\n"
             "\n"
             "uniform float point_size;\n"
             "uniform float width;\n"
@@ -452,21 +478,21 @@ class PointCloud : protected OpenGLFuncs {
             "uniform float scalar_min;\n"
             "uniform float scalar_max;\n"
             "uniform float color_map_n;\n"
-
             "uniform int projection_mode;\n"
             "uniform vec3 eye;\n"
             "uniform vec3 view;\n"
             "uniform float image_t;\n"
-            "varying float inner_radius;\n"
-            "varying float outer_radius;\n"
-
-            "attribute vec3 position;\n"
-            "attribute vec4 color;\n"
-            "attribute float scalar;\n"
-            "attribute float size;\n"
-            "attribute float selected;\n"
-            "varying vec4 frag_color;\n"
-            "varying vec2 frag_center;\n"
+            "\n"
+            "layout(location = 0) in vec3 position;\n"
+            "layout(location = 1) in vec4 color;\n"
+            "layout(location = 2) in float scalar;\n"
+            "layout(location = 3) in float size;\n"
+            "layout(location = 4) in float selected;\n"
+            "\n"
+            "out vec4 frag_color;\n"
+            "out vec2 frag_center;\n"
+            "out float inner_radius;\n"
+            "out float outer_radius;\n"
             "\n"
             "void main() {\n"
             "  vec4 p = mvpMatrix * vec4(position, 1.0);\n"
@@ -475,7 +501,7 @@ class PointCloud : protected OpenGLFuncs {
             "  p /= p.w;\n"
             "  float tex_coord = clamp((scalar - scalar_min) / (scalar_max - scalar_min), 0.0, 1.0);\n"
             "  tex_coord = (tex_coord - 0.5) * (color_map_n - 1.0) / color_map_n + 0.5;\n"
-            "  vec4 color_s = tex_coord != tex_coord ? vec4(0, 0, 0, 1) : texture1D(color_map, tex_coord);\n"
+            "  vec4 color_s = tex_coord != tex_coord ? vec4(0, 0, 0, 1) : texture(color_map, tex_coord);\n"
             "  vec4 color_r = color_s * color;\n"
             "  if (box_select_mode == 2)\n"
             "    frag_color = selected == 1.0 ? vec4(1, 1, 0, 1) : color_r;\n"
@@ -498,17 +524,21 @@ class PointCloud : protected OpenGLFuncs {
             "  gl_PointSize = outer_radius * 2.0;\n"
             "}\n";
     std::string fsCode =
-            "#version 120\n"
+            "#version 330 core\n"
+            // "precision highp float;\n"
+            // "precision highp int;\n"
             "\n"
             "uniform float point_size;\n"
-            "varying vec4 frag_color;\n"
-            "varying vec2 frag_center;\n"
-            "varying float inner_radius;\n"
-            "varying float outer_radius;\n"
+            "in vec4 frag_color;\n"
+            "in vec2 frag_center;\n"
+            "in float inner_radius;\n"
+            "in float outer_radius;\n"
+            "\n"
+            "out vec4 fragColor;\n"
             "\n"
             "void main() {\n"
             "  float weight = clamp((outer_radius - length(frag_center - gl_FragCoord.xy)) / (outer_radius - inner_radius), 0, 1);\n"
-            "  gl_FragColor = frag_color * vec4(1, 1, 1, weight);\n"
+            "  fragColor = frag_color * vec4(1, 1, 1, weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());

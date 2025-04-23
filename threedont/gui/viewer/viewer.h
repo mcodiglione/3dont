@@ -6,6 +6,7 @@
 #include <QMatrix4x4>
 #include <QMouseEvent>
 #include <QOpenGLContext>
+#include <QOpenGLDebugLogger>
 #include <QOpenGLShaderProgram>
 #include <QString>
 #include <QTcpServer>
@@ -39,6 +40,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
   explicit Viewer() : QWindow() {
     setSurfaceType(QSurface::OpenGLSurface);
     QSurfaceFormat f;
+    f.setProfile(QSurfaceFormat::CompatibilityProfile);
     f.setDepthBufferSize(16);
     setFormat(f);
     resize(1, 1);
@@ -864,7 +866,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POINT_SPRITE);
+    glEnable(GL_POINT_SPRITE); // TODO
     _render_time = vltools::getTime();
     _background->draw();
     _floor_grid->draw(_camera);

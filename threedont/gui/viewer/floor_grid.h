@@ -137,7 +137,7 @@ class FloorGrid : protected OpenGLFuncs {
   private:
   void compilePerspProgram() {
     std::string vsCode =
-            "#version 120\n"
+            "#version 330 core\n"
             "\n"
             "// camera coordinate frame\n"
             "uniform vec3 eye;\n"
@@ -152,22 +152,22 @@ class FloorGrid : protected OpenGLFuncs {
             "uniform float r;  // right\n"
             "uniform float t;  // top\n"
             "\n"
-            "attribute vec3 position;\n"
-            "varying vec2 floor_coord;\n"
-            "varying float distance;\n"
+            "layout(location = 0) in vec3 position;\n"
+            "out vec2 floor_coord;\n"
+            "out float distance;\n"
             "\n"
             "void main() {\n"
-            "  vec2 image_coord = position.xy * vec2(2.0 * r, h_hi - h_lo)+vec2(-r, h_lo);\n"
-            "  mat3 R = mat3(right,up,view);\n"
-            "  vec3 p_world = R * vec3(image_coord,-1);\n"
-            "  p_world *= -height/p_world.z;\n"
+            "  vec2 image_coord = position.xy * vec2(2.0 * r, h_hi - h_lo) + vec2(-r, h_lo);\n"
+            "  mat3 R = mat3(right, up, view);\n"
+            "  vec3 p_world = R * vec3(image_coord, -1.0);\n"
+            "  p_world *= -height / p_world.z;\n"
             "  vec3 p_camera = transpose(R) * p_world;\n"
-            "  gl_Position = vec4(p_camera.xy * vec2(1.0 / r, 1.0 / t), 0, -p_camera.z);\n"
+            "  gl_Position = vec4(p_camera.xy * vec2(1.0 / r, 1.0 / t), 0.0, -p_camera.z);\n"
             "  floor_coord = p_world.xy;\n"
             "  distance = length(p_world);\n"
             "}\n";
     std::string fsCode =
-            "#version 120\n"
+            "#version 330 core\n"
             "\n"
             "uniform vec3 eye;\n"
             "uniform vec3 right;\n"
@@ -184,14 +184,15 @@ class FloorGrid : protected OpenGLFuncs {
             "uniform float max_dist_in_focus;\n"
             "uniform float max_dist_visible;\n"
             "\n"
-            "varying vec2 floor_coord;\n"
-            "varying float distance;\n"
+            "in vec2 floor_coord;\n"
+            "in float distance;\n"
+            "out vec4 fragColor;\n"
             "\n"
             "float compute_weight(vec3 n, vec2 image_coord) {\n"
-            "  vec3 line = transpose(mat3(right, up, view))*n;\n"
+            "  vec3 line = transpose(mat3(right, up, view)) * n;\n"
             "  line /= length(line.xy);\n"
-            "  float eps = -abs(dot(vec3(image_coord, -1), line));\n"
-            "  return (eps+line_width) / line_width;\n"
+            "  float eps = -abs(dot(vec3(image_coord, -1.0), line));\n"
+            "  return (eps + line_width) / line_width;\n"
             "}\n"
             "void main() {\n"
             "  vec2 cell_idx = floor((floor_coord + eye.xy) / cell_size);\n"
@@ -203,19 +204,19 @@ class FloorGrid : protected OpenGLFuncs {
             "  float x_max_weight = i == 9.0 ? 1.0 : line_weight;\n"
             "  float y_min_weight = j == 0.0 ? 1.0 : line_weight;\n"
             "  float y_max_weight = j == 9.0 ? 1.0 : line_weight;\n"
-
+            "\n"
             "  vec3 temp = transpose(mat3(right, up, view)) * vec3(floor_coord, -height);\n"
             "  vec2 image_coord = -temp.xy / temp.z;\n"
             "  float weight = 0.0;\n"
-            "  weight = max(weight, x_min_weight * compute_weight(vec3(height, 0, cell_min.x), image_coord));\n"
-            "  weight = max(weight, x_max_weight * compute_weight(vec3(height, 0, cell_max.x), image_coord));\n"
-            "  weight = max(weight, y_min_weight * compute_weight(vec3(0, height, cell_min.y), image_coord));\n"
-            "  weight = max(weight, y_max_weight * compute_weight(vec3(0, height, cell_max.y), image_coord));\n"
+            "  weight = max(weight, x_min_weight * compute_weight(vec3(height, 0.0, cell_min.x), image_coord));\n"
+            "  weight = max(weight, x_max_weight * compute_weight(vec3(height, 0.0, cell_max.x), image_coord));\n"
+            "  weight = max(weight, y_min_weight * compute_weight(vec3(0.0, height, cell_min.y), image_coord));\n"
+            "  weight = max(weight, y_max_weight * compute_weight(vec3(0.0, height, cell_max.y), image_coord));\n"
             "  weight *= 0.7;\n"
-
+            "\n"
             "  float blur_weight = clamp((max_dist_visible - distance) / (max_dist_visible - max_dist_in_focus), 0.0, 1.0);\n"
-            "  vec4 c = line_color * weight+floor_color*(1.0 - weight);\n"
-            "  gl_FragColor = vec4(c.xyz, c.w * blur_weight);\n"
+            "  vec4 c = line_color * weight + floor_color * (1.0 - weight);\n"
+            "  fragColor = vec4(c.xyz, c.w * blur_weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _persp_program.addShaderFromSourceCode(QOpenGLShader::Vertex,
@@ -227,7 +228,7 @@ class FloorGrid : protected OpenGLFuncs {
   }
   void compileOrthoProgram() {
     std::string vsCode =
-            "#version 110\n"
+            "#version 330 core\n"
             "uniform vec3 eye;\n"
             "uniform vec3 right;\n"
             "uniform vec3 up;\n"
@@ -235,24 +236,25 @@ class FloorGrid : protected OpenGLFuncs {
             "uniform float z_floor;\n"
             "uniform float r;\n"
             "uniform float t;\n"
-            "attribute vec3 position;\n"
-            "varying vec2 floor_coord;\n"
+            "layout(location = 0) in vec3 position;\n"
+            "out vec2 floor_coord;\n"
             "void main() {\n"
             "  vec2 image_coord = (position.xy - 0.5) * 2.0;\n"
             "  vec3 o = eye + image_coord.x * r * right + image_coord.y * t * up;\n"
             "  float d = (o.z - z_floor) / view.z;\n"
             "  floor_coord = -view.xy * d + o.xy;\n"
-            "  gl_Position = vec4(image_coord, 0, 1);\n"
+            "  gl_Position = vec4(image_coord, 0.0, 1.0);\n"
             "}\n";
     std::string fsCode =
-            "#version 110\n"
+            "#version 330 core\n"
             "uniform float eps_x;\n"
             "uniform float eps_y;\n"
             "uniform float cell_size;    // for minor grid cells\n"
             "uniform float line_weight;  // for minor grid lines\n"
             "uniform vec4 floor_color;\n"
             "uniform vec4 line_color;\n"
-            "varying vec2 floor_coord;\n"
+            "in vec2 floor_coord;\n"
+            "out vec4 fragColor;\n"
             "void main() {\n"
             "  vec2 cell_idx = floor(floor_coord / cell_size);\n"
             "  vec2 cell_min = cell_idx * cell_size;\n"
@@ -270,11 +272,12 @@ class FloorGrid : protected OpenGLFuncs {
             "  weight = max(weight, y_max_weight * (1.0 + (floor_coord.y - cell_max.y) / eps_y));\n"
             "  weight *= 0.7;\n"
 
-            "  gl_FragColor = floor_color * (1.0 - weight) + line_color * (weight);\n"
+            "  fragColor = floor_color * (1.0 - weight) + line_color * (weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _ortho_program.addShaderFromSourceCode(QOpenGLShader::Vertex,
                                            vsCode.c_str());
+
     _ortho_program.addShaderFromSourceCode(QOpenGLShader::Fragment,
                                            fsCode.c_str());
     _ortho_program.link();

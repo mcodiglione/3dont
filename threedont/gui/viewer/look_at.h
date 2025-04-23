@@ -68,22 +68,23 @@ class LookAt : protected OpenGLFuncs {
   private:
   void compileProgram() {
     std::string vsCode =
-            "#version 110\n"
+            "#version 330 core\n"
             "uniform float d;\n"
             "uniform vec3 lookat;\n"
             "uniform mat4 mvp;\n"
-            "attribute vec3 position;\n"
-            "attribute vec3 color;\n"
-            "varying vec3 vcolor;\n"
+            "layout(location = 0) in vec3 position;\n"
+            "layout(location = 1) in vec3 color;\n"
+            "out vec3 vcolor;\n"
             "void main() {\n"
-            "  gl_Position = mvp * vec4(d * position + lookat, 1);\n"
+            "  gl_Position = mvp * vec4(d * position + lookat, 1.0);\n"
             "  vcolor = color;\n"
             "}\n";
     std::string fsCode =
-            "#version 110\n"
-            "varying vec3 vcolor;\n"
+            "#version 330 core\n"
+            "in vec3 vcolor;\n"
+            "out vec4 fragColor;\n"
             "void main() {\n"
-            "  gl_FragColor = vec4(vcolor, 1);\n"
+            "  fragColor = vec4(vcolor, 1.0);\n"
             "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());

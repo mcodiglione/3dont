@@ -63,22 +63,23 @@ class Background : protected OpenGLFuncs {
   private:
   void compileProgram() {
     std::string vsCode =
-            "#version 110\n"
+            "#version 330 core\n"
             "\n"
-            "attribute vec4 position;\n"
-            "varying vec2 coordinate;\n"
+            "layout(location = 0) in vec4 position;\n"
+            "out vec2 coordinate;\n"
             "void main() {\n"
-            "  gl_Position = vec4(2.0*position.xy-1.0,0,1);\n"
+            "  gl_Position = vec4(2.0 * position.xy - 1.0, 0.0, 1.0);\n"
             "  coordinate = position.xy;\n"
             "}\n";
     std::string fsCode =
-            "#version 110\n"
+            "#version 330 core\n"
             "\n"
             "uniform vec4 colorBottom;\n"
             "uniform vec4 colorTop;\n"
-            "varying vec2 coordinate;\n"
+            "in vec2 coordinate;\n"
+            "out vec4 fragColor;\n"
             "void main() {\n"
-            "  gl_FragColor = mix(colorBottom, colorTop, coordinate.y);\n"
+            "  fragColor = mix(colorBottom, colorTop, coordinate.y);\n"
             "}\n";
 
     _context->makeCurrent(_window);

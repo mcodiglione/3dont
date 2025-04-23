@@ -41,8 +41,7 @@ class SparqlEndpoint:
                 raise Exception("Empty result set for query: ", query)
 
             any_key = next(iter(results.keys()))
-            # print("Chunk size: ", len(results[any_key]), " offset: ", offset)
-            if len(results[any_key]) < CHUNK_SIZE or chunked_query == query: # if offset is present
+            if len(results[any_key]) < CHUNK_SIZE or chunked_query == query: # if placeholders were present
                 break
             offset += CHUNK_SIZE
         return all_results
@@ -103,7 +102,7 @@ class SparqlEndpoint:
 
         minimum = float(min(results['x']))
         maximum = float(max(results['x']))
-        print(minimum, maximum)
+        # print(minimum, maximum)
         default = minimum - (maximum - minimum) / 10
         # scalars = np.empty(len(self.colors), dtype=np.float32)
         scalars = np.full(len(self.colors), default, dtype=np.float32)
