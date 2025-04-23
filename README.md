@@ -16,8 +16,11 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] configure page (namespace)
 - [ ] add default to scalar queries equal to color
 - [ ] refactor input dialogs
-- [ ] append OFFSET and LIMIT instead of using template
-
+- [x] append OFFSET and LIMIT instead of using template
+- [ ] nl queries
+- [ ] error box in gui
+- [ ] error handling for: wrong output format, empty output, syntax error, connection error...
+ 
 ## License
 
 Unless otherwise noted in `LICENSE` files for specific files or directories,

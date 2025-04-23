@@ -19,8 +19,9 @@ class SparqlEndpoint:
         # TODO generalize outside of virtuoso
         self.endpoint= parsed.scheme + "://" + parsed.netloc + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
-        self.sparql.setReturnFormat(TURTLE)
+        self.sparql.setReturnFormat(TURTLE) # works with virtuoso even if the header sent is accept */* (RuntimeWarning)
         self.iri_to_id = {}
+        self.coords_to_id = {}
         self.id_to_iri = []
         self.colors = None
 
@@ -64,6 +65,7 @@ class SparqlEndpoint:
         coords = np.array((results['x'], results['y'], results['z'])).T.astype(np.float32)
         colors = np.array((results['r'], results['g'], results['b'])).T.astype(np.float32)
         self.iri_to_id = {p: i for i, p in enumerate(results['p'])}
+        self.coords_to_id = {tuple(c): i for i, c in enumerate(coords)}
         self.id_to_iri = results['p']
 
         if colors.max() > 255:
