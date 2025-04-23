@@ -1,4 +1,5 @@
 from queue import Queue
+import logging
 import sys
 
 from .viewer import Viewer
@@ -54,8 +55,8 @@ class Controller:
             function_name, args = command
             try:
                 getattr(self, function_name)(*args)
-            except Exception as e:
-                print("Controller error: ", e)
+            except BaseException:
+                logging.exception("Error in controller running function %s", function_name)
 
             command = self.commands_queue.get()
 

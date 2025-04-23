@@ -49,8 +49,7 @@ class SparqlEndpoint:
         try:
             results = self._execute_chunked_query(query)
         except Exception as e:
-            print("Error executing query: ", e)
-            return None, None
+            raise Exception("Error executing query get all!") from e
         print("Time to query: ", time() - start)
         start = time()
 
@@ -75,14 +74,15 @@ class SparqlEndpoint:
 
     # returns the colors with highlighted points
     def execute_select_query(self, query):
-        self.sparql.setQuery(query)
         try:
-            results = self.sparql.queryAndConvert()
+            results = self._execute_chunked_query(query)
         except Exception as e:
-            print("Error executing query: ", e)
-            return self.colors
+            raise Exception("Error executing select query!") from e
 
         colors = np.copy(self.colors)
+        if not 'p' in results:
+            raise Exception("Select query should return 'p' variable, but got: ", results.keys())
+
         for p in results['p']:
             i = self.iri_to_id[p]
             colors[i] = [1.0, 0.0, 0.0] # TODO make this a parameter
@@ -91,9 +91,8 @@ class SparqlEndpoint:
 
     def execute_scalar_query(self, query):
         results = self._execute_chunked_query(query)
-        if 's' not in results:
-            # assume empty result
-            return None
+        if not 's' in results or not 'x' in results:
+            raise Exception("Select query should return 's' and 'x' variables, but got: ", results.keys())
 
         minimum = float(min(results['x']))
         maximum = float(max(results['x']))
