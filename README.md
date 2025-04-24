@@ -18,8 +18,13 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] refactor input dialogs
 - [x] append OFFSET and LIMIT instead of using template
 - [ ] nl queries
-- [ ] error box in gui
-- [ ] error handling for: wrong output format, empty output, syntax error, connection error...
+- [x] error box in gui
+- [x] error handling for: wrong output format, empty output, syntax error, connection error...
+- [ ] non visual queries (tabular result box?)
+- [ ] highligh subject in treeview (?)
+- [ ] scalar templates
+- [ ] legenda scalar
+- [ ] import nuvole etc.
  
 ## License
 
