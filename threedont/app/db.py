@@ -89,7 +89,7 @@ class SparqlEndpoint:
 
         colors = np.copy(self.colors)
         if not 'p' in results:
-            raise Exception("Select query should return 'p' variable, but got: ", results.keys())
+            raise WrongResultFormatException(['p'], list(results.keys()))
 
         for p in results['p']:
             try:

@@ -23,9 +23,6 @@ class QueryResultWithTurtle(QueryResult):
             return var
 
     def _convertN3(self):
-        if self.response.getcode() // 100 != 2:
-            raise Exception("Error in SPARQL query: " + self.response.read().decode())
-
         encoding = self.response.info().get_content_charset('utf-8')
         self._prefixes = {}
         out = {}

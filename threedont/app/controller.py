@@ -80,7 +80,7 @@ class Controller:
             function_name, args = command
             try:
                 getattr(self, function_name)(*args)
-            except BaseException:
+            except Exception:
                 logging.exception("Error in controller running function %s", function_name)
 
             command = self.commands_queue.get()

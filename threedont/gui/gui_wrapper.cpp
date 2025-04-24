@@ -4,7 +4,7 @@
 #include <Python.h>
 #include <QApplication>
 #include <thread>
-#include <signal.h>
+#include <csignal>
 
 typedef struct {
     PyObject_HEAD
@@ -114,12 +114,6 @@ static PyObject *GuiWrapper_get_viewer_server_port(GuiWrapperObject *self, PyObj
     return PyLong_FromLong(self->mainLayout->getViewerServerPort());
 }
 
-/**
- * This can be called safely from any thread
- * @param self
- * @param args
- * @return
- */
 static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *args) {
     if (self->mainLayout == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");

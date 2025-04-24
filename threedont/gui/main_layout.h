@@ -28,6 +28,7 @@ class MainLayout : public QMainWindow {
     this->controllerWrapper = controllerWrapper;
 
     ui->setupUi(this);
+    ui->errorLabel->setVisible(false);
     ui->statusbar->showMessage(tr("Loading..."));
 
     viewer = new Viewer();
@@ -70,15 +71,28 @@ class MainLayout : public QMainWindow {
     ui->statusbar->showMessage(content, seconds * 1000);
   }
 
-  void on_executeSelectQueryButton_clicked() {
-    QString query = ui->selectQueryTextBox->toPlainText();
-    controllerWrapper->selectQuery(query.toStdString());
+  void on_executeQueryButton_clicked() {
+    QString queryType = ui->queryType->currentText();
+    QString query = ui->queryTextBox->toPlainText();
+    ui->errorLabel->setVisible(false);
+
+    if (query.isEmpty())
+      return;
+
+    if (queryType == "select") {
+      controllerWrapper->selectQuery(query.toStdString());
+    } else if (queryType == "scalar") {
+      controllerWrapper->scalarQuery(query.toStdString());
+    } else if (queryType == "natural language") {
+      ui->errorLabel->setText("Natural language queries are not supported yet");
+      ui->errorLabel->setVisible(true);
+    } else {
+      // should not happen
+      ui->errorLabel->setText("Unknown query type");
+      ui->errorLabel->setVisible(true);
+    }
   }
 
-  void on_executeScalarQueryButton_clicked() {
-    QString query = ui->scalarQueryTextBox->toPlainText();
-    controllerWrapper->scalarQuery(query.toStdString());
-  }
 
   void on_actionConnect_to_server_triggered() {
     bool ok;
@@ -125,8 +139,8 @@ class MainLayout : public QMainWindow {
   }
 
   void setQueryError(QString error) {
-    // TODO
-    ui->statusbar->showMessage(error, 5000);
+    ui->errorLabel->setText(error);
+    ui->errorLabel->setVisible(true);
   }
 
   void onTreeViewContexMenuRequested(const QPoint &pos) {

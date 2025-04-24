@@ -33,7 +33,7 @@
      <x>0</x>
      <y>0</y>
      <width>646</width>
-     <height>27</height>
+     <height>33</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -85,142 +85,51 @@
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QTabWidget" name="tabWidget">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-         <horstretch>1</horstretch>
-         <verstretch>1</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>5</height>
-        </size>
+      <widget class="QTextEdit" name="queryTextBox"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="errorLabel">
+       <property name="enabled">
+        <bool>true</bool>
        </property>
        <property name="styleSheet">
-        <string notr="true"/>
+        <string notr="true">border: 1px solid red;</string>
        </property>
-       <property name="currentIndex">
-        <number>0</number>
+       <property name="text">
+        <string/>
        </property>
-       <property name="documentMode">
-        <bool>false</bool>
+       <property name="wordWrap">
+        <bool>true</bool>
        </property>
-       <widget class="QWidget" name="tab">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::LinksAccessibleByMouse|Qt::TextInteractionFlag::TextSelectableByKeyboard|Qt::TextInteractionFlag::TextSelectableByMouse</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="queryType">
+       <item>
+        <property name="text">
+         <string>select</string>
         </property>
-        <attribute name="title">
-         <string>Select</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_2">
-         <item>
-          <widget class="QTextEdit" name="selectQueryTextBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="executeSelectQueryButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>execute</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       </item>
+       <item>
+        <property name="text">
+         <string>scalar</string>
         </property>
-        <attribute name="title">
-         <string>NL</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_4">
-         <item>
-          <widget class="QTextEdit" name="NLQueryTextBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="executeNLQueryButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>execute</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_3">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>1</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       </item>
+       <item>
+        <property name="text">
+         <string>natural language</string>
         </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <attribute name="title">
-         <string>Scalar</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
-         <item>
-          <widget class="QTextEdit" name="scalarQueryTextBox">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="executeScalarQueryButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>execute</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="executeQueryButton">
+       <property name="text">
+        <string>execute</string>
+       </property>
       </widget>
      </item>
     </layout>
