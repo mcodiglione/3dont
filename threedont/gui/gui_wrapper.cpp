@@ -160,7 +160,7 @@ static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *
     return Py_None;
 }
 
-static PyObject  *GuiWrapper_set_statusbar_content(GuiWrapperObject *self, PyObject *args) {
+static PyObject *GuiWrapper_set_statusbar_content(GuiWrapperObject *self, PyObject *args) {
     if (self->mainLayout == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
         return nullptr;
@@ -176,11 +176,27 @@ static PyObject  *GuiWrapper_set_statusbar_content(GuiWrapperObject *self, PyObj
     return Py_None;
 }
 
+static PyObject *GuiWrapper_set_query_error(GuiWrapperObject *self, PyObject *args) {
+    if (self->mainLayout == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+        return nullptr;
+    }
+
+    const char *error;
+    if (!PyArg_ParseTuple(args, "s", &error)) {
+        return nullptr;
+    }
+
+    QMetaObject::invokeMethod(self->mainLayout, "setQueryError", Qt::QueuedConnection, Q_ARG(QString, QString(error)));
+    return Py_None;
+}
+
 static PyMethodDef GuiWrapper_methods[] = {
         {"run", (PyCFunction) GuiWrapper_run, METH_NOARGS, "Runs the GUI event loop"},
         {"set_statusbar_content", (PyCFunction) GuiWrapper_set_statusbar_content, METH_VARARGS, "Sets the content of the status bar"},
         {"get_viewer_server_port", (PyCFunction) GuiWrapper_get_viewer_server_port, METH_NOARGS, "Returns the server port of the viewer"},
         {"view_node_details", (PyCFunction) GuiWrapper_view_node_details, METH_VARARGS, "Displays the details of a point"},
+        {"set_query_error", (PyCFunction) GuiWrapper_set_query_error, METH_VARARGS, "Sets the query error"},
         {nullptr}
 };
 

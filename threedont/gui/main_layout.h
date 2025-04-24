@@ -124,63 +124,65 @@ class MainLayout : public QMainWindow {
 
   }
 
+  void setQueryError(QString error) {
+    // TODO
+    ui->statusbar->showMessage(error, 5000);
+  }
+
+  void onTreeViewContexMenuRequested(const QPoint &pos) {
+    QTreeView *treeView = qobject_cast<QTreeView *>(sender());
+    if (!treeView)
+      return;
+
+    QModelIndex index = treeView->indexAt(pos);
+    if (!index.isValid())
+      return;
+
+    QString predicate = graphTreeModel->getPredicate(index);
+    QString object = graphTreeModel->getObject(index);
+
+    QMenu contextMenu;
+    QAction *plotAction = contextMenu.addAction("Plot predicate");
+    connect(plotAction, &QAction::triggered, [this, predicate]() {
+      controllerWrapper->scalarWithPredicate(predicate.toStdString());
+    });
+    QAction *annotate = contextMenu.addAction("Annotate");
+    connect(annotate, &QAction::triggered, [this, object]() {
+      QString subject = object;
+      bool ok;
+      QString predicate = QInputDialog::getText(this, tr("Annotate"),
+                                                tr("Predicate:"), QLineEdit::Normal,
+                                                "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
+      if (!ok || predicate.isEmpty())
+        return;
+      QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Object:"), QLineEdit::Normal,
+                                                "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
+      if (!ok || newObject.isEmpty())
+        return;
+      controllerWrapper->annotateNode(subject.toStdString(), predicate.toStdString(), newObject.toStdString());
+    });
+    QAction *selectAll = contextMenu.addAction("Select all");
+    connect(selectAll, &QAction::triggered, [this, predicate, object]() {
+      controllerWrapper->selectAllSubjects(predicate.toStdString(), object.toStdString());
+    });
+
+    contextMenu.exec(treeView->viewport()->mapToGlobal(pos));
+  }
+
+  void detailsClosed(bool visible) {
+    if (visible)
+      return;
+
+    qDebug() << "Details closed";
+    isDetailsOpen = false;
+  }
+
   private:
   Ui::MainLayout *ui;
   Viewer *viewer;
   ControllerWrapper *controllerWrapper;
   GraphTreeModel *graphTreeModel;
   bool isDetailsOpen = false;
-
-  private slots:
-      void detailsClosed(bool visible) {
-          if (visible)
-              return;
-
-          qDebug() << "Details closed";
-          isDetailsOpen = false;
-      }
-
-      void onTreeViewContexMenuRequested(const QPoint &pos) {
-          QTreeView *treeView = qobject_cast<QTreeView *>(sender());
-          if (!treeView)
-              return;
-
-          QModelIndex index = treeView->indexAt(pos);
-          if (!index.isValid())
-              return;
-
-          QString predicate = graphTreeModel->getPredicate(index);
-          QString object = graphTreeModel->getObject(index);
-
-          QMenu contextMenu;
-          QAction *plotAction = contextMenu.addAction("Plot predicate");
-          connect(plotAction, &QAction::triggered, [this, predicate]() {
-              controllerWrapper->scalarWithPredicate(predicate.toStdString());
-          });
-          QAction *annotate = contextMenu.addAction("Annotate");
-          connect(annotate, &QAction::triggered, [this, object]() {
-              QString subject = object;
-              bool ok;
-              QString predicate = QInputDialog::getText(this, tr("Annotate"),
-                                                           tr("Predicate:"), QLineEdit::Normal,
-                                                           "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
-              if (!ok || predicate.isEmpty())
-                  return;
-              QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Object:"), QLineEdit::Normal,
-                                                    "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
-              if (!ok || newObject.isEmpty())
-                  return;
-              controllerWrapper->annotateNode(subject.toStdString(), predicate.toStdString(), newObject.toStdString());
-          });
-          QAction *selectAll = contextMenu.addAction("Select all");
-          connect(selectAll, &QAction::triggered, [this, predicate, object]() {
-              controllerWrapper->selectAllSubjects(predicate.toStdString(), object.toStdString());
-          });
-
-          contextMenu.exec(treeView->viewport()->mapToGlobal(pos));
-      }
-
-
 };
 
 

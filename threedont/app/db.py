@@ -8,6 +8,16 @@ from .queries import *
 
 CHUNK_SIZE = 1000000
 
+class WrongResultFormatException(Exception):
+    def __init__(self, expcected, got):
+        message = f"Expected {expcected}, but got {got}"
+        super().__init__(message)
+
+class EmptyResultSetException(Exception):
+    def __init__(self, query):
+        message = f"Empty result set for query: {query}"
+        super().__init__(message)
+
 class SparqlEndpoint:
     def __init__(self, url, namespace):
         self.graph = url
@@ -38,7 +48,7 @@ class SparqlEndpoint:
                 all_results[key].extend(results[key])
 
             if len(results) == 0:
-                raise Exception("Empty result set for query: ", query)
+                raise EmptyResultSetException(query)
 
             any_key = next(iter(results.keys()))
             if len(results[any_key]) < CHUNK_SIZE:
@@ -49,10 +59,7 @@ class SparqlEndpoint:
     def get_all(self):
         query = SELECT_ALL_QUERY.format(graph=self.graph, namespace=self.namespace)
         start = time()
-        try:
-            results = self._execute_chunked_query(query)
-        except Exception as e:
-            raise Exception("Error executing query get all!") from e
+        results = self._execute_chunked_query(query)
         print("Time to query: ", time() - start)
         start = time()
 
@@ -78,10 +85,7 @@ class SparqlEndpoint:
 
     # returns the colors with highlighted points
     def execute_select_query(self, query):
-        try:
-            results = self._execute_chunked_query(query)
-        except Exception as e:
-            raise Exception("Error executing select query!") from e
+        results = self._execute_chunked_query(query)
 
         colors = np.copy(self.colors)
         if not 'p' in results:
@@ -97,12 +101,9 @@ class SparqlEndpoint:
         return colors
 
     def execute_scalar_query(self, query):
-        try:
-            results = self._execute_chunked_query(query)
-        except Exception as e:
-            raise Exception("Error executing scalar query!") from e
+        results = self._execute_chunked_query(query)
         if not 's' in results or not 'x' in results:
-            raise Exception("Select query should return 's' and 'x' variables, but got: ", results.keys())
+            raise WrongResultFormatException(['s', 'x'], list(results.keys()))
 
         minimum = float(min(results['x']))
         maximum = float(max(results['x']))
@@ -152,3 +153,9 @@ class SparqlEndpoint:
                 continue # not all the results of a select are points
             colors[i] = [1.0, 0.0, 0.0]
         return colors
+
+# Expceptions:
+# urllib.error.URLError no connection to server
+# SPARQLWrapper.SPARQLExceptions.QueryBadFormed, get .response to get error
+# No right result (custom)
+# Empty result set (custom)
