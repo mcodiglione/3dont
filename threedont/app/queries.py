@@ -40,6 +40,7 @@ SELECT DISTINCT ?p ?o
 FROM <{graph}>
 WHERE {{
 {point} ?p ?o.
+FILTER (?p != base:Is_constituted_by)
 }}
 ORDER BY ?o
 """
