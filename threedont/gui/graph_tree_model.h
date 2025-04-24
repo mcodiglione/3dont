@@ -76,7 +76,7 @@ public:
     }
 
     bool isLeaf() const {
-      return !object.startsWith("http"); // TODO is ugly
+      return !object.startsWith("<http"); // TODO is ugly
     }
 
 
@@ -214,7 +214,6 @@ public:
         if (!parent.isValid())
             return;
 
-
         GraphTreeItem *item = static_cast<GraphTreeItem *>(parent.internalPointer());
 
         if (item->areChildrenLoaded())
@@ -223,6 +222,9 @@ public:
         QString nodeId = item->nodeId();
 
         controllerWrapper->viewNodeDetails(nodeId.toStdString());
+
+        if (item->data(0) == "Constitutes")
+            controllerWrapper->selectAllSubjects(item->data(0, false).toString().toStdString(), item->data(1, false).toString().toStdString());
     }
 
     void addTopLevelItem(const QString &object, const QString &predicate) {
