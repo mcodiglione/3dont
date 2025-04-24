@@ -124,9 +124,9 @@ class MainLayout : public QMainWindow {
       QTreeView *treeView = new QTreeView(dock);
       treeView->setContextMenuPolicy(Qt::CustomContextMenu);
       connect(treeView, &QTreeView::customContextMenuRequested, this, &MainLayout::onTreeViewContexMenuRequested);
+      connect(treeView, &QTreeView::expanded, graphTreeModel, &GraphTreeModel::onRowExpanded);
 
       treeView->setModel(graphTreeModel);
-
 
       dock->setWidget(treeView);
 

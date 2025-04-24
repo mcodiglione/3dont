@@ -222,9 +222,6 @@ public:
         QString nodeId = item->nodeId();
 
         controllerWrapper->viewNodeDetails(nodeId.toStdString());
-
-        if (item->data(0) == "Constitutes")
-            controllerWrapper->selectAllSubjects(item->data(0, false).toString().toStdString(), item->data(1, false).toString().toStdString());
     }
 
     void addTopLevelItem(const QString &object, const QString &predicate) {
@@ -280,6 +277,19 @@ public:
 
         GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
         return item->data(1, false).toString();
+    }
+
+public slots:
+    void onRowExpanded(const QModelIndex &index) {
+        if (!index.isValid()) {
+            return;
+        }
+
+        GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+
+        if (item->data(0) == "Constitutes")
+          controllerWrapper->selectAllSubjects(item->data(0, false).toString().toStdString(),
+                                               item->data(1, false).toString().toStdString());
     }
 
 private:
