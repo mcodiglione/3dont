@@ -17,7 +17,8 @@ class ControllerWrapper {
             "view_node_details",
             "start",
             "annotate_node",
-            "select_all_subjects"
+            "select_all_subjects",
+            "tabular_query"
     };
 
   public:
@@ -103,6 +104,13 @@ class ControllerWrapper {
       void selectAllSubjects(const std::string& predicate, const std::string& object) {
         PyGILState_STATE gil_state = PyGILState_Ensure();
         PyObject *result = PyObject_CallMethod(controller, "select_all_subjects", "ss", predicate.c_str(), object.c_str());
+        Py_XDECREF(result);
+        PyGILState_Release(gil_state);
+      }
+
+      void tabularQuery(const std::string &query) {
+        PyGILState_STATE gil_state = PyGILState_Ensure();
+        PyObject *result = PyObject_CallMethod(controller, "tabular_query", "s", query.c_str());
         Py_XDECREF(result);
         PyGILState_Release(gil_state);
       }

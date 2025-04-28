@@ -98,3 +98,20 @@ WHERE {
     ?obj a base:Type_Building.
 }
 """
+
+# sample table (avg x, avg y, avg z)
+"""
+PREFIX base:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
+PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT (AVG(?x) AS ?avg_x) (AVG(?y) AS ?avg_y) (AVG(?z) AS ?avg_z)
+FROM <http://localhost:8890/Nettuno>
+WHERE {
+?p 	base:X ?x;
+    base:Y ?y;
+    base:Z ?z.
+    ?p base:Constitutes ?part.
+    ?part base:Is_part_of ?obj.
+    ?obj a base:Type_Building.
+}
+"""

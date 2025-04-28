@@ -4,7 +4,7 @@ import io
 
 __all__ = ['SPARQLWrapperWithTurtle', 'QueryResultWithTurtle']
 
-VARIABLES_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-z]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
+VARIABLES_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-zA-Z0-9_]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
 PREFIXES_REGEX = re.compile(r"^@prefix\s+([a-zA-Z0-9_]+):\s*<([^>]+)>\s*\.\s*")
 
 class QueryResultWithTurtle(QueryResult):

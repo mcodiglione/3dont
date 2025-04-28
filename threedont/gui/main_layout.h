@@ -67,7 +67,7 @@ class MainLayout : public QMainWindow {
     controllerWrapper->viewPointDetails(index);
   }
 
-  void setStatusbarContent(QString content, int seconds) {
+  void setStatusbarContent(const QString& content, int seconds) {
     ui->statusbar->showMessage(content, seconds * 1000);
   }
 
@@ -86,6 +86,8 @@ class MainLayout : public QMainWindow {
     } else if (queryType == "natural language") {
       ui->errorLabel->setText("Natural language queries are not supported yet");
       ui->errorLabel->setVisible(true);
+    } else if (queryType == "tabular") {
+      controllerWrapper->tabularQuery(query.toStdString());
     } else {
       // should not happen
       ui->errorLabel->setText("Unknown query type");
@@ -110,7 +112,7 @@ class MainLayout : public QMainWindow {
     controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
   }
 
-  void displayNodeDetails(QVectorOfQStringPairs details, QString parentId) {
+  void displayNodeDetails(const QVectorOfQStringPairs& details, const QString& parentId) {
     qDebug() << "Displaying point details for " << parentId;
 
     if (!isDetailsOpen) {
@@ -138,7 +140,30 @@ class MainLayout : public QMainWindow {
 
   }
 
-  void setQueryError(QString error) {
+  void plotTabular(const QStringList& header, const QStringList& rows) {
+    auto dock = new QDockWidget(tr("Tabular data"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+
+    int nVars = header.size();
+    QTableWidget *tableWidget = new QTableWidget(dock);
+    tableWidget->setColumnCount(nVars);
+    tableWidget->setRowCount(rows.size() / nVars);
+    tableWidget->setHorizontalHeaderLabels(header);
+    tableWidget->verticalHeader()->setVisible(false);
+
+    for (int i = 0; i < rows.size() / nVars; ++i) {
+      for (int j = 0; j < nVars; ++j) {
+        QTableWidgetItem *item = new QTableWidgetItem(rows[i*nVars + j]);
+        tableWidget->setItem(i, j, item);
+      }
+    }
+
+    dock->setWidget(tableWidget);
+    addDockWidget(Qt::LeftDockWidgetArea, dock);
+  }
+
+  void setQueryError(const QString& error) {
     ui->errorLabel->setText(error);
     ui->errorLabel->setVisible(true);
   }

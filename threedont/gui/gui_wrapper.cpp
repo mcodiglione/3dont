@@ -114,6 +114,28 @@ static PyObject *GuiWrapper_get_viewer_server_port(GuiWrapperObject *self, PyObj
     return PyLong_FromLong(self->mainLayout->getViewerServerPort());
 }
 
+static bool pyListToQVectorOfQStringPairs(PyObject *details, QVectorOfQStringPairs &detailsVector) {
+  Py_ssize_t size = PyList_Size(details);
+  for (Py_ssize_t i = 0; i < size; i++) {
+      PyObject *tuple = PyList_GetItem(details, i);
+      if (!PyTuple_Check(tuple) || PyTuple_Size(tuple) != 2) {
+          PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples");
+          return false;
+      }
+
+      PyObject *key = PyTuple_GetItem(tuple, 0);
+      PyObject *value = PyTuple_GetItem(tuple, 1);
+
+      if (!PyUnicode_Check(key) || !PyUnicode_Check(value)) {
+          PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples of strings");
+          return false;
+      }
+
+      detailsVector.emplace_back(QString(PyUnicode_AsUTF8(key)), QString(PyUnicode_AsUTF8(value)));
+  }
+  return true;
+}
+
 static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *args) {
     if (self->mainLayout == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
@@ -128,29 +150,69 @@ static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *
     }
 
     QVectorOfQStringPairs detailsVector;
-
-    Py_ssize_t size = PyList_Size(details);
-    for (Py_ssize_t i = 0; i < size; i++) {
-        PyObject *tuple = PyList_GetItem(details, i);
-        if (!PyTuple_Check(tuple) || PyTuple_Size(tuple) != 2) {
-            PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples");
-            return nullptr;
-        }
-
-        PyObject *key = PyTuple_GetItem(tuple, 0);
-        PyObject *value = PyTuple_GetItem(tuple, 1);
-
-        if (!PyUnicode_Check(key) || !PyUnicode_Check(value)) {
-            PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples of strings");
-            return nullptr;
-        }
-
-        detailsVector.emplace_back(QString(PyUnicode_AsUTF8(key)), QString(PyUnicode_AsUTF8(value)));
+    if (!pyListToQVectorOfQStringPairs(details, detailsVector)) {
+        return nullptr;
     }
 
     QString parentIdString = QString(parentId);
 
     QMetaObject::invokeMethod(self->mainLayout, "displayNodeDetails", Qt::QueuedConnection, Q_ARG(QVectorOfQStringPairs, detailsVector), Q_ARG(QString, parentIdString));
+    return Py_None;
+}
+
+static PyObject *GuiWrapper_plot_tabular(GuiWrapperObject *self, PyObject *args) {
+    if (self->mainLayout == nullptr) {
+        PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+        return nullptr;
+    }
+
+    PyObject* header;
+    PyObject* rows;
+    if (!PyArg_ParseTuple(args, "OO", &header, &rows)) {
+        return nullptr;
+    }
+
+    QStringList headerList;
+    if (PyList_Check(header)) {
+        Py_ssize_t size = PyList_Size(header);
+        for (Py_ssize_t i = 0; i < size; i++) {
+            PyObject* item = PyList_GetItem(header, i);
+            if (!PyUnicode_Check(item)) {
+                PyErr_SetString(PyExc_TypeError, "Header must be a list of strings");
+                return nullptr;
+            }
+            headerList.append(QString(PyUnicode_AsUTF8(item)));
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Header must be a list of strings");
+        return nullptr;
+    }
+
+    QStringList rowsList;
+    if (PyList_Check(rows)) {
+        Py_ssize_t size = PyList_Size(rows);
+        for (Py_ssize_t i = 0; i < size; i++) {
+            PyObject* row = PyList_GetItem(rows, i);
+            if (!PySequence_Check(row)) {
+                PyErr_SetString(PyExc_TypeError, "Rows must be a list of sequences");
+                return nullptr;
+            }
+            Py_ssize_t rowSize = PySequence_Size(row);
+            for (Py_ssize_t j = 0; j < rowSize; j++) {
+                PyObject* item = PySequence_GetItem(row, j);
+                if (!PyUnicode_Check(item)) {
+                    PyErr_SetString(PyExc_TypeError, "Row items must be strings");
+                    return nullptr;
+                }
+                rowsList.append(QString(PyUnicode_AsUTF8(item)));
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Rows must be a list of lists");
+        return nullptr;
+    }
+
+    QMetaObject::invokeMethod(self->mainLayout, "plotTabular", Qt::QueuedConnection, Q_ARG(QStringList, headerList), Q_ARG(QStringList, rowsList));
     return Py_None;
 }
 
@@ -191,6 +253,7 @@ static PyMethodDef GuiWrapper_methods[] = {
         {"get_viewer_server_port", (PyCFunction) GuiWrapper_get_viewer_server_port, METH_NOARGS, "Returns the server port of the viewer"},
         {"view_node_details", (PyCFunction) GuiWrapper_view_node_details, METH_VARARGS, "Displays the details of a point"},
         {"set_query_error", (PyCFunction) GuiWrapper_set_query_error, METH_VARARGS, "Sets the query error"},
+        {"plot_tabular", (PyCFunction) GuiWrapper_plot_tabular, METH_VARARGS, "Plots the tabular data"},
         {nullptr}
 };
 

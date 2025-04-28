@@ -21,7 +21,7 @@ View, query and manually annotate pointclouds ontologies.
 - [x] error box in gui
 - [x] error handling for: wrong output format, empty output, syntax error, connection error...
 - [ ] non visual queries (tabular result box?)
-- [ ] highligh subject in treeview (?)
+- [x] highligh subject in treeview
 - [ ] scalar templates
 - [ ] legenda scalar
 - [ ] import nuvole etc.

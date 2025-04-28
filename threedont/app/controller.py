@@ -124,7 +124,7 @@ class Controller:
         self.gui.set_statusbar_content("Connecting to server...", 5)
         self.sparql_client = SparqlEndpoint(url, namespace)
         print("Connected to server")
-        self.gui.set_statusbar_content("Loading points from server...", 20)
+        self.gui.set_statusbar_content("Loading points from server...", 60)
         coords, colors = self.sparql_client.get_all()
         print("Points received from db")
         self.gui.set_statusbar_content("Points loaded", 5)
@@ -153,3 +153,10 @@ class Controller:
         colors = self.sparql_client.select_all_subjects(predicate, object)
         self.viewer_client.attributes(colors)
         self.viewer_client.set(curr_attribute_id=0)
+
+    @report_errors_to_gui
+    def tabular_query(self, query):
+        result = self.sparql_client.raw_query(query)
+        header = list(result.keys())
+        rows = list(zip(*(result[key] for key in result)))
+        self.gui.plot_tabular(header, rows)

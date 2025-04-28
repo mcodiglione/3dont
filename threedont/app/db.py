@@ -1,3 +1,5 @@
+from chunk import Chunk
+
 from SPARQLWrapper import TURTLE
 from urllib.parse import urlparse
 import numpy as np
@@ -6,8 +8,8 @@ from time import time
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 from .queries import *
 
-CHUNK_SIZE = 1000000
-
+# CHUNK_SIZE = 1000000
+CHUNK_SIZE = 1000
 class WrongResultFormatException(Exception):
     def __init__(self, expcected, got):
         message = f"Expected {expcected}, but got {got}"
@@ -48,11 +50,13 @@ class SparqlEndpoint:
                 all_results[key].extend(results[key])
 
             if len(results) == 0:
+                print(results)
                 raise EmptyResultSetException(query)
 
             any_key = next(iter(results.keys()))
             if len(results[any_key]) < CHUNK_SIZE:
                 break
+            break
             offset += CHUNK_SIZE
         return all_results
 
@@ -153,6 +157,10 @@ class SparqlEndpoint:
                 continue # not all the results of a select are points
             colors[i] = [1.0, 0.0, 0.0]
         return colors
+
+    def raw_query(self, query):
+        return self._execute_chunked_query(query)
+
 
 # Expceptions:
 # urllib.error.URLError no connection to server

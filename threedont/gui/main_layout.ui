@@ -123,6 +123,11 @@
          <string>natural language</string>
         </property>
        </item>
+       <item>
+        <property name="text">
+         <string>tabular</string>
+        </property>
+       </item>
       </widget>
      </item>
      <item>
