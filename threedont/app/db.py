@@ -8,8 +8,8 @@ from time import time
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 from .queries import *
 
-# CHUNK_SIZE = 1000000
-CHUNK_SIZE = 1000
+CHUNK_SIZE = 1000000
+
 class WrongResultFormatException(Exception):
     def __init__(self, expcected, got):
         message = f"Expected {expcected}, but got {got}"
@@ -56,7 +56,6 @@ class SparqlEndpoint:
             any_key = next(iter(results.keys()))
             if len(results[any_key]) < CHUNK_SIZE:
                 break
-            break
             offset += CHUNK_SIZE
         return all_results
 

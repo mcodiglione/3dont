@@ -21,7 +21,6 @@ add_executable(viewer
         viewer/point_attributes.h
         main_layout.h
         main_layout.ui
-        types.h
         graph_tree_model.h
 )
 
@@ -60,7 +59,6 @@ add_library(gui MODULE
         viewer/point_attributes.h
         main_layout.h
         main_layout.ui
-        types.h
         graph_tree_model.h
 )
 

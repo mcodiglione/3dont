@@ -2,7 +2,6 @@
 #define THREEDONT_GRAPH_TREE_MODEL_H
 
 #include "controller_wrapper.h"
-#include "types.h"
 #include <QAbstractItemModel>
 #include <QString>
 #include <QVariant>
@@ -232,7 +231,11 @@ public:
         endInsertRows();
     }
 
-    void onChildrenLoaded(QString parentId, QVectorOfQStringPairs children) {
+    /**
+     * @param parentId
+     * @param children as flatten list of pairs
+     */
+    void onChildrenLoaded(QString parentId, QStringList children) {
         QList<GraphTreeItem *> parents;
 
         if (!itemMap.contains(parentId))
@@ -249,8 +252,8 @@ public:
           QModelIndex parentIndex = indexForItem(item);
           beginInsertRows(parentIndex, item->childCount(), item->childCount() + children.size() - 1);
 
-          for (const auto &child: children) {
-            GraphTreeItem *childItem = new GraphTreeItem(child.second, child.first, item);
+          for (int i = 0; i < children.size(); i += 2) {
+            GraphTreeItem *childItem = new GraphTreeItem(children[i+1], children[i], item);
             itemMap.insert(childItem->nodeId(), childItem);// Store the mapping
             item->appendChild(childItem);
           }

@@ -2,7 +2,6 @@
 #define THREEDONT_MAIN_LAYOUT_H
 
 #include "controller_wrapper.h"
-#include "types.h"
 #include "ui_main_layout.h"
 #include "viewer/viewer.h"
 #include "graph_tree_model.h"
@@ -112,7 +111,7 @@ class MainLayout : public QMainWindow {
     controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
   }
 
-  void displayNodeDetails(const QVectorOfQStringPairs& details, const QString& parentId) {
+  void displayNodeDetails(const QStringList& details, const QString& parentId) {
     qDebug() << "Displaying point details for " << parentId;
 
     if (!isDetailsOpen) {

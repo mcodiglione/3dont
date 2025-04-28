@@ -1,6 +1,5 @@
 #include "controller_wrapper.h"
 #include "main_layout.h"
-#include "types.h"
 #include <Python.h>
 #include <QApplication>
 #include <thread>
@@ -70,9 +69,6 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
 
     // This memory is intentionally leaked (it's fine if only done once)
     self->app = new QApplication(*argc, argvRaw);
-
-    declareAllMetaTypes();
-
     self->mainLayout = new MainLayout(self->controllerWrapper);
 
     return 0;
@@ -114,28 +110,6 @@ static PyObject *GuiWrapper_get_viewer_server_port(GuiWrapperObject *self, PyObj
     return PyLong_FromLong(self->mainLayout->getViewerServerPort());
 }
 
-static bool pyListToQVectorOfQStringPairs(PyObject *details, QVectorOfQStringPairs &detailsVector) {
-  Py_ssize_t size = PyList_Size(details);
-  for (Py_ssize_t i = 0; i < size; i++) {
-      PyObject *tuple = PyList_GetItem(details, i);
-      if (!PyTuple_Check(tuple) || PyTuple_Size(tuple) != 2) {
-          PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples");
-          return false;
-      }
-
-      PyObject *key = PyTuple_GetItem(tuple, 0);
-      PyObject *value = PyTuple_GetItem(tuple, 1);
-
-      if (!PyUnicode_Check(key) || !PyUnicode_Check(value)) {
-          PyErr_SetString(PyExc_TypeError, "Details should be a list of tuples of strings");
-          return false;
-      }
-
-      detailsVector.emplace_back(QString(PyUnicode_AsUTF8(key)), QString(PyUnicode_AsUTF8(value)));
-  }
-  return true;
-}
-
 static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *args) {
     if (self->mainLayout == nullptr) {
         PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
@@ -149,14 +123,33 @@ static PyObject *GuiWrapper_view_node_details(GuiWrapperObject* self, PyObject *
         return nullptr;
     }
 
-    QVectorOfQStringPairs detailsVector;
-    if (!pyListToQVectorOfQStringPairs(details, detailsVector)) {
+    QStringList detailsList;
+    if (PyList_Check(details)) {
+        Py_ssize_t size = PyList_Size(details);
+        for (Py_ssize_t i = 0; i < size; i++) {
+            PyObject* item = PyList_GetItem(details, i);
+            if (!PyTuple_Check(item)) {
+                PyErr_SetString(PyExc_TypeError, "Details must be a list of tuples");
+                return nullptr;
+            }
+            Py_ssize_t tupleSize = PyTuple_Size(item);
+            for (Py_ssize_t j = 0; j < tupleSize; j++) {
+                PyObject* tupleItem = PyTuple_GetItem(item, j);
+                if (!PyUnicode_Check(tupleItem)) {
+                    PyErr_SetString(PyExc_TypeError, "Tuple items must be strings");
+                    return nullptr;
+                }
+                detailsList.append(QString(PyUnicode_AsUTF8(tupleItem)));
+            }
+        }
+    } else {
+        PyErr_SetString(PyExc_TypeError, "Details must be a list of tuples");
         return nullptr;
     }
 
     QString parentIdString = QString(parentId);
 
-    QMetaObject::invokeMethod(self->mainLayout, "displayNodeDetails", Qt::QueuedConnection, Q_ARG(QVectorOfQStringPairs, detailsVector), Q_ARG(QString, parentIdString));
+    QMetaObject::invokeMethod(self->mainLayout, "displayNodeDetails", Qt::QueuedConnection, Q_ARG(QStringList , detailsList), Q_ARG(QString, parentIdString));
     return Py_None;
 }
 
