@@ -1,24 +1,26 @@
-from chunk import Chunk
-
-from SPARQLWrapper import TURTLE
-from urllib.parse import urlparse
-import numpy as np
 from time import time
+from urllib.parse import urlparse
 
-from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
+import numpy as np
+from SPARQLWrapper import TURTLE
+
 from .queries import *
+from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 
 CHUNK_SIZE = 1000000
+
 
 class WrongResultFormatException(Exception):
     def __init__(self, expcected, got):
         message = f"Expected {expcected}, but got {got}"
         super().__init__(message)
 
+
 class EmptyResultSetException(Exception):
     def __init__(self, query):
         message = f"Empty result set for query: {query}"
         super().__init__(message)
+
 
 class SparqlEndpoint:
     def __init__(self, url, namespace):
@@ -29,9 +31,10 @@ class SparqlEndpoint:
             self.namespace = namespace + "#"
         parsed = urlparse(url)
         # TODO generalize outside of virtuoso
-        self.endpoint= parsed.scheme + "://" + parsed.netloc + "/sparql"
+        self.endpoint = parsed.scheme + "://" + parsed.netloc + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
-        self.sparql.setReturnFormat(TURTLE) # works with virtuoso even if the header sent is accept */* (RuntimeWarning)
+        self.sparql.setReturnFormat(
+            TURTLE)  # works with virtuoso even if the header sent is accept */* (RuntimeWarning)
         self.iri_to_id = {}
         self.coords_to_id = {}
         self.id_to_iri = []
@@ -67,7 +70,7 @@ class SparqlEndpoint:
         start = time()
 
         # fix values in form '"2.48e-05"^^xsd:decimal'
-        for k, v  in results.items():
+        for k, v in results.items():
             for i, x in enumerate(v):
                 if x.endswith('^^xsd:decimal'):
                     v[i] = x.split('"')[1]
@@ -79,9 +82,9 @@ class SparqlEndpoint:
         self.id_to_iri = results['p']
 
         if colors.max() > 255:
-            colors = colors / (1<<16) # 16 bit color
+            colors = colors / (1 << 16)  # 16 bit color
         else:
-            colors = colors / (1<<8) # 8 bit color
+            colors = colors / (1 << 8)  # 8 bit color
         self.colors = colors
         print("Time to process query result: ", time() - start)
         return coords, colors
@@ -98,8 +101,8 @@ class SparqlEndpoint:
             try:
                 i = self.iri_to_id[p]
             except KeyError:
-                continue # not all the results of a select are points
-            colors[i] = [1.0, 0.0, 0.0] # TODO make this a parameter
+                continue  # not all the results of a select are points
+            colors[i] = [1.0, 0.0, 0.0]  # TODO make this a parameter
 
         return colors
 
@@ -119,7 +122,6 @@ class SparqlEndpoint:
             scalars[i] = scalar
         return scalars
 
-
     def get_point_iri(self, point_id):
         return self.id_to_iri[point_id]
 
@@ -137,29 +139,30 @@ class SparqlEndpoint:
         return out
 
     def execute_predicate_query(self, predicate):
-        query =PREDICATE_QUERY.format(graph=self.graph, predicate=predicate, namespace=self.namespace)
+        query = PREDICATE_QUERY.format(graph=self.graph, predicate=predicate, namespace=self.namespace)
         return self.execute_scalar_query(query)
 
     def annotate_node(self, subject, predicate, object):
-        query = ANNOTATE_NODE.format(graph=self.graph, subject=subject, predicate=predicate, object=object, namespace=self.namespace)
+        query = ANNOTATE_NODE.format(graph=self.graph, subject=subject, predicate=predicate, object=object,
+                                     namespace=self.namespace)
         self.sparql.setQuery(query)
         self.sparql.query()
 
     def select_all_subjects(self, predicate, object):
-        query = SELECT_ALL_WITH_PREDICATE.format(graph=self.graph, predicate=predicate, object=object, namespace=self.namespace)
+        query = SELECT_ALL_WITH_PREDICATE.format(graph=self.graph, predicate=predicate, object=object,
+                                                 namespace=self.namespace)
         iris = self._execute_chunked_query(query)['p']
         colors = np.copy(self.colors)
         for p in iris:
             try:
                 i = self.iri_to_id[p]
             except KeyError:
-                continue # not all the results of a select are points
+                continue  # not all the results of a select are points
             colors[i] = [1.0, 0.0, 0.0]
         return colors
 
     def raw_query(self, query):
         return self._execute_chunked_query(query)
-
 
 # Expceptions:
 # urllib.error.URLError no connection to server

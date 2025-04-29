@@ -1,11 +1,13 @@
-from SPARQLWrapper import SPARQLWrapper, QueryResult
-import re
 import io
+import re
+
+from SPARQLWrapper import SPARQLWrapper, QueryResult
 
 __all__ = ['SPARQLWrapperWithTurtle', 'QueryResultWithTurtle']
 
 VARIABLES_REGEX = re.compile(r"res:binding\s*\[\s*res:variable\s*\"([a-zA-Z0-9_]+)\"\s*;\s*res:value\s*(\S+)\s*\]")
 PREFIXES_REGEX = re.compile(r"^@prefix\s+([a-zA-Z0-9_]+):\s*<([^>]+)>\s*\.\s*")
+
 
 class QueryResultWithTurtle(QueryResult):
     def substitute_prefix(self, var):
@@ -45,7 +47,7 @@ class QueryResultWithTurtle(QueryResult):
 
         return out
 
+
 class SPARQLWrapperWithTurtle(SPARQLWrapper):
     def query(self):
         return QueryResultWithTurtle(self._query())
-

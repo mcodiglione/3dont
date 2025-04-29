@@ -1,11 +1,12 @@
-from queue import Queue
 import logging
 import sys
+from queue import Queue
 from urllib.error import URLError
+
 from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
-from .viewer import Viewer
 from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetException
+from .viewer import Viewer
 from ..gui import GuiWrapper
 
 __all__ = ['Controller']
@@ -15,6 +16,7 @@ __all__ = ['Controller']
     A functions here is a tuple of the form (function_name, args).
     ActionController is just a middleman to help with the transport between the processes, a facade.
 """
+
 
 class ActionController:
     def __init__(self, commands_queue, start_func):
@@ -32,10 +34,12 @@ class ActionController:
         f = lambda *args: self.commands_queue.put((item, args))
         return f
 
+
 def report_errors_to_gui(func):
     """
     Decorator to report errors to the GUI.
     """
+
     def wrapper(self, *args, **kwargs):
         try:
             return func(self, *args, **kwargs)
@@ -55,6 +59,7 @@ def report_errors_to_gui(func):
 
     return wrapper
 
+
 class Controller:
     def __init__(self):
         self.commands_queue = Queue()
@@ -67,7 +72,6 @@ class Controller:
     def stop(self):
         print("Stopping controller...")
         self.commands_queue.put(None)
-
 
     def run(self):
         # this will create a thread that runs `run_event_loop`

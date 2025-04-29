@@ -2,9 +2,9 @@
 #define THREEDONT_MAIN_LAYOUT_H
 
 #include "controller_wrapper.h"
+#include "graph_tree_model.h"
 #include "ui_main_layout.h"
 #include "viewer/viewer.h"
-#include "graph_tree_model.h"
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QMainWindow>
@@ -23,7 +23,7 @@ class MainLayout : public QMainWindow {
   Q_OBJECT
 
   public:
-  explicit MainLayout(ControllerWrapper* controllerWrapper, QWidget *parent = nullptr): QMainWindow(parent), ui(new Ui::MainLayout) {
+  explicit MainLayout(ControllerWrapper *controllerWrapper, QWidget *parent = nullptr) : QMainWindow(parent), ui(new Ui::MainLayout) {
     this->controllerWrapper = controllerWrapper;
 
     ui->setupUi(this);
@@ -31,7 +31,7 @@ class MainLayout : public QMainWindow {
     ui->statusbar->showMessage(tr("Loading..."));
 
     viewer = new Viewer();
-    viewer->setFlags(Qt::FramelessWindowHint); // TODO is not enough
+    viewer->setFlags(Qt::FramelessWindowHint);// TODO is not enough
     QWidget *container = createWindowContainer(viewer, this);
     setCentralWidget(container);
     ui->statusbar->showMessage(tr("Ready"), 5000);
@@ -59,14 +59,14 @@ class MainLayout : public QMainWindow {
   private slots:
   void cleanupOnExit() {
     qDebug() << "Scheduling cleaning up main layout";
-    this->deleteLater(); // schedule for deletion in the right thread
+    this->deleteLater();// schedule for deletion in the right thread
   }
 
   void singlePointSelected(unsigned int index) {
     controllerWrapper->viewPointDetails(index);
   }
 
-  void setStatusbarContent(const QString& content, int seconds) {
+  void setStatusbarContent(const QString &content, int seconds) {
     ui->statusbar->showMessage(content, seconds * 1000);
   }
 
@@ -98,20 +98,20 @@ class MainLayout : public QMainWindow {
   void on_actionConnect_to_server_triggered() {
     bool ok;
     QString dbUrl = QInputDialog::getText(this, tr("Connect to server"),
-                                         tr("Server URL:"), QLineEdit::Normal,
-                                         "http://localhost:8890/Nettuno", &ok);
+                                          tr("Server URL:"), QLineEdit::Normal,
+                                          "http://localhost:8890/Nettuno", &ok);
     if (!ok || dbUrl.isEmpty())
       return;
     QString ontologyNamespace = QInputDialog::getText(this, tr("Connect to server"),
-                                         tr("Ontology namespace:"), QLineEdit::Normal,
-                                         "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
+                                                      tr("Ontology namespace:"), QLineEdit::Normal,
+                                                      "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
     if (!ok || ontologyNamespace.isEmpty())
       return;
 
     controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
   }
 
-  void displayNodeDetails(const QStringList& details, const QString& parentId) {
+  void displayNodeDetails(const QStringList &details, const QString &parentId) {
     qDebug() << "Displaying node details for " << parentId;
 
     if (!isDetailsOpen) {
@@ -137,10 +137,9 @@ class MainLayout : public QMainWindow {
     }
 
     graphTreeModel->onChildrenLoaded(std::move(parentId), std::move(details));
-
   }
 
-  void plotTabular(const QStringList& header, const QStringList& rows) {
+  void plotTabular(const QStringList &header, const QStringList &rows) {
     auto dock = new QDockWidget(tr("Tabular data"), this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
@@ -154,7 +153,7 @@ class MainLayout : public QMainWindow {
 
     for (int i = 0; i < rows.size() / nVars; ++i) {
       for (int j = 0; j < nVars; ++j) {
-        QTableWidgetItem *item = new QTableWidgetItem(rows[i*nVars + j]);
+        QTableWidgetItem *item = new QTableWidgetItem(rows[i * nVars + j]);
         tableWidget->setItem(i, j, item);
       }
     }
@@ -163,7 +162,7 @@ class MainLayout : public QMainWindow {
     addDockWidget(Qt::LeftDockWidgetArea, dock);
   }
 
-  void setQueryError(const QString& error) {
+  void setQueryError(const QString &error) {
     ui->errorLabel->setText(error);
     ui->errorLabel->setVisible(true);
   }

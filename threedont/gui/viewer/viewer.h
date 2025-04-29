@@ -105,7 +105,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
   }
 
   signals:
-      void singlePointSelected(unsigned int);
+  void singlePointSelected(unsigned int);
 
   protected:
   virtual void keyPressEvent(QKeyEvent *ev) {
@@ -288,7 +288,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     // read first byte of incoming message
     char msgType;
     comm::receiveBytes(&msgType, 1, clientConnection);
-    qDebug() << "Viewer: received message type" << ((int)msgType);
+    qDebug() << "Viewer: received message type" << ((int) msgType);
 
     // switch on message type
     switch (msgType) {
@@ -866,7 +866,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POINT_SPRITE); // TODO
+    glEnable(GL_POINT_SPRITE);// TODO
     _render_time = vltools::getTime();
     _background->draw();
     _floor_grid->draw(_camera);

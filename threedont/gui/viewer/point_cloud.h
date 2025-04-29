@@ -12,7 +12,7 @@
 #include <QWindow>
 #include <vector>
 
-inline void checkOpenGLError(const char* context) {
+inline void checkOpenGLError(const char *context) {
   GLenum error = glGetError();
   if (error != GL_NO_ERROR) {
     qWarning() << "OpenGL Error after" << context << ":" << error;

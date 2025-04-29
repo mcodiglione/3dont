@@ -2,11 +2,8 @@ import inspect
 import os
 import socket
 import struct
-from sqlite3 import connect
 
 import numpy
-
-from ..gui import GuiWrapper
 
 _viewer_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 if not os.path.isabs(_viewer_dir):
@@ -42,7 +39,6 @@ class Viewer:
 
         """
         self._portNumber = port
-
 
     def close(self):
         """ Closes the point cloud viewer

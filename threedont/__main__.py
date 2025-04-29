@@ -1,7 +1,7 @@
 import argparse
-import signal
 
 from threedont import Controller
+
 
 def main():
     parser = argparse.ArgumentParser(description='3Dont')
@@ -12,6 +12,7 @@ def main():
 
     controller.run()
     print("Application stopped gracefully")
+
 
 if __name__ == '__main__':
     main()

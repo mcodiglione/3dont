@@ -90,7 +90,7 @@ class Text : public OpenGLFuncs {
 
     glPushAttrib(GL_CURRENT_BIT | GL_ENABLE_BIT | GL_TEXTURE_BIT);
     glPushMatrix();
-    glEnable(GL_TEXTURE_2D); // TODO
+    glEnable(GL_TEXTURE_2D);// TODO
     glEnable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
