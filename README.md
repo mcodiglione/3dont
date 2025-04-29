@@ -13,18 +13,19 @@ View, query and manually annotate pointclouds ontologies.
 - [x] scalar field query
 - [x] right click: select all subjects with this predicate and object
 - [x] right click: plot predicate (scalar)
-- [ ] configure page (namespace)
-- [ ] add default to scalar queries equal to color
-- [ ] refactor input dialogs
 - [x] append OFFSET and LIMIT instead of using template
-- [ ] nl queries
 - [x] error box in gui
 - [x] error handling for: wrong output format, empty output, syntax error, connection error...
-- [ ] non visual queries (tabular result box?)
 - [x] highligh subject in treeview
+- [x] non visual queries (tabular result box?)
+- [ ] highligh subject name
 - [ ] scalar templates
-- [ ] legenda scalar
+- [ ] legend scalar
+- [ ] nl queries
+- [ ] refactor input dialogs
 - [ ] import nuvole etc.
+- [ ] add default to scalar queries equal to color
+- [ ] configure page (namespace)
  
 ## License
 

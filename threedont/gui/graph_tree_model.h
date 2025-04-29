@@ -4,7 +4,12 @@
 #include "controller_wrapper.h"
 #include <QAbstractItemModel>
 #include <QString>
+#include <QFont>
 #include <QVariant>
+#include <QApplication>
+#include <QBrush>
+#include <QPalette>
+#include <QColor>
 
 class GraphTreeItem {
 public:
@@ -156,13 +161,24 @@ public:
     }
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
-        if (!index.isValid() || role != Qt::DisplayRole) {
+        if (!index.isValid())
             return QVariant();
-        }
+
 
         GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
 
-        return item->data(index.column());
+        if (role == Qt::DisplayRole) {
+          return item->data(index.column());
+        } else if (role == Qt::FontRole && index == highlightedIndex) {
+            QFont font;
+            font.setBold(true);
+            return font;
+        } else if (role == Qt::ForegroundRole && index == highlightedIndex) {
+          QColor highlightColor = qApp->palette().color(QPalette::HighlightedText); // HighlightedText
+          return QBrush(highlightColor);
+        }
+
+        return QVariant();
     }
 
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override {
@@ -293,12 +309,29 @@ public slots:
         if (item->data(0) == "Constitutes")
           controllerWrapper->selectAllSubjects(item->data(0, false).toString().toStdString(),
                                                item->data(1, false).toString().toStdString());
+
+        // highlightedIndex is the index of the column 1 that is expanded
+        highlightedIndex = index.sibling(index.row(), 1);
+        emit dataChanged(highlightedIndex, highlightedIndex, {Qt::FontRole});
+    }
+
+    void onRowCollapsed(const QModelIndex &index) {
+        if (!index.isValid())
+            return;
+
+        QModelIndex siblingIndex = index.sibling(index.row(), 1);
+
+        if (highlightedIndex == siblingIndex)
+            highlightedIndex = QModelIndex();
+        emit dataChanged(siblingIndex, siblingIndex, {Qt::FontRole});
     }
 
 private:
     GraphTreeItem *rootItem;
     ControllerWrapper *controllerWrapper;
     QMultiHash<QString, GraphTreeItem*> itemMap; // Maps nodeId to GraphTreeItem
+    QModelIndex highlightedIndex = QModelIndex();
+
 };
 
 #endif//THREEDONT_GRAPH_TREE_MODEL_H

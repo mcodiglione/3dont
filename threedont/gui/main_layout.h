@@ -112,7 +112,7 @@ class MainLayout : public QMainWindow {
   }
 
   void displayNodeDetails(const QStringList& details, const QString& parentId) {
-    qDebug() << "Displaying point details for " << parentId;
+    qDebug() << "Displaying node details for " << parentId;
 
     if (!isDetailsOpen) {
       QDockWidget *dock = new QDockWidget(tr("Point details"), this);
@@ -126,6 +126,7 @@ class MainLayout : public QMainWindow {
       treeView->setContextMenuPolicy(Qt::CustomContextMenu);
       connect(treeView, &QTreeView::customContextMenuRequested, this, &MainLayout::onTreeViewContexMenuRequested);
       connect(treeView, &QTreeView::expanded, graphTreeModel, &GraphTreeModel::onRowExpanded);
+      connect(treeView, &QTreeView::collapsed, graphTreeModel, &GraphTreeModel::onRowCollapsed);
 
       treeView->setModel(graphTreeModel);
 
