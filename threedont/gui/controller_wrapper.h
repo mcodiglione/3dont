@@ -20,6 +20,36 @@ class ControllerWrapper {
           "select_all_subjects",
           "tabular_query"};
 
+  void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...) {
+    va_list args;
+    va_start(args, format);
+    PyGILState_STATE gil_state = PyGILState_Ensure(); // Acquire GIL
+
+    PyObject *pyMethod = PyObject_GetAttrString(object, methodName);
+    PyObject *result;
+    PyObject *pyArg;
+    switch(strlen(format)) {
+      case 0:
+        result = PyObject_CallNoArgs(pyMethod);
+        break;
+      case 1:
+        pyArg = Py_VaBuildValue(format, args);
+        result = PyObject_CallOneArg(pyMethod, pyArg);
+        Py_XDECREF(pyArg);
+        break;
+      default:
+        pyArg = Py_VaBuildValue(format, args);
+        result = PyObject_CallObject(pyMethod, pyArg);
+        Py_XDECREF(pyArg);
+    }
+    Py_XDECREF(pyMethod);
+    Py_XDECREF(result);
+
+    PyGILState_Release(gil_state); // Release GIL
+    va_end(args);
+  }
+
+
   public:
   explicit ControllerWrapper(PyObject *controller) {
     for (const auto &method: neededMethods) {
@@ -38,81 +68,49 @@ class ControllerWrapper {
   }
 
   void selectQuery(const std::string &query) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "select_query", "s", query.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "select_query", "s", query.c_str());
   }
 
   void scalarQuery(const std::string &query) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "scalar_query", "s", query.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "scalar_query", "s", query.c_str());
   }
 
   void connectToServer(const std::string &url, const std::string &ontologyNamespace) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "connect_to_server", "ss", url.c_str(), ontologyNamespace.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "connect_to_server", "ss", url.c_str(), ontologyNamespace.c_str());
   }
 
   void stop() {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "stop", nullptr);
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "stop", "");
   }
 
   void viewPointDetails(unsigned int index) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "view_point_details", "I", index);
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "view_point_details", "I", index);
   }
 
   void viewNodeDetails(const std::string &node_id) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "view_node_details", "s", node_id.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "view_node_details", "s", node_id.c_str());
   }
 
   void scalarWithPredicate(const std::string &predicate) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "scalar_with_predicate", "s", predicate.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "scalar_with_predicate", "s", predicate.c_str());
   }
 
   void start() {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "start", nullptr);
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "start", "");
   }
 
   void annotateNode(const std::string &subject, const std::string &predicate, const std::string &object) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "annotate_node", "sss", subject.c_str(), predicate.c_str(), object.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "annotate_node", "sss", subject.c_str(), predicate.c_str(), object.c_str());
   }
 
   void selectAllSubjects(const std::string &predicate, const std::string &object) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "select_all_subjects", "ss", predicate.c_str(), object.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "select_all_subjects", "ss", predicate.c_str(), object.c_str());
   }
 
   void tabularQuery(const std::string &query) {
-    PyGILState_STATE gil_state = PyGILState_Ensure();
-    PyObject *result = PyObject_CallMethod(controller, "tabular_query", "s", query.c_str());
-    Py_XDECREF(result);
-    PyGILState_Release(gil_state);
+    callPythonMethod(controller, "tabular_query", "s", query.c_str());
   }
+
 };
 
 #endif//THREEDONT_CONTROLLER_WRAPPER_H
