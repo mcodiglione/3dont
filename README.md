@@ -16,22 +16,22 @@ View, query and manually annotate pointclouds ontologies.
 - [x] append OFFSET and LIMIT instead of using template
 - [x] error box in gui
 - [x] error handling for: wrong output format, empty output, syntax error, connection error...
-- [x] highligh subject in treeview
+- [x] highlight subject in treeview
 - [x] non visual queries (tabular result box?)
-- [ ] highligh subject name
+- [x] highlight subject name
+- [x] legend scalar
+- [x] adjust licensing
 - [ ] scalar templates
-- [ ] legend scalar
 - [ ] nl queries
 - [ ] refactor input dialogs
 - [ ] import nuvole etc.
 - [ ] add default to scalar queries equal to color
 - [ ] configure page (namespace)
-- [ ] adjust licensing
  
 ## License
 
-Unless otherwise noted in `LICENSE` files for specific files or directories,
-the [LICENSE](LICENSE) in the root applies to all content in this repository.
+The LICENSE_PPTK is the license of the viewer used as a base for this project. It applies to the content of the folder
+`threedont/gui/viewer`, the file `threedont/app/viewer` and `docs`.
 
 ## Install
 
@@ -44,55 +44,30 @@ pip install .
 
 ## Build
 
-We provide CMake scripts for automating most of the build process, but ask the
-user to manually prepare [dependencies](#requirements) and record their paths
-in the following CMake cache variables.
+We provide CMake scripts for automating most of the build process, just 
+follow the standard cmake workflow to build:
 
-* `Numpy_INCLUDE_DIR`
-* `PYTHON_INCLUDE_DIR`
-* `PYTHON_LIBRARY`
-* `Eigen_INCLUDE_DIR`
-* `Qt5_DIR`
-
-To set these variables, either use one of CMake's GUIs (ccmake or cmake-gui),
-or provide an initial CMakeCache.txt in the target build folder
-(for examples of initial cache files, see the CMakeCache.<platform>.txt files)
+```bash
+mkdir build
+cd build
+cmake ..
+make -j4
+```
 
 ##### Requirements
 
 Listed are versions of libraries used to develop pptk, though earlier versions
 of these libraries may also work.
 
-* [QT](https://www.qt.io/) 5.4
+* [QT](https://www.qt.io/) 6.9
 * [Eigen](http://eigen.tuxfamily.org) 3.2.9
-* [Python](https://www.python.org/) 2.7+ or 3.6+
+* [Python](https://www.python.org/) 3.6+
 * [Numpy](http://www.numpy.org/) 1.13
 
-##### Windows
+## Build with nix
 
-1. Create an empty build folder
+This project has nix support (with flakes). Install nix and enable flakes,
+the run `nix build` from the root to build the project. 
+You can also use `nix run` and `nix run github:SamueleFacenda/3dont` to run the project 
+without downloading the repo.
 
-```
->> mkdir <build_folder>
-```
-
-2. Create an initial CMakeCache.txt under <build_folder> and use it to provide
-values for the CMake cache variables listed above. (e.g. see CMakeCache.win.txt)
-
-3. Type the following...
-
-```
->> cd <build_folder>
->> cmake -G "NMake Makefiles" <source_folder>
->> nmake
->> python setup.py bdist_wheel
->> pip install dist\<.whl file>
-```
-
-##### Linux
-
-Similar to building on Windows.
-
-##### Mac
-
-Similar to building on Windows.

@@ -17,4 +17,3 @@ find_package(Qt6 CONFIG REQUIRED COMPONENTS Widgets Network OpenGL Core)
 find_package(Python COMPONENTS Interpreter Development REQUIRED)
 
 add_subdirectory(threedont)
-add_subdirectory(licenses)
