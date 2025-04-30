@@ -36,7 +36,7 @@
 
 class Viewer : public QWindow, protected OpenGLFuncs {
   Q_OBJECT
-  public:
+public:
   explicit Viewer() : QWindow() {
     setSurfaceType(QSurface::OpenGLSurface);
     QSurfaceFormat f;
@@ -104,10 +104,10 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     return _server->serverPort();
   }
 
-  signals:
+signals:
   void singlePointSelected(unsigned int);
 
-  protected:
+protected:
   virtual void keyPressEvent(QKeyEvent *ev) {
     _dolly->stop();
     if (ev->key() == Qt::Key_5) {
@@ -279,7 +279,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     _context->doneCurrent();
   }
 
-  private slots:
+private slots:
   void reply() {
     QTcpSocket *clientConnection = _server->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()), clientConnection,
@@ -715,7 +715,7 @@ class Viewer : public QWindow, protected OpenGLFuncs {
     QTimer::singleShot(15, this, SLOT(playCameraAnimation()));
   }
 
-  private:
+private:
   void dummyCalculation(int n) {
     _dummy_accumulator /= (float) n;
     for (int i = 0; i < n; i++)

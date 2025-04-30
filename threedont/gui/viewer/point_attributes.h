@@ -8,13 +8,13 @@
 #include <vector>
 
 class PointAttributes {
-  private:
+private:
   std::vector<std::vector<float>> _attr;
   std::vector<quint64> _attr_size;
   std::vector<quint64> _attr_dim;
   std::size_t _curr_idx;
 
-  public:
+public:
   PointAttributes()
       : _attr(1, std::vector<float>(4, 1.0f)),
         _attr_size(1, 1),
@@ -104,7 +104,7 @@ class PointAttributes {
     if (i < _attr.size() && i >= 0) _curr_idx = i;
   }
 
-  private:
+private:
   bool _unpack(const std::vector<char> &data, unsigned int expected_size) {
     if (data.empty()) return false;
 

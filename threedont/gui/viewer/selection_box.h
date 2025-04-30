@@ -8,7 +8,7 @@
 #include <QWindow>
 
 class SelectionBox : protected OpenGLFuncs {
-  public:
+public:
   enum SelectMode { ADD = 0,
                     SUB = 1,
                     NONE = 2 };
@@ -82,7 +82,7 @@ class SelectionBox : protected OpenGLFuncs {
 
   SelectMode getType() const { return _select_mode; }
 
-  private:
+private:
   void compileProgram() {
     std::string vsCode =
             "#version 330 core\n"

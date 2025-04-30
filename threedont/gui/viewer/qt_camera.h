@@ -9,7 +9,7 @@
 class QtCamera : public Camera {
   // adapter class that utilizes Qt features
   // (Parent class Camera is Qt-independent)
-  public:
+public:
   enum ProjectionMode { PERSPECTIVE = 0,
                         ORTHOGRAPHIC = 1 };
   enum ViewAxis { ARBITRARY_AXIS,
@@ -147,7 +147,7 @@ class QtCamera : public Camera {
     return matrix;
   }
 
-  private:
+private:
   void computeNearFar(float &d_near, float &d_far, const vltools::Box3<float> &box) const {
     d_near = std::numeric_limits<float>::max();
     d_far = -std::numeric_limits<float>::max();

@@ -7,8 +7,9 @@ from SPARQLWrapper import TURTLE
 from .queries import *
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 
-TEST_FAST = False # remove before commit
+TEST_FAST = False  # remove before commit
 CHUNK_SIZE = 1000000 if not TEST_FAST else 1000
+
 
 class WrongResultFormatException(Exception):
     def __init__(self, expcected, got):

@@ -33,7 +33,7 @@ class Text : public OpenGLFuncs {
     GLfloat t[2];
   };
 
-  public:
+public:
   Text(QWindow *window, QOpenGLContext *context, const QFont &f)
       : _context(context),
         _window(window),
@@ -138,7 +138,7 @@ class Text : public OpenGLFuncs {
     return rect;
   }
 
-  private:
+private:
   void allocateTexture() {
     GLuint texture;
     glGenTextures(1, &texture);

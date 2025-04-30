@@ -22,7 +22,7 @@ inline void checkOpenGLError(const char *context) {
 
 
 class PointCloud : protected OpenGLFuncs {
-  public:
+public:
   PointCloud(QWindow *window, QOpenGLContext *context)
       : _context(context),
         _window(window),
@@ -459,7 +459,7 @@ class PointCloud : protected OpenGLFuncs {
     if (index_changed) initColors();
   }
 
-  private:
+private:
   void compileProgram() {
     std::string vsCode =
             "#version 330 core\n"

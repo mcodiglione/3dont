@@ -4,7 +4,7 @@
 #include <math.h>
 #define PI 3.14159265359f
 class Camera {
-  public:
+public:
   Camera()
       : _theta(0.0f),
         _phi(0.0f),
@@ -143,7 +143,7 @@ class Camera {
     v[2] = sin(theta);
   }
 
-  private:
+private:
   static void computeCameraPosition(float (&p)[3], const float (&lookAt)[3],
                                     const float theta, const float phi,
                                     const float d) {

@@ -5,7 +5,7 @@
 #include <QOpenGLShaderProgram>
 #include <QWindow>
 class Background : protected OpenGLFuncs {
-  public:
+public:
   Background(QWindow *window, QOpenGLContext *context)
       : _context(context),
         _window(window),
@@ -60,7 +60,7 @@ class Background : protected OpenGLFuncs {
   QVector4D getColorTop() const { return _bg_color_top; }
   QVector4D getColorBottom() const { return _bg_color_bottom; }
 
-  private:
+private:
   void compileProgram() {
     std::string vsCode =
             "#version 330 core\n"

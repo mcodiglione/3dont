@@ -23,7 +23,7 @@ QT_END_NAMESPACE
 class MainLayout : public QMainWindow {
   Q_OBJECT
 
-  public:
+public:
   explicit MainLayout(ControllerWrapper *controllerWrapper, QWidget *parent = nullptr) : QMainWindow(parent), ui(new Ui::MainLayout) {
     this->controllerWrapper = controllerWrapper;
 
@@ -50,14 +50,14 @@ class MainLayout : public QMainWindow {
     return viewer->getServerPort();
   }
 
-  protected:
+protected:
   void closeEvent(QCloseEvent *event) override {
     qDebug() << "Closing main layout";
     controllerWrapper->stop();
     event->accept();
   }
 
-  private slots:
+private slots:
   void cleanupOnExit() {
     qDebug() << "Scheduling cleaning up main layout";
     this->deleteLater();// schedule for deletion in the right thread
@@ -176,7 +176,7 @@ class MainLayout : public QMainWindow {
     ui->errorLabel->setVisible(true);
   }
 
-  void setLegend(const QVariantList& colors, const QStringList & labels) {
+  void setLegend(const QVariantList &colors, const QStringList &labels) {
     if (!showLegend)
       return;
 
@@ -188,9 +188,9 @@ class MainLayout : public QMainWindow {
     dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 
     QList<QColor> colorList;
-    for (const auto &color : colors) {
+    for (const auto &color: colors) {
       //if (color.canConvert<QColor>()) { // TODO
-        //colorList.append(color.value<QColor>());
+      //colorList.append(color.value<QColor>());
       //} else
       if (color.canConvert<QString>()) {
         colorList.append(QColor(color.toString()));
@@ -251,7 +251,7 @@ class MainLayout : public QMainWindow {
     isDetailsOpen = false;
   }
 
-  private:
+private:
   Ui::MainLayout *ui;
   Viewer *viewer;
   ControllerWrapper *controllerWrapper;

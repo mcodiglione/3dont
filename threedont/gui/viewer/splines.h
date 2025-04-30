@@ -5,7 +5,7 @@
 
 template<typename T>
 class Spline {
-  public:
+public:
   Spline(const std::vector<T> &ts, const std::vector<T> &vs)
       : _ts(ts), _vs(vs) {
     checkAndInit();
@@ -18,7 +18,7 @@ class Spline {
   const std::vector<T> &ts() const { return _ts; }
   const std::vector<T> &vs() const { return _vs; }
 
-  protected:
+protected:
   static bool checkTs(std::vector<T> &ts) {
     // returns true if ts is:
     // 1. non-empty
@@ -52,7 +52,7 @@ class ConstantSpline : public Spline<T> {
   using Spline<T>::_ts;
   using Spline<T>::_vs;
 
-  public:
+public:
   ConstantSpline(const std::vector<T> &ts, const std::vector<T> &vs)
       : Spline<T>(ts, vs) {}
 
@@ -75,7 +75,7 @@ class LinearSpline : public Spline<T> {
   using Spline<T>::_ts;
   using Spline<T>::_vs;
 
-  public:
+public:
   LinearSpline(const std::vector<T> &ts, const std::vector<T> &vs)
       : Spline<T>(ts, vs) {}
 
@@ -100,7 +100,7 @@ class CubicSpline : public Spline<T> {
   using Spline<T>::_ts;
   using Spline<T>::_vs;
 
-  public:
+public:
   typedef Eigen::Triplet<float> Triplet;
   typedef Eigen::SparseMatrix<float, Eigen::RowMajor> SpMat;
   enum BoundaryBehavior { NATURAL,
@@ -134,7 +134,7 @@ class CubicSpline : public Spline<T> {
     }
   }
 
-  private:
+private:
   void setupLinearSystem(SpMat &A, Eigen::VectorXf &b) {
     // assumes _ts.size() > 1
     int num_intervals = (int) _ts.size() - 1;

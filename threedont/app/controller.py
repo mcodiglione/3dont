@@ -19,6 +19,7 @@ __all__ = ['Controller']
 
 NUMBER_OF_LABELS_IN_LEGEND = 5
 
+
 class ActionController:
     def __init__(self, commands_queue, start_func):
         self.commands_queue = commands_queue
@@ -59,6 +60,7 @@ def report_errors_to_gui(func):
             raise e
 
     return wrapper
+
 
 class Controller:
     def __init__(self):
@@ -111,7 +113,6 @@ class Controller:
         self.viewer_client.attributes(self.sparql_client.colors, scalars)
         self.viewer_client.set(curr_attribute_id=1)
         self._send_legend(scalars)
-
 
     def scalar_with_predicate(self, predicate):
         print("Controller: ", predicate)
@@ -176,4 +177,4 @@ class Controller:
         colors = get_color_map()
         # it's a numpy array of shape (N, 3), convert to list of hex colors
         colors = ["#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255)) for (r, g, b) in colors]
-        self.gui.set_legend(colors , labels)
+        self.gui.set_legend(colors, labels)

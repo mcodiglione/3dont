@@ -40,10 +40,11 @@ protected:
     for (int i = 0; i < labels.size(); ++i) {
       int x = static_cast<qreal>(i) / (labels.size() - 1) * colorWidth + colorStartX;
       int textWidth = painter.fontMetrics().horizontalAdvance(labels[i]);
-      painter.drawText(x - textWidth/2, scaleHeight + textHeight, labels[i]);
+      painter.drawText(x - textWidth / 2, scaleHeight + textHeight, labels[i]);
       painter.drawLine(x, 0, x, scaleHeight);
     }
   }
+
 private:
   QList<QColor> colors;
   QStringList labels;

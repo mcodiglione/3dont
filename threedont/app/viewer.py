@@ -645,6 +645,7 @@ _init_properties()
 _color_maps = dict()
 _init_color_maps()
 
+
 def get_color_map(name=None):
     """
     Returns the color map with the given name.
@@ -653,6 +654,7 @@ def get_color_map(name=None):
         name = 'jet'
 
     return _color_maps[name]
+
 
 # define codes for each interpolation scheme
 _interp_code = {'constant': 0,

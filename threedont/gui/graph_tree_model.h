@@ -12,7 +12,7 @@
 #include <QVariant>
 
 class GraphTreeItem {
-  public:
+public:
   GraphTreeItem(const QString &object, const QString &predicate, GraphTreeItem *parent = nullptr)
       : predicate(predicate), object(object), parentItem(parent) {
   }
@@ -84,7 +84,7 @@ class GraphTreeItem {
   }
 
 
-  private:
+private:
   QString predicate;
   QString object;
   GraphTreeItem *parentItem;
@@ -94,7 +94,7 @@ class GraphTreeItem {
 
 class GraphTreeModel : public QAbstractItemModel {
   Q_OBJECT
-  public:
+public:
   explicit GraphTreeModel(ControllerWrapper *controllerWrapper, QObject *parent = nullptr)
       : QAbstractItemModel(parent), rootItem(new GraphTreeItem("", "")) {
     this->controllerWrapper = controllerWrapper;
@@ -298,7 +298,7 @@ class GraphTreeModel : public QAbstractItemModel {
     return item->data(1, false).toString();
   }
 
-  public slots:
+public slots:
   void onRowExpanded(const QModelIndex &index) {
     if (!index.isValid()) {
       return;
@@ -326,7 +326,7 @@ class GraphTreeModel : public QAbstractItemModel {
     emit dataChanged(siblingIndex, siblingIndex, {Qt::FontRole});
   }
 
-  private:
+private:
   GraphTreeItem *rootItem;
   ControllerWrapper *controllerWrapper;
   QMultiHash<QString, GraphTreeItem *> itemMap;// Maps nodeId to GraphTreeItem

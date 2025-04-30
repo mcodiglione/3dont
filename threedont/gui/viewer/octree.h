@@ -8,7 +8,7 @@
 #include <vector>
 
 class Octree {
-  public:
+public:
   struct Node {
     unsigned int centroid_index;
     unsigned int point_index;
@@ -284,7 +284,7 @@ class Octree {
     if (min_idx != -1) indices.push_back(min_idx);
   }
 
-  private:
+private:
   static void traversalOrder(unsigned int (&nodeIndices)[8],
                              const float (&view)[3]) {
     int b[3][2];

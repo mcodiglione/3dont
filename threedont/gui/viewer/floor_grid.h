@@ -19,7 +19,7 @@ class SectorCreateException : public std::exception {
  *    most one sector
  */
 class Sector {
-  public:
+public:
   Sector() : _start(0.0f), _end(-1.0f) {}
   Sector(float start, float end) : _start(start), _end(end) {
     normalize(_start, _end);
@@ -64,7 +64,7 @@ class Sector {
   static float deg2rad(float deg) { return deg / 180.0f * pi(); }
   friend std::ostream &operator<<(std::ostream &, const Sector &);
 
-  private:
+private:
   /* \brief
    * _start is in [0, 2*pi) and _end is in [_start, _start+2*pi]
    */
@@ -92,7 +92,7 @@ class Sector {
 };
 
 class FloorGrid : protected OpenGLFuncs {
-  public:
+public:
   FloorGrid(QWindow *window, QOpenGLContext *context)
       : _context(context),
         _window(window),
@@ -134,7 +134,7 @@ class FloorGrid : protected OpenGLFuncs {
   void setFloorLevel(float z) { _grid_floor_z = z; }
   void setVisible(bool visible) { _visible = visible; }
 
-  private:
+private:
   void compilePerspProgram() {
     std::string vsCode =
             "#version 330 core\n"

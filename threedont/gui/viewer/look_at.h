@@ -7,7 +7,7 @@
 #include <QWindow>
 
 class LookAt : protected OpenGLFuncs {
-  public:
+public:
   LookAt(QWindow *window, QOpenGLContext *context)
       : _context(context), _window(window), _visible(true) {
     _context->makeCurrent(_window);
@@ -65,7 +65,7 @@ class LookAt : protected OpenGLFuncs {
   void setVisible(bool visible) { _visible = visible; }
   bool getVisible() const { return _visible; }
 
-  private:
+private:
   void compileProgram() {
     std::string vsCode =
             "#version 330 core\n"

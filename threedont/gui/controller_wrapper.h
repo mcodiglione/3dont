@@ -6,7 +6,7 @@
 #include <string>
 
 class ControllerWrapper {
-  private:
+private:
   PyObject *controller;
   inline static std::string neededMethods[] = {
           "select_query",
@@ -23,12 +23,12 @@ class ControllerWrapper {
   void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...) {
     va_list args;
     va_start(args, format);
-    PyGILState_STATE gil_state = PyGILState_Ensure(); // Acquire GIL
+    PyGILState_STATE gil_state = PyGILState_Ensure();// Acquire GIL
 
     PyObject *pyMethod = PyObject_GetAttrString(object, methodName);
     PyObject *result;
     PyObject *pyArg;
-    switch(strlen(format)) {
+    switch (strlen(format)) {
       case 0:
         result = PyObject_CallNoArgs(pyMethod);
         break;
@@ -45,12 +45,12 @@ class ControllerWrapper {
     Py_XDECREF(pyMethod);
     Py_XDECREF(result);
 
-    PyGILState_Release(gil_state); // Release GIL
+    PyGILState_Release(gil_state);// Release GIL
     va_end(args);
   }
 
 
-  public:
+public:
   explicit ControllerWrapper(PyObject *controller) {
     for (const auto &method: neededMethods) {
       if (!PyObject_HasAttrString(controller, method.c_str())) {
@@ -110,7 +110,6 @@ class ControllerWrapper {
   void tabularQuery(const std::string &query) {
     callPythonMethod(controller, "tabular_query", "s", query.c_str());
   }
-
 };
 
 #endif//THREEDONT_CONTROLLER_WRAPPER_H

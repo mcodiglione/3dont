@@ -1,6 +1,6 @@
-#include <Python.h>
 #include "controller_wrapper.h"
 #include "main_layout.h"
+#include <Python.h>
 #include <QApplication>
 #include <csignal>
 #include <thread>
@@ -240,7 +240,7 @@ static PyObject *GuiWrapper_set_query_error(GuiWrapperObject *self, PyObject *ar
   return Py_None;
 }
 
-static PyObject *GuiWrapper_set_legend(GuiWrapperObject* self, PyObject *args) {
+static PyObject *GuiWrapper_set_legend(GuiWrapperObject *self, PyObject *args) {
   if (self->mainLayout == nullptr) {
     PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
     return nullptr;

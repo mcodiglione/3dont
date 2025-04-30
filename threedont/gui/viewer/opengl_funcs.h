@@ -4,7 +4,7 @@
 
 class OpenGLFuncs : public QOpenGLFunctions {
   // extends QOpenGLFunctions with some helper and error checking functions
-  public:
+public:
   OpenGLFuncs() : QOpenGLFunctions() {}
 
   OpenGLFuncs(QOpenGLContext *context) : QOpenGLFunctions(context) {}

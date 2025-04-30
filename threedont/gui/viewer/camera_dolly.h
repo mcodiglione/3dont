@@ -7,7 +7,7 @@
 #include <vector>
 
 class CameraPose {
-  public:
+public:
   CameraPose() : _look_at(), _phi(0.0f), _theta(0.0f), _d(1.0f) {}
   CameraPose(const QVector3D &p, float phi, float theta, float d)
       : _look_at(p), _phi(phi), _theta(theta), _d(d) {}
@@ -24,7 +24,7 @@ class CameraPose {
   void setTheta(float theta) { _theta = theta; }
   void setD(float d) { _d = d; }
 
-  private:
+private:
   QVector3D _look_at;
   float _phi;
   float _theta;
@@ -57,7 +57,7 @@ struct CameraPosesSOA {
 };
 
 class CameraDolly {
-  public:
+public:
   enum InterpolationType { CONSTANT,
                            LINEAR,
                            CUBIC_NATURAL,
@@ -159,7 +159,7 @@ class CameraDolly {
   }
   void setRepeat(bool b) { _repeat = b; }
 
-  private:
+private:
   void check_and_init() {
     if (_ts.size() == _poses.size() && !_ts.empty()) {
       _start_time = _ts.front();
