@@ -1,6 +1,6 @@
+#include <Python.h>
 #include "controller_wrapper.h"
 #include "main_layout.h"
-#include <Python.h>
 #include <QApplication>
 #include <csignal>
 #include <thread>
@@ -240,6 +240,57 @@ static PyObject *GuiWrapper_set_query_error(GuiWrapperObject *self, PyObject *ar
   return Py_None;
 }
 
+static PyObject *GuiWrapper_set_legend(GuiWrapperObject* self, PyObject *args) {
+  if (self->mainLayout == nullptr) {
+    PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+    return nullptr;
+  }
+
+  // there is a list of colors and a list of labels
+  PyObject *colorsObject;
+  PyObject *labelsObject;
+  if (!PyArg_ParseTuple(args, "OO", &colorsObject, &labelsObject)) {
+    return nullptr;
+  }
+
+  QStringList labels;
+  QVariantList colors;
+
+  if (!PyList_Check(labelsObject)) {
+    PyErr_SetString(PyExc_TypeError, "Labels must be a list");
+    return nullptr;
+  }
+
+  if (!PyList_Check(colorsObject)) {
+    PyErr_SetString(PyExc_TypeError, "Colors must be a list");
+    return nullptr;
+  }
+
+  Py_ssize_t size = PyList_Size(labelsObject);
+  for (Py_ssize_t i = 0; i < size; i++) {
+    PyObject *item = PyList_GetItem(labelsObject, i);
+    if (!PyUnicode_Check(item)) {
+      PyErr_SetString(PyExc_TypeError, "Labels must be a list of strings");
+      return nullptr;
+    }
+    labels.append(QString(PyUnicode_AsUTF8(item)));
+  }
+
+  size = PyList_Size(colorsObject);
+  for (Py_ssize_t i = 0; i < size; i++) {
+    PyObject *item = PyList_GetItem(colorsObject, i);
+    if (PyUnicode_Check(item)) {
+      colors.append(QVariant(QString(PyUnicode_AsUTF8(item))));
+    } else {
+      PyErr_SetString(PyExc_TypeError, "Colors must be a list of strings");
+      return nullptr;
+    }
+  }
+
+  QMetaObject::invokeMethod(self->mainLayout, "setLegend", Qt::QueuedConnection, Q_ARG(QVariantList, colors), Q_ARG(QStringList, labels));
+  return Py_None;
+}
+
 static PyMethodDef GuiWrapper_methods[] = {
         {"run", (PyCFunction) GuiWrapper_run, METH_NOARGS, "Runs the GUI event loop"},
         {"set_statusbar_content", (PyCFunction) GuiWrapper_set_statusbar_content, METH_VARARGS, "Sets the content of the status bar"},
@@ -247,6 +298,7 @@ static PyMethodDef GuiWrapper_methods[] = {
         {"view_node_details", (PyCFunction) GuiWrapper_view_node_details, METH_VARARGS, "Displays the details of a point"},
         {"set_query_error", (PyCFunction) GuiWrapper_set_query_error, METH_VARARGS, "Sets the query error"},
         {"plot_tabular", (PyCFunction) GuiWrapper_plot_tabular, METH_VARARGS, "Plots the tabular data"},
+        {"set_legend", (PyCFunction) GuiWrapper_set_legend, METH_VARARGS, "Sets the legend"},
         {nullptr}};
 
 static PyTypeObject GuiWrapperType = {

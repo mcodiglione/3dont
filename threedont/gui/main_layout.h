@@ -3,6 +3,7 @@
 
 #include "controller_wrapper.h"
 #include "graph_tree_model.h"
+#include "scale_legend.h"
 #include "ui_main_layout.h"
 #include "viewer/viewer.h"
 #include <QHeaderView>
@@ -111,6 +112,14 @@ class MainLayout : public QMainWindow {
     controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
   }
 
+  void on_actionLegend_toggled(bool checked) {
+    showLegend = checked;
+    if (!checked && legendDock) {
+      legendDock->close();
+      legendDock = nullptr;
+    }
+  }
+
   void displayNodeDetails(const QStringList &details, const QString &parentId) {
     qDebug() << "Displaying node details for " << parentId;
 
@@ -167,6 +176,33 @@ class MainLayout : public QMainWindow {
     ui->errorLabel->setVisible(true);
   }
 
+  void setLegend(const QVariantList& colors, const QStringList & labels) {
+    if (!showLegend)
+      return;
+
+    if (legendDock)
+      legendDock->close();
+
+    QDockWidget *dock = new QDockWidget(tr("Legend"), this);
+    dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
+    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+
+    QList<QColor> colorList;
+    for (const auto &color : colors) {
+      //if (color.canConvert<QColor>()) { // TODO
+        //colorList.append(color.value<QColor>());
+      //} else
+      if (color.canConvert<QString>()) {
+        colorList.append(QColor(color.toString()));
+      }
+    }
+    auto *legend = new ColorScaleLegend(colorList, labels, dock);
+    dock->setWidget(legend);
+
+    addDockWidget(Qt::BottomDockWidgetArea, dock);
+    legendDock = dock;
+  }
+
   void onTreeViewContexMenuRequested(const QPoint &pos) {
     QTreeView *treeView = qobject_cast<QTreeView *>(sender());
     if (!treeView)
@@ -220,8 +256,9 @@ class MainLayout : public QMainWindow {
   Viewer *viewer;
   ControllerWrapper *controllerWrapper;
   GraphTreeModel *graphTreeModel;
+  QDockWidget *legendDock = nullptr;
   bool isDetailsOpen = false;
+  bool showLegend = true;
 };
-
 
 #endif//THREEDONT_MAIN_LAYOUT_H

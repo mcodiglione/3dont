@@ -9,7 +9,7 @@ _viewer_dir = os.path.dirname(inspect.getfile(inspect.currentframe()))
 if not os.path.isabs(_viewer_dir):
     _viewer_dir = os.path.abspath(_viewer_dir)
 
-__all__ = ['Viewer']
+__all__ = ['Viewer', 'get_color_map']
 
 
 class Viewer:
@@ -644,6 +644,15 @@ _properties = dict()
 _init_properties()
 _color_maps = dict()
 _init_color_maps()
+
+def get_color_map(name=None):
+    """
+    Returns the color map with the given name.
+    """
+    if name is None:
+        name = 'jet'
+
+    return _color_maps[name]
 
 # define codes for each interpolation scheme
 _interp_code = {'constant': 0,

@@ -6,7 +6,7 @@ from urllib.error import URLError
 from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 
 from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetException
-from .viewer import Viewer
+from .viewer import Viewer, get_color_map
 from ..gui import GuiWrapper
 
 __all__ = ['Controller']
@@ -17,6 +17,7 @@ __all__ = ['Controller']
     ActionController is just a middleman to help with the transport between the processes, a facade.
 """
 
+NUMBER_OF_LABELS_IN_LEGEND = 5
 
 class ActionController:
     def __init__(self, commands_queue, start_func):
@@ -58,7 +59,6 @@ def report_errors_to_gui(func):
             raise e
 
     return wrapper
-
 
 class Controller:
     def __init__(self):
@@ -110,7 +110,8 @@ class Controller:
         scalars = self.sparql_client.execute_scalar_query(query)
         self.viewer_client.attributes(self.sparql_client.colors, scalars)
         self.viewer_client.set(curr_attribute_id=1)
-        # self.viewer_client.color_map("jet")
+        self._send_legend(scalars)
+
 
     def scalar_with_predicate(self, predicate):
         print("Controller: ", predicate)
@@ -121,6 +122,7 @@ class Controller:
         scalars = self.sparql_client.execute_predicate_query(predicate)
         self.viewer_client.attributes(self.sparql_client.colors, scalars)
         self.viewer_client.set(curr_attribute_id=1)
+        self._send_legend(scalars)
 
     @report_errors_to_gui
     def connect_to_server(self, url, namespace):
@@ -164,3 +166,14 @@ class Controller:
         header = list(result.keys())
         rows = list(zip(*(result[key] for key in result)))
         self.gui.plot_tabular(header, rows)
+
+    def _send_legend(self, scalars):
+        minimum = float(min(scalars))
+        maximum = float(max(scalars))
+        step = (maximum - minimum) / NUMBER_OF_LABELS_IN_LEGEND
+        # TODO better float format
+        labels = [f"{minimum + step * i:.2f}" for i in range(NUMBER_OF_LABELS_IN_LEGEND)]
+        colors = get_color_map()
+        # it's a numpy array of shape (N, 3), convert to list of hex colors
+        colors = ["#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255)) for (r, g, b) in colors]
+        self.gui.set_legend(colors , labels)

@@ -22,6 +22,7 @@ add_executable(viewer
         main_layout.h
         main_layout.ui
         graph_tree_model.h
+        scale_legend.h
 )
 
 # if on APPLE instead of linking to OpenGL use "-framework OpenGL"
@@ -60,6 +61,7 @@ add_library(gui MODULE
         main_layout.h
         main_layout.ui
         graph_tree_model.h
+        scale_legend.h
 )
 
 if (WIN32)

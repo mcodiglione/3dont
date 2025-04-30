@@ -7,8 +7,8 @@ from SPARQLWrapper import TURTLE
 from .queries import *
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 
-CHUNK_SIZE = 1000000
-
+TEST_FAST = False # remove before commit
+CHUNK_SIZE = 1000000 if not TEST_FAST else 1000
 
 class WrongResultFormatException(Exception):
     def __init__(self, expcected, got):
@@ -58,6 +58,8 @@ class SparqlEndpoint:
 
             any_key = next(iter(results.keys()))
             if len(results[any_key]) < CHUNK_SIZE:
+                break
+            if TEST_FAST:
                 break
             offset += CHUNK_SIZE
         return all_results
