@@ -24,9 +24,10 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] scalar templates
 - [ ] nl queries
 - [ ] refactor input dialogs
-- [ ] import nuvole etc.
+- [ ] import pointclouds etc.
 - [ ] add default to scalar queries equal to color
 - [ ] configure page (namespace)
+- [ ] fix viewer focus issue
  
 ## License
 

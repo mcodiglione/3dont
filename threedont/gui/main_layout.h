@@ -33,7 +33,9 @@ public:
 
     viewer = new Viewer();
     viewer->setFlags(Qt::FramelessWindowHint);// TODO is not enough
+    // viewer->installEventFilter(this); TOTO fix focus issue
     QWidget *container = createWindowContainer(viewer, this);
+    container->setFocusPolicy(Qt::StrongFocus);
     setCentralWidget(container);
     ui->statusbar->showMessage(tr("Ready"), 5000);
 
@@ -55,6 +57,16 @@ protected:
     qDebug() << "Closing main layout";
     controllerWrapper->stop();
     event->accept();
+  }
+
+  // fix focus issue on viewer
+  bool eventFilter(QObject *obj, QEvent *event) override {
+    if (event->type() == QEvent::MouseButtonPress) {
+      ui->centralwidget->setFocus();
+      viewer->requestActivate();
+      return true;
+    }
+    return QObject::eventFilter(obj, event);
   }
 
 private slots:

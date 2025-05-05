@@ -108,7 +108,8 @@ signals:
   void singlePointSelected(unsigned int);
 
 protected:
-  virtual void keyPressEvent(QKeyEvent *ev) {
+  void keyPressEvent(QKeyEvent *ev) override {
+    qDebug() << "Viewer: key pressed" << ev->key();
     _dolly->stop();
     if (ev->key() == Qt::Key_5) {
       if (_camera.getProjectionMode() == QtCamera::PERSPECTIVE)
@@ -161,7 +162,7 @@ protected:
     renderPointsFine();
   }
 
-  virtual void mouseDoubleClickEvent(QMouseEvent *ev) {
+  void mouseDoubleClickEvent(QMouseEvent *ev) override {
     Q_UNUSED(ev);
     _dolly->stop();
     // center on a point near cursor
@@ -179,7 +180,7 @@ protected:
     renderPointsFine();
   }
 
-  virtual void mousePressEvent(QMouseEvent *ev) {
+  void mousePressEvent(QMouseEvent *ev) override {
     _dolly->stop();
     if (ev->buttons() & Qt::LeftButton) {
       _pressPos = ev->windowPos();
@@ -218,7 +219,7 @@ protected:
     }
   }
 
-  virtual void mouseReleaseEvent(QMouseEvent *ev) {
+  void mouseReleaseEvent(QMouseEvent *ev) override {
     Q_UNUSED(ev);
     QPointF releasePos = ev->windowPos();
     bool mouse_moved = releasePos != _pressPos;
@@ -255,7 +256,7 @@ protected:
     }
   }
 
-  virtual void wheelEvent(QWheelEvent *ev) {
+  void wheelEvent(QWheelEvent *ev) override {
     _dolly->stop();
     // note: angleDelta() is in units of 1/8 degree
     _camera.zoom(ev->angleDelta().y() / 120.0f);
@@ -264,13 +265,13 @@ protected:
     renderPointsFine(500);
   }
 
-  virtual void exposeEvent(QExposeEvent *ev) {
+  void exposeEvent(QExposeEvent *ev) override {
     Q_UNUSED(ev);
     renderPoints();
     renderPointsFine(1000);
   }
 
-  virtual void resizeEvent(QResizeEvent *ev) {
+  void resizeEvent(QResizeEvent *ev) override {
     Q_UNUSED(ev);
     _camera.setAspectRatio((float) width() / height());
     _context->makeCurrent(this);
