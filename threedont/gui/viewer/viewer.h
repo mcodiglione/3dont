@@ -167,7 +167,7 @@ protected:
     _dolly->stop();
     // center on a point near cursor
     std::vector<unsigned int> indices;
-    _points->queryNearPoint(indices, ev->windowPos(), _camera);
+    _points->queryNearPoint(indices, ev->scenePosition(), _camera);
     if (indices.empty()) return;
 
     const std::vector<float> &ps = _points->getPositions();
@@ -183,7 +183,7 @@ protected:
   void mousePressEvent(QMouseEvent *ev) override {
     _dolly->stop();
     if (ev->buttons() & Qt::LeftButton) {
-      _pressPos = ev->windowPos();
+      _pressPos = ev->scenePosition();
       if (ev->modifiers() & Qt::ControlModifier) {
         if (ev->modifiers() & Qt::ShiftModifier)
           _selection_box->click(win2ndc(_pressPos), SelectionBox::SUB);
@@ -204,14 +204,14 @@ protected:
     if (ev->buttons() & Qt::LeftButton) {
       if (_fine_render_state != INACTIVE) _fine_render_state = TERMINATE;
       if (_selection_box->active()) {
-        _selection_box->drag(win2ndc(ev->windowPos()));
+        _selection_box->drag(win2ndc(ev->scenePosition()));
       } else {
         _camera.restore();
         if (ev->modifiers() == Qt::ShiftModifier)
-          _camera.pan(QVector2D(ev->windowPos() - _pressPos) *
+          _camera.pan(QVector2D(ev->scenePosition() - _pressPos) *
                       QVector2D(2.0f / width(), 2.0f / height()));
         else if (ev->modifiers() == Qt::NoModifier)
-          _camera.rotate(QVector2D(ev->windowPos() - _pressPos));
+          _camera.rotate(QVector2D(ev->scenePosition() - _pressPos));
       }
       renderPoints();
     } else {
@@ -221,7 +221,7 @@ protected:
 
   void mouseReleaseEvent(QMouseEvent *ev) override {
     Q_UNUSED(ev);
-    QPointF releasePos = ev->windowPos();
+    QPointF releasePos = ev->scenePosition();
     bool mouse_moved = releasePos != _pressPos;
     if (_selection_box->active()) {
       // if one was selected, deselect it
