@@ -96,8 +96,7 @@ private slots:
     } else if (queryType == "scalar") {
       controllerWrapper->scalarQuery(query.toStdString());
     } else if (queryType == "natural language") {
-      ui->errorLabel->setText("Natural language queries are not supported yet");
-      ui->errorLabel->setVisible(true);
+      controllerWrapper->naturalLanguageQuery(query.toStdString());
     } else if (queryType == "tabular") {
       controllerWrapper->tabularQuery(query.toStdString());
     } else {

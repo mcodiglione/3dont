@@ -18,9 +18,10 @@ private:
           "start",
           "annotate_node",
           "select_all_subjects",
+          "natural_language_query",
           "tabular_query"};
 
-  void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...) {
+  static void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...) {
     va_list args;
     va_start(args, format);
     PyGILState_STATE gil_state = PyGILState_Ensure();// Acquire GIL
@@ -109,6 +110,10 @@ public:
 
   void tabularQuery(const std::string &query) {
     callPythonMethod(controller, "tabular_query", "s", query.c_str());
+  }
+
+  void naturalLanguageQuery(const std::string &query) {
+    callPythonMethod(controller, "natural_language_query", "s", query.c_str());
   }
 };
 
