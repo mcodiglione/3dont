@@ -251,6 +251,14 @@ private slots:
       controllerWrapper->selectAllSubjects(predicate.toStdString(), object.toStdString());
     });
 
+    // if it's a top level item, show a "remove item" action
+    if (!index.parent().isValid()) {
+      QAction *removeAction = contextMenu.addAction("Remove item");
+      connect(removeAction, &QAction::triggered, [this, index]() {
+        graphTreeModel->removeRow(index.row(), index.parent());
+      });
+    }
+
     contextMenu.exec(treeView->viewport()->mapToGlobal(pos));
   }
 

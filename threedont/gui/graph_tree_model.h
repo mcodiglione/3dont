@@ -10,11 +10,16 @@
 #include <QPalette>
 #include <QString>
 #include <QVariant>
+#include <utility>
 
 class GraphTreeItem {
 public:
-  GraphTreeItem(const QString &object, const QString &predicate, GraphTreeItem *parent = nullptr)
-      : predicate(predicate), object(object), parentItem(parent) {
+  GraphTreeItem(QString object, QString predicate, GraphTreeItem *parent = nullptr)
+      : predicate(std::move(predicate)), object(std::move(object)), parentItem(parent) {
+  }
+
+  ~GraphTreeItem() {
+    qDeleteAll(childItems);
   }
 
   void appendChild(GraphTreeItem *child) {
@@ -25,11 +30,17 @@ public:
     return childItems.value(row);
   }
 
-  int childCount() const {
+  void removeChild(int row) {
+    if (row >= 0 && row < childItems.size()) {
+      delete childItems.takeAt(row);
+    }
+  }
+
+  [[nodiscard]] int childCount() const {
     return childItems.count();
   }
 
-  int columnCount() const {
+  [[nodiscard]] int columnCount() const {
     return 2;// Name and Type
   }
 
@@ -41,14 +52,14 @@ public:
     return str;
   }
 
-  QVariant data(int column, bool removeNS = true) const {
+  [[nodiscard]] QVariant data(int column, bool removeNS = true) const {
     QString out;
     if (column == 0)
       out = predicate;
     else if (column == 1)
       out = object;
     else
-      return QVariant();
+      return {};
 
     if (removeNS)
       out = removeNamespace(out);
@@ -60,7 +71,7 @@ public:
     return parentItem;
   }
 
-  bool areChildrenLoaded() const {
+  [[nodiscard]] bool areChildrenLoaded() const {
     return childrenLoaded;
   }
 
@@ -68,18 +79,18 @@ public:
     childrenLoaded = loaded;
   }
 
-  QString nodeId() const {
+  [[nodiscard]] QString nodeId() const {
     return object;
   }
 
-  int childIndex() const {
+  [[nodiscard]] int childIndex() const {
     if (parentItem) {
       return parentItem->childItems.indexOf(this);
     }
     return -1;
   }
 
-  bool isLeaf() const {
+  [[nodiscard]] bool isLeaf() const {
     return !object.startsWith("<http");// TODO is ugly
   }
 
@@ -103,10 +114,16 @@ public:
   ~GraphTreeModel() override {
     delete rootItem;
   }
+  
+  [[nodiscard]] GraphTreeItem* itemFromIndex(const QModelIndex &index) const {
+    if (index.isValid())
+      return static_cast<GraphTreeItem*>(index.internalPointer());
+    return rootItem; // Fallback if index is invalid (e.g., the root)
+  }
 
-  QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override {
+  [[nodiscard]] QModelIndex index(int row, int column, const QModelIndex &parent = QModelIndex()) const override {
     if (!hasIndex(row, column, parent)) {
-      return QModelIndex();
+      return {};
     }
 
     GraphTreeItem *parentItem;
@@ -114,7 +131,7 @@ public:
     if (!parent.isValid()) {
       parentItem = rootItem;
     } else {
-      parentItem = static_cast<GraphTreeItem *>(parent.internalPointer());
+      parentItem = itemFromIndex(parent);
     }
 
     GraphTreeItem *childItem = parentItem->child(row);
@@ -122,50 +139,49 @@ public:
     if (childItem) {
       return createIndex(row, column, childItem);
     } else {
-      return QModelIndex();
+      return {};
     }
   }
 
-  QModelIndex parent(const QModelIndex &index) const override {
+  [[nodiscard]] QModelIndex parent(const QModelIndex &index) const override {
     if (!index.isValid()) {
-      return QModelIndex();
+      return {};
     }
 
-    GraphTreeItem *childItem = static_cast<GraphTreeItem *>(index.internalPointer());
+    GraphTreeItem *childItem = itemFromIndex(index);
     GraphTreeItem *parentItem = childItem->parent();
 
     if (parentItem == rootItem) {
-      return QModelIndex();
+      return {};
     }
 
     return createIndex(parentItem->childCount(), 0, parentItem);
   }
 
-  int rowCount(const QModelIndex &parent = QModelIndex()) const override {
+  [[nodiscard]] int rowCount(const QModelIndex &parent = QModelIndex()) const override {
     GraphTreeItem *parentItem;
 
-    if (!parent.isValid()) {
+    if (!parent.isValid())
       parentItem = rootItem;
-    } else {
-      parentItem = static_cast<GraphTreeItem *>(parent.internalPointer());
-    }
+    else
+      parentItem = itemFromIndex(parent);
+
 
     return parentItem->childCount();
   }
 
-  int columnCount(const QModelIndex &parent = QModelIndex()) const override {
-    if (parent.isValid()) {
-      return static_cast<GraphTreeItem *>(parent.internalPointer())->columnCount();
-    }
+  [[nodiscard]] int columnCount(const QModelIndex &parent = QModelIndex()) const override {
+    if (parent.isValid())
+      return itemFromIndex(parent)->columnCount();
+
     return rootItem->columnCount();
   }
 
-  QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
+  [[nodiscard]] QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const override {
     if (!index.isValid())
-      return QVariant();
+      return {};
 
-
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+    GraphTreeItem *item = itemFromIndex(index);
 
     if (role == Qt::DisplayRole) {
       return item->data(index.column());
@@ -178,13 +194,12 @@ public:
       return QBrush(highlightColor);
     }
 
-    return QVariant();
+    return {};
   }
 
-  QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override {
-    if (role != Qt::DisplayRole) {
-      return QVariant();
-    }
+  [[nodiscard]] QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override {
+    if (role != Qt::DisplayRole)
+      return {};
 
     if (orientation == Qt::Horizontal) {
       switch (section) {
@@ -193,34 +208,31 @@ public:
         case 1:
           return QString("Object");
         default:
-          return QVariant();
+          return {};
       }
     }
-    return QVariant();
+    return {};
   }
 
-  bool canFetchMore(const QModelIndex &parent) const override {
-    if (!parent.isValid()) {
+  [[nodiscard]] bool canFetchMore(const QModelIndex &parent) const override {
+    if (!parent.isValid())
       return false;
-    }
 
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(parent.internalPointer());
+    GraphTreeItem *item = itemFromIndex(parent);
     return !item->areChildrenLoaded() && !item->isLeaf();
   }
 
-  bool hasChildren(const QModelIndex &parent) const override {
-    if (!parent.isValid()) {
+  [[nodiscard]] bool hasChildren(const QModelIndex &parent) const override {
+    if (!parent.isValid())
       return true;
-    }
 
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(parent.internalPointer());
+    GraphTreeItem *item = itemFromIndex(parent);
     return (item->areChildrenLoaded() && item->childCount() > 0) || !item->isLeaf();
   }
 
   QModelIndex indexForItem(GraphTreeItem *item) const {
-    if (item == rootItem) {
-      return QModelIndex();
-    }
+    if (item == rootItem)
+      return {};
 
     return createIndex(item->childIndex(), 0, item->parent());
   }
@@ -229,7 +241,7 @@ public:
     if (!parent.isValid())
       return;
 
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(parent.internalPointer());
+    auto *item = itemFromIndex(parent);
 
     if (item->areChildrenLoaded())
       return;
@@ -239,9 +251,23 @@ public:
     controllerWrapper->viewNodeDetails(nodeId.toStdString());
   }
 
+  bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) override {
+    if (!hasIndex(row, 0, parent))
+      return false;
+
+    beginRemoveRows(parent, row, row + count - 1);
+
+    GraphTreeItem *parentItem = itemFromIndex(parent);
+    for (int i = 0; i < count; ++i)
+      parentItem->removeChild(row);
+
+    endRemoveRows();
+    return true;
+  }
+
   void addTopLevelItem(const QString &object, const QString &predicate) {
     beginInsertRows(QModelIndex(), rootItem->childCount(), rootItem->childCount());
-    GraphTreeItem *item = new GraphTreeItem(object, predicate, rootItem);
+    auto *item = new GraphTreeItem(object, predicate, rootItem);
     itemMap.insert(item->nodeId(), item);// Store the mapping
     rootItem->appendChild(item);
     endInsertRows();
@@ -251,7 +277,7 @@ public:
      * @param parentId
      * @param children as flatten list of pairs
      */
-  void onChildrenLoaded(QString parentId, QStringList children) {
+  void onChildrenLoaded(const QString& parentId, QStringList children) {
     QList<GraphTreeItem *> parents;
 
     if (!itemMap.contains(parentId))
@@ -261,15 +287,14 @@ public:
 
     // all the items relatives to the same node in the graph, can be more than one
     for (const auto &item: parents) {
-      if (item->areChildrenLoaded()) {
+      if (item->areChildrenLoaded())
         continue;
-      }
 
       QModelIndex parentIndex = indexForItem(item);
       beginInsertRows(parentIndex, item->childCount(), item->childCount() + children.size() - 1);
 
       for (int i = 0; i < children.size(); i += 2) {
-        GraphTreeItem *childItem = new GraphTreeItem(children[i + 1], children[i], item);
+        auto *childItem = new GraphTreeItem(children[i + 1], children[i], item);
         itemMap.insert(childItem->nodeId(), childItem);// Store the mapping
         item->appendChild(childItem);
       }
@@ -280,31 +305,28 @@ public:
     }
   }
 
-  QString getPredicate(const QModelIndex &index) const {
-    if (!index.isValid()) {
-      return QString();
-    }
+  [[nodiscard]] QString getPredicate(const QModelIndex &index) const {
+    if (!index.isValid())
+      return {};
 
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+    GraphTreeItem *item = itemFromIndex(index);
     return item->data(0, false).toString();
   }
 
-  QString getObject(const QModelIndex &index) const {
-    if (!index.isValid()) {
-      return QString();
-    }
+  [[nodiscard]] QString getObject(const QModelIndex &index) const {
+    if (!index.isValid())
+      return {};
 
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+    GraphTreeItem *item = itemFromIndex(index);
     return item->data(1, false).toString();
   }
 
 public slots:
   void onRowExpanded(const QModelIndex &index) {
-    if (!index.isValid()) {
+    if (!index.isValid())
       return;
-    }
 
-    GraphTreeItem *item = static_cast<GraphTreeItem *>(index.internalPointer());
+    GraphTreeItem *item = itemFromIndex(index);
 
     if (item->data(0) == "Constitutes")
       controllerWrapper->selectAllSubjects(item->data(0, false).toString().toStdString(),
