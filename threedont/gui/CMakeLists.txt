@@ -23,7 +23,7 @@ add_library(gui MODULE
         viewer/point_attributes.h
         main_layout.h
         main_layout.ui
-        graph_tree_model.h
+        pointsTreeView/graph_tree_model.h
         scale_legend.h
 )
 

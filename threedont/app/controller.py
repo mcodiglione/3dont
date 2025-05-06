@@ -179,7 +179,6 @@ class Controller:
         colors = ["#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255)) for (r, g, b) in colors]
         self.gui.set_legend(colors, labels)
 
-
     @report_errors_to_gui
     def natural_language_query(self, query):
         print("Natural language query: ", query)

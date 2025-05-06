@@ -2,7 +2,7 @@
 #define THREEDONT_MAIN_LAYOUT_H
 
 #include "controller_wrapper.h"
-#include "graph_tree_model.h"
+#include "pointsTreeView/graph_tree_model.h"
 #include "scale_legend.h"
 #include "ui_main_layout.h"
 #include "viewer/viewer.h"
