@@ -1,10 +1,16 @@
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 
-# Gui python bindings
 add_library(gui MODULE
         gui_wrapper.cpp
-        controller_wrapper.h
+        controller_wrapper.cpp
+        main_layout.cpp
+        pointsTreeView/graph_tree_model.cpp
+        pointsTreeView/graph_tree_item.cpp
+        widgets/scale_legend.cpp
+)
+
+target_sources(gui PRIVATE
         viewer/octree.h
         viewer/box3.h
         viewer/floor_grid.h
@@ -21,10 +27,13 @@ add_library(gui MODULE
         viewer/camera_dolly.h
         viewer/splines.h
         viewer/point_attributes.h
-        main_layout.h
+
         main_layout.ui
+        main_layout.h
+        controller_wrapper.h
+        widgets/scale_legend.h
         pointsTreeView/graph_tree_model.h
-        scale_legend.h
+        pointsTreeView/graph_tree_item.h
 )
 
 if (WIN32)
