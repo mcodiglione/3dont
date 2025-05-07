@@ -1,5 +1,7 @@
 # Design document
 
+> Maybe it's outdated
+
 At the moment the design of the application
 is becoming very complex. The number of components
 and actors, the interactions between them, the

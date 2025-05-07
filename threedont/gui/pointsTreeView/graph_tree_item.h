@@ -31,9 +31,9 @@ public:
   }
 
   void removeChild(int row) {
-    if (row >= 0 && row < childItems.size()) {
+    if (row >= 0 && row < childItems.size())
       delete childItems.takeAt(row);
-    }
+
   }
 
   [[nodiscard]] int childCount() const {
@@ -46,9 +46,9 @@ public:
 
   static QString removeNamespace(const QString &str) {
     int index = str.lastIndexOf('#');
-    if (index != -1) {
+    if (index != -1)
       return str.mid(index + 1, str.length() - index - 2);
-    }
+
     return str;
   }
 
@@ -84,9 +84,9 @@ public:
   }
 
   [[nodiscard]] int childIndex() const {
-    if (parentItem) {
+    if (parentItem)
       return parentItem->childItems.indexOf(this);
-    }
+
     return -1;
   }
 

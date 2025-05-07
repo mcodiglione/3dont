@@ -11,6 +11,10 @@ if not os.path.isabs(_viewer_dir):
 
 __all__ = ['Viewer', 'get_color_map']
 
+"""
+For docs: go to [the original github page](https://github.com/heremaps/pptk)
+Rendered docs avaiable [here](https://heremaps.github.io/pptk/)
+"""
 
 class Viewer:
     def __init__(self, port):

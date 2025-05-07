@@ -31,8 +31,8 @@ View, query and manually annotate pointclouds ontologies.
  
 ## License
 
-The LICENSE_PPTK is the license of the viewer used as a base for this project. It applies to the content of the folder
-`threedont/gui/viewer`, the file `threedont/app/viewer` and `docs`.
+The LICENSE_PPTK file is the license of the viewer used as a base for this project. It is relative to the content of the folder
+`threedont/gui/viewer` and the file `threedont/app/viewer`.
 
 ## Install
 
@@ -57,7 +57,7 @@ make -j4
 
 ##### Requirements
 
-Listed are versions of libraries used to develop pptk, though earlier versions
+Listed are versions of libraries used to develop 3dont, though earlier versions
 of these libraries may also work.
 
 * [QT](https://www.qt.io/) 6.9
