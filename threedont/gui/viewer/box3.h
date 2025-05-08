@@ -37,9 +37,8 @@ namespace vltools {
       _data[1][2] = std::max(z, _data[1][2]);
     }
     void addPoints(const T *points, std::size_t numPoints) {
-      for (std::size_t i = 0; i < numPoints; i++) {
+      for (std::size_t i = 0; i < numPoints; i++)
         addPoint(points[3 * i + 0], points[3 * i + 1], points[3 * i + 2]);
-      }
     }
     void addBox(const Box3<T> &other) {
       _data[0][0] = std::min(other.min(0), _data[0][0]);
@@ -104,5 +103,5 @@ namespace vltools {
        << b.min(2) << ", " << b.max(2) << "]";
     return os;
   }
-}// namespace vltools
-#endif// __BOX3_H__
+} // namespace vltools
+#endif // __BOX3_H__

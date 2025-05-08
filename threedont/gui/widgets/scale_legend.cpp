@@ -1,6 +1,6 @@
 #include "scale_legend.h"
-#include <QPainter>
 #include <QPaintEvent>
+#include <QPainter>
 #include <QPalette>
 #include <algorithm>
 

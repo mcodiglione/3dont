@@ -224,4 +224,4 @@ private:
   BoundaryBehavior _boundary_behavior;
 };
 
-#endif// __SPLINES_H__
+#endif // __SPLINES_H__

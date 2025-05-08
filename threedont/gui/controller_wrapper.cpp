@@ -31,7 +31,7 @@ void ControllerWrapper::callPythonMethod(PyObject *object, const char *methodNam
 }
 
 ControllerWrapper::ControllerWrapper(PyObject *controller) {
-  for (const auto &method : neededMethods) {
+  for (const auto &method: neededMethods) {
     if (!PyObject_HasAttrString(controller, method.c_str())) {
       PyErr_SetString(PyExc_TypeError, "Controller must have all needed methods");
       throw std::invalid_argument("Controller must have all needed methods, missing: " + method);

@@ -99,4 +99,4 @@ private:
   bool _visible;
 };
 
-#endif// __LOOKAT_H__
+#endif // __LOOKAT_H__

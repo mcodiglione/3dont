@@ -11,6 +11,7 @@ TEST_FAST = False  # remove true before commit
 CHUNK_SIZE = 1000000 if not TEST_FAST else 1000
 HIGHLIGHT_COLOR = [1.0, 0.0, 0.0]  # TODO make this a parameter
 
+
 class WrongResultFormatException(Exception):
     def __init__(self, expcected, got):
         message = f"Expected {expcected}, but got {got}"

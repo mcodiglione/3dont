@@ -129,7 +129,7 @@ public:
 
   // render methods
   void draw(const QtCamera &camera, const SelectionBox *box = nullptr) {
-    queryLOD(_octree_ids, camera, 0.25f);
+    queryLOD(_octree_ids, camera, 0.25f); // TODO make this a parameter
     if (_octree_ids.empty()) return;
     draw(&_octree_ids[0], (unsigned int) _octree_ids.size(), camera, box);
   }
@@ -156,9 +156,9 @@ public:
     _program.setUniformValue("mvpMatrix", camera.computeMVPMatrix(_full_box));
     _program.setUniformValue(
             "box_min", box ? box->getBox().topLeft()
-                           : QPointF());// topLeft in Qt is bottom left in NDC
+                           : QPointF());                  // topLeft in Qt is bottom left in NDC
     _program.setUniformValue("box_max", box ? box->getBox().bottomRight()
-                                            : QPointF());// top right in NDC
+                                            : QPointF()); // top right in NDC
     _program.setUniformValue("eye", camera.getCameraPosition());
     _program.setUniformValue("view", camera.getViewVector());
     _program.setUniformValue("image_t", camera.getTop());
@@ -212,12 +212,10 @@ public:
                     sizeof(unsigned int) * num_points, (GLvoid *) indices);
     glDrawElements(GL_POINTS, num_points, GL_UNSIGNED_INT, 0);
 
-    if (!use_color_map && !broadcast_attr) {
+    if (!use_color_map && !broadcast_attr)
       _program.disableAttributeArray("color");
-    }
-    if (use_color_map && !broadcast_attr) {
+    if (use_color_map && !broadcast_attr)
       _program.disableAttributeArray("scalar");
-    }
 
     _program.disableAttributeArray("position");
     _program.disableAttributeArray("size");
@@ -275,7 +273,7 @@ public:
       glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
       glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
       // not sure why this is needed, but it is
-      //glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
+      // glTexParameteri(GL_TEXTURE_1D, GL_TEXTURE_MAX_LEVEL, 0);
     } else {
       // use color map that always returns white
       float white[4] = {1.0f, 1.0f, 1.0f, 1.0f};
@@ -296,9 +294,8 @@ public:
 
     glBindTexture(GL_TEXTURE_1D, 0);
     _context->doneCurrent();
-    if (_color_map_auto) {
+    if (_color_map_auto)
       setColorMapScale(1.0f, 0.0f);
-    }
   }
 
   void setColorMap(const std::vector<float> &color_map) {
@@ -327,7 +324,7 @@ public:
         _color_map_min = std::numeric_limits<float>::max();
         _color_map_max = -std::numeric_limits<float>::max();
         for (std::size_t i = 0; i < attr.size(); i++) {
-          if (attr[i] == attr[i]) {// skip if attr[i] is NaN
+          if (attr[i] == attr[i]) { // skip if attr[i] is NaN
             _color_map_min = qMin(_color_map_min, attr[i]);
             _color_map_max = qMax(_color_map_max, attr[i]);
           }
@@ -357,7 +354,7 @@ public:
     }
     if (box.getType() == SelectionBox::ADD)
       mergeIndices(_selected_ids, new_indices);
-    else// box.getType() == SelectionBox::SUB
+    else // box.getType() == SelectionBox::SUB
       removeIndices(_selected_ids, new_indices);
     updateSelectionMask();
   }
@@ -395,21 +392,19 @@ public:
     // (prior to reshuffling by octree)
     indices.reserve(_selected_ids.size());
     indices.clear();
-    for (std::size_t i = 0; i < _selected_ids.size(); i++) {
+    for (std::size_t i = 0; i < _selected_ids.size(); i++)
       if (_selected_ids[i] < _num_points)
         indices.push_back(_octree.getIndices()[_selected_ids[i]]);
       else
         break;
-    }
   }
 
   void setSelected(const std::vector<unsigned int> &indices) {
     // expects indices into original array of points
     _selected_ids.clear();
-    for (std::size_t i = 0; i < indices.size(); i++) {
+    for (std::size_t i = 0; i < indices.size(); i++)
       _selected_ids.push_back(_octree.getIndicesR()[indices[i]]);
-    }
-    std::sort(_selected_ids.begin(), _selected_ids.end());// increasing order
+    std::sort(_selected_ids.begin(), _selected_ids.end()); // increasing order
     updateSelectionMask();
   }
 
@@ -634,8 +629,8 @@ private:
   std::vector<float> _positions;
   std::vector<float> _colors;
   std::vector<float> _sizes;
-  std::vector<unsigned int> _octree_ids;  // LOD-selected points dumped here
-  std::vector<unsigned int> _selected_ids;// maintain list of selected points
+  std::vector<unsigned int> _octree_ids;   // LOD-selected points dumped here
+  std::vector<unsigned int> _selected_ids; // maintain list of selected points
   vltools::Box3<float> _full_box;
   GLuint _buffer_positions;
   GLuint _buffer_colors;
@@ -653,4 +648,4 @@ private:
   bool _color_map_auto;
 };
 
-#endif// __POINTCLOUD_H__
+#endif // __POINTCLOUD_H__

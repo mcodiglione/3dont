@@ -177,7 +177,7 @@ private:
       for (unsigned int i = 0; i < node->point_count; i++)
         _accumulate_rgba(x, w, &attr[4 * (node->point_index + i)]);
       _xw_to_rgba(dst, x, w, node->point_count);
-    } else {// !node->is_leaf
+    } else { // !node->is_leaf
       //_compute_inner_rgba(dst, node);
       QVector3D x = QVector3D(0.0f, 0.0f, 0.0f);
       float w = 1.0f;
@@ -204,7 +204,7 @@ private:
         for (quint64 j = 0; j < dim; j++)
           dst[j] += attr[(node->point_index + i) * dim + j];
       for (quint64 i = 0; i < dim; i++) dst[i] /= node->point_count;
-    } else {// !node->is_leaf
+    } else { // !node->is_leaf
       std::vector<float> w(8, 0.0f);
       for (std::size_t i = 0; i < 8; i++) {
         if (!node->children[i]) continue;
@@ -260,4 +260,4 @@ private:
   }
 };
 
-#endif// __POINTATTRIBUTES_H__
+#endif // __POINTATTRIBUTES_H__

@@ -4,9 +4,9 @@ namespace vltools {
 #if defined(_WIN32) || defined(__CYGWIN__)
 #ifndef _WIN32
 #define PCTIMER_NO_WIN32
-#endif /* WIN32 */
+#endif               /* WIN32 */
 #define WIN32_LEAN_AND_MEAN
-#include <windows.h>// req'd for QueryPerformance[...]
+#include <windows.h> // req'd for QueryPerformance[...]
 #ifdef PCTIMER_NO_WIN32
 #undef PCTIMER_NO_WIN32
 #undef _WIN32
@@ -31,5 +31,5 @@ namespace vltools {
     return (double) tv.tv_sec + (double) tv.tv_usec / 1000000;
   }
 #endif
-}// namespace vltools
-#endif// __TIMER_H__
+} // namespace vltools
+#endif // __TIMER_H__

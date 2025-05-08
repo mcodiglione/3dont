@@ -77,4 +77,4 @@ public:
   }
 };
 
-#endif// __OPENGLFUNCS_H__
+#endif // __OPENGLFUNCS_H__

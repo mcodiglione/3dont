@@ -166,10 +166,10 @@ private:
     }
   }
   static float pi() { return atan2(0.0, -1.0); }
-  float _vfov;        // vertical fov in radians
-  float _aspect_ratio;// width / height
+  float _vfov;         // vertical fov in radians
+  float _aspect_ratio; // width / height
   ProjectionMode _projection_mode;
   ViewAxis _view_axis;
 };
 
-#endif// QMOUSECONTROLLEDCAMERA_H
+#endif // QMOUSECONTROLLEDCAMERA_H

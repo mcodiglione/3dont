@@ -8,10 +8,10 @@
 #include <QBrush>
 #include <QColor>
 #include <QFont>
+#include <QMultiHash>
 #include <QPalette>
 #include <QString>
 #include <QVariant>
-#include <QMultiHash>
 
 class GraphTreeModel : public QAbstractItemModel {
   Q_OBJECT

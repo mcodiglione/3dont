@@ -32,7 +32,7 @@
 #include "text.h"
 #include "timer.h"
 
-//#define TEST_FINE_RENDER
+// #define TEST_FINE_RENDER
 
 class Viewer : public QWindow, protected OpenGLFuncs {
   Q_OBJECT
@@ -247,12 +247,10 @@ protected:
       _selection_box->release();
       renderPoints();
       renderPointsFine();
-    } else {
-      if (mouse_moved) {
-        _camera.save();
-        renderPoints();
-        renderPointsFine();
-      }
+    } else if (mouse_moved) {
+      _camera.save();
+      renderPoints();
+      renderPointsFine();
     }
   }
 
@@ -293,7 +291,7 @@ private slots:
 
     // switch on message type
     switch (msgType) {
-      case 1: {// load points
+      case 1: { // load points
         // receive point count (next 4 bytes)
         qint32 numPoints;
         comm::receiveBytes((char *) &numPoints, sizeof(qint32), clientConnection);
@@ -314,20 +312,20 @@ private slots:
         renderPointsFine();
         break;
       }
-      case 2: {// clear points
+      case 2: { // clear points
         _points->clearPoints();
         renderPoints();
         renderPointsFine();
         break;
       }
-      case 3: {// reset view to fit all
+      case 3: { // reset view to fit all
         _camera = QtCamera(_points->getBox());
         _camera.setAspectRatio((float) width() / height());
         renderPoints();
         renderPointsFine();
         break;
       }
-      case 4: {// set viewer property
+      case 4: { // set viewer property
         // receive length of property name string
         quint64 stringLength;
         comm::receiveBytes((char *) &stringLength, sizeof(quint64),
@@ -421,7 +419,7 @@ private slots:
           selected.reserve(num_selected);
           for (quint64 i = 0; i < num_selected; i++)
             if (ptr[i] < _points->getNumPoints())
-              selected.push_back(ptr[i]);// silently drop out of range indices
+              selected.push_back(ptr[i]); // silently drop out of range indices
           _points->setSelected(selected);
         } else if (!strcmp(propertyName.c_str(), "color_map")) {
           quint64 num_colors = payloadLength / sizeof(float) / 4;
@@ -444,7 +442,7 @@ private slots:
         renderPointsFine();
         break;
       }
-      case 5: {// get viewer property
+      case 5: { // get viewer property
         // receive length of property name string
         quint64 stringLength;
         comm::receiveBytes((char *) &stringLength, sizeof(quint64),
@@ -509,7 +507,7 @@ private slots:
         }
         break;
       }
-      case 6: {// print screen
+      case 6: { // print screen
         // receive length of property name string
         quint64 stringLength;
         comm::receiveBytes((char *) &stringLength, sizeof(quint64),
@@ -521,12 +519,12 @@ private slots:
         printScreen(filename);
         break;
       }
-      case 7: {// wait for enter
+      case 7: { // wait for enter
         // save current connection socket and return
         _socket_waiting_on_enter_key = clientConnection;
         return;
       }
-      case 8: {// load camera path animation
+      case 8: { // load camera path animation
         // receive number of poses (1 int)
         qint32 numPoses;
         comm::receiveBytes((char *) &numPoses, sizeof(qint32), clientConnection);
@@ -567,7 +565,7 @@ private slots:
 
         break;
       }
-      case 9: {// playback camera path animation
+      case 9: { // playback camera path animation
         // receive playback time range (2 float)
         float tmin, tmax;
         comm::receiveBytes((char *) &tmin, sizeof(float), clientConnection);
@@ -586,7 +584,7 @@ private slots:
 
         break;
       }
-      case 10: {// set per point attributes
+      case 10: { // set per point attributes
         //  receive length of payload
         quint64 payloadLength;
         comm::receiveBytes((char *) &payloadLength, sizeof(quint64),
@@ -602,7 +600,7 @@ private slots:
         renderPointsFine();
         break;
       }
-      default:// unrecognized message type
+      default: // unrecognized message type
         break;
         // do nothing
     }
@@ -730,7 +728,7 @@ private:
     GLubyte *pixels = new GLubyte[4 * w * h];
     glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glReadBuffer(GL_FRONT);// otherwise will read back buffer
+    glReadBuffer(GL_FRONT); // otherwise will read back buffer
     glReadPixels(0, 0, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
     QImage image(w, h, QImage::Format_ARGB32);
     for (int i = 0; i < h; i++) {
@@ -867,7 +865,7 @@ private:
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POINT_SPRITE);// TODO
+    glEnable(GL_POINT_SPRITE); // TODO
     _render_time = vltools::getTime();
     _background->draw();
     _floor_grid->draw(_camera);
@@ -917,4 +915,4 @@ private:
   bool _show_text;
 };
 
-#endif// __VIEWER_H__
+#endif // __VIEWER_H__

@@ -48,12 +48,12 @@ public:
     const Sector *b = &other;
     if (a->_start > b->_start) std::swap(a, b);
 
-    if (b->_start <= a->_end) {
+    if (b->_start <= a->_end)
       return Sector(b->_start, std::min(a->_end, b->_end));
-    } else if (b->_end >= a->_start + 2.0f * pi()) {
+    else if (b->_end >= a->_start + 2.0f * pi())
       return Sector(a->_start + 2.0f * pi(),
                     std::min(a->_end + 2.0f * pi(), b->_end));
-    } else
+    else
       return Sector();
   }
 
@@ -341,7 +341,7 @@ private:
     if (fabs(eye_floor_height) > d_max) return false;
     float theta_max =
             asin(eye_floor_height /
-                 d_max);// TODO: handle eye_floor_height > d_max case
+                 d_max); // TODO: handle eye_floor_height > d_max case
     float theta = normalizeAngle(camera.getTheta());
 
     Sector floor_sector;
@@ -381,7 +381,7 @@ private:
     float r = camera.getAspectRatio() * t;
     z_floor = camera.getViewAxis() != QtCamera::ARBITRARY_AXIS ? 0.0f : z_floor;
 
-    float delta_pixels = 1.0f;// in pixels;
+    float delta_pixels = 1.0f; // in pixels;
     float delta_image = delta_pixels / _window->height() /
                         _window->devicePixelRatio() * 2.0f * t;
     float eps_x, eps_y;
@@ -425,13 +425,12 @@ private:
         view = camera.getViewVector();
       } else {
         eye = camera.getCameraPosition();
-        if (camera.getViewAxis() == QtCamera::X_AXIS) {
+        if (camera.getViewAxis() == QtCamera::X_AXIS)
           eye = QVector3D(-eye.z(), eye.y(), 1.0f);
-        } else if (camera.getViewAxis() == QtCamera::Y_AXIS) {
+        else if (camera.getViewAxis() == QtCamera::Y_AXIS)
           eye = QVector3D(-eye.z(), eye.x(), 1.0f);
-        } else {
+        else
           eye = QVector3D(-eye.y(), eye.x(), 1.0f);
-        }
         right = QVector3D(0.0f, 1.0f, 0.0f);
         up = QVector3D(-1.0f, 0.0f, 0.0f);
         view = QVector3D(0.0f, 0.0f, 1.0f);
@@ -534,4 +533,4 @@ private:
   float _line_weight;
 };
 
-#endif// __FLOORGRID_H__
+#endif // __FLOORGRID_H__

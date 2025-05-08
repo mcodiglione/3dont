@@ -114,4 +114,4 @@ private:
   QRectF _box;
 };
 
-#endif// __SELECTIONBOX_H__
+#endif // __SELECTIONBOX_H__

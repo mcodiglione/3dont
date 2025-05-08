@@ -96,4 +96,4 @@ private:
   QVector4D _bg_color_bottom;
 };
 
-#endif// __BACKGROUND_H__
+#endif // __BACKGROUND_H__

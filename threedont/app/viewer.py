@@ -16,6 +16,7 @@ For docs: go to [the original github page](https://github.com/heremaps/pptk)
 Rendered docs avaiable [here](https://heremaps.github.io/pptk/)
 """
 
+
 class Viewer:
     def __init__(self, port):
         """ Opens a point cloud viewer

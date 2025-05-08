@@ -114,7 +114,7 @@ namespace comm {
   }
 
   template<typename T>
-  void sendMatrix(const T *source,// in column major order
+  void sendMatrix(const T *source, // in column major order
                   const quint64 numRows, const quint64 numCols,
                   QTcpSocket *clientConnection) {
     // send data type
@@ -154,5 +154,5 @@ namespace comm {
     // send array elements
     sendBytes((char *) source, sizeof(T) * numElts, clientConnection);
   }
-}// namespace comm
-#endif// __COMMFUNCS_H__
+} // namespace comm
+#endif // __COMMFUNCS_H__

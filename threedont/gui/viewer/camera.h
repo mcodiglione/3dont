@@ -9,9 +9,9 @@ public:
       : _theta(0.0f),
         _phi(0.0f),
         _d(1.0f),
-        _panRate(2.0f / 300),// 2.0 per 300 pixels
+        _panRate(2.0f / 300),     // 2.0 per 300 pixels
         _zoomRate(0.8f),
-        _rotateRate(PI / 2 / 256)// PI/2 per 256 pixels
+        _rotateRate(PI / 2 / 256) // PI/2 per 256 pixels
   {
     _lookAt[0] = _lookAt[1] = _lookAt[2] = 0.0f;
     save();
@@ -56,9 +56,8 @@ public:
     float up[3];
     computeRightVector(x, _theta, _phi);
     computeUpVector(up, _theta, _phi);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
       _lookAt[i] += _panRate * (-x[i] * dx + up[i] * dy);
-    }
   }
 
   /*! \brief zoom
@@ -149,9 +148,8 @@ private:
                                     const float d) {
     float v[3];
     computeViewVector(v, theta, phi);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
       p[i] = lookAt[i] + d * v[i];
-    }
   }
 
   static void computeCameraFrame(float (&x)[3], float (&y)[3], float (&z)[3],
@@ -194,9 +192,9 @@ private:
   }
 
   float _lookAt[3];
-  float _theta;// angle of elevation
-  float _phi;  // azimuthal angle
-  float _d;    // camera distance from _lookAt
+  float _theta; // angle of elevation
+  float _phi;   // azimuthal angle
+  float _d;     // camera distance from _lookAt
 
   float _saved_lookAt[3];
   float _saved_theta;
@@ -208,4 +206,4 @@ private:
   float _rotateRate;
 };
 
-#endif// __CAMERA_H__
+#endif // __CAMERA_H__

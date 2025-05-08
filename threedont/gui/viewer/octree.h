@@ -14,8 +14,8 @@ public:
     unsigned int point_index;
     unsigned int point_count;
     bool is_leaf;
-    Node *children[8];// index given by 3-bit code: xyz,
-                      // where z is least significant bit
+    Node *children[8]; // index given by 3-bit code: xyz,
+                       // where z is least significant bit
   };
 
   struct CameraFrustum {
@@ -25,7 +25,7 @@ public:
     float view[3];
     float image_r;
     float image_t;
-    float z_near;// z_near < 0
+    float z_near; // z_near < 0
 
     void setImagePlane(float vfov, float aspect_ratio) {
       // vfov in radians
@@ -36,9 +36,8 @@ public:
     void xyz2ruv(float (&ruv)[3], const float (&xyz)[3]) const {
       // note: handles case where xyz and ruv refer to same vector
       float xyz_[3];
-      for (unsigned int dim = 0; dim < 3; dim++) {
+      for (unsigned int dim = 0; dim < 3; dim++)
         xyz_[dim] = xyz[dim] - eye[dim];
-      }
       ruv[0] = ruv[1] = ruv[2] = 0.0f;
       for (unsigned int k = 0; k < 3; k++) ruv[0] += right[k] * xyz_[k];
       for (unsigned int k = 0; k < 3; k++) ruv[1] += up[k] * xyz_[k];
@@ -154,16 +153,13 @@ public:
     std::vector<float> temp_xyz;
     temp_xyz.reserve(point_xyz.size());
     for (unsigned int i = 0; i < _num_points; i++) {
-      for (unsigned int dim = 0; dim < 3; dim++) {
+      for (unsigned int dim = 0; dim < 3; dim++)
         temp_xyz.push_back(point_xyz[3 * _indices[i] + dim]);
-      }
       _indices_r[_indices[i]] = i;
     }
-    for (unsigned int i = _num_points; i < point_xyz.size() / 3; i++) {
-      for (unsigned int dim = 0; dim < 3; dim++) {
+    for (unsigned int i = _num_points; i < point_xyz.size() / 3; i++)
+      for (unsigned int dim = 0; dim < 3; dim++)
         temp_xyz.push_back(point_xyz[3 * i + dim]);
-      }
-    }
     point_xyz.swap(temp_xyz);
 #endif
   }
@@ -207,7 +203,7 @@ public:
     camera.getViewVector(frustum.view);
     frustum.image_t = image_t;
     frustum.image_r = image_r;
-    frustum.z_near = 0.0;// doesn't matter for orthographic projection
+    frustum.z_near = 0.0; // doesn't matter for orthographic projection
 
     // compute eps (pixel size in image plane at z = -1)
     float eps = frustum.image_t * 2.0f / height;
@@ -221,7 +217,7 @@ public:
                        const float screen_y, const float screen_radius,
                        const float screen_width, const float screen_height,
                        const float vfov,
-                       const float near_clip,// positive, distance along -view
+                       const float near_clip, // positive, distance along -view
                        const Camera &camera,
                        const ProjectionMode projection_mode) const {
     // returned indices include:
@@ -257,7 +253,7 @@ public:
           std::vector<unsigned int> &indices, const float screen_x,
           const float screen_y, const float screen_radius, const float screen_width,
           const float screen_height, const float vfov,
-          const float near_clip,// positive, distance along -view
+          const float near_clip, // positive, distance along -view
           const Camera &camera, const ProjectionMode projection_mode) const {
     float d_min = std::numeric_limits<float>::max();
     CameraFrustum frustum;
@@ -390,7 +386,7 @@ private:
   void getClickIndicesHelper(
           std::vector<unsigned int> &indices, float &d_min, const Node *node,
           const float (&node_corner)[3], const float node_size,
-          const float (&click_pos)[2],// on z = -1 image plane
+          const float (&click_pos)[2], // on z = -1 image plane
           const float click_radius, const CameraFrustum &frustum,
           const ProjectionMode projection_mode = PERSPECTIVE) const {
     if (!node) return;
@@ -465,22 +461,19 @@ private:
     }
   }
 
-  Octree(const Octree &);// prohibit copy constructor
+  Octree(const Octree &);    // prohibit copy constructor
 
-  Octree &operator=(Octree);// prohibit copy assignment constructor
+  Octree &operator=(Octree); // prohibit copy assignment constructor
 
   void computeCentroid(float (&pos)[3], const unsigned int *indices,
                        const unsigned int count) {
     std::vector<float> &point_xyz = *_ptr_point_xyz;
     pos[0] = pos[1] = pos[2] = 0.0f;
-    for (unsigned int i = 0; i < count; i++) {
-      for (unsigned int dim = 0; dim < 3; dim++) {
+    for (unsigned int i = 0; i < count; i++)
+      for (unsigned int dim = 0; dim < 3; dim++)
         pos[dim] += point_xyz[3 * indices[i] + dim];
-      }
-    }
-    for (unsigned int dim = 0; dim < 3; dim++) {
+    for (unsigned int dim = 0; dim < 3; dim++)
       pos[dim] /= count;
-    }
   }
 
   void partitionXYZ(unsigned int *child_counts, unsigned int *indices,
@@ -518,9 +511,8 @@ private:
   unsigned int addCentroid(const float (&xyz)[3]) {
     std::vector<float> &point_xyz = *_ptr_point_xyz;
     unsigned int index = (unsigned int) point_xyz.size() / 3;
-    for (unsigned int dim = 0; dim < 3; dim++) {
+    for (unsigned int dim = 0; dim < 3; dim++)
       point_xyz.push_back(xyz[dim]);
-    }
     return index;
   }
   void computeCentroid(float (&centroid_xyz)[3], Node *children[]) {
@@ -533,14 +525,12 @@ private:
       if (children[i] == nullptr) continue;
       float *child_centroid_xyz = &point_xyz[3 * children[i]->centroid_index];
       unsigned int child_count = children[i]->point_count;
-      for (unsigned int dim = 0; dim < 3; dim++) {
+      for (unsigned int dim = 0; dim < 3; dim++)
         centroid_xyz[dim] += child_centroid_xyz[dim] * child_count;
-      }
       count += child_count;
     }
-    for (unsigned int dim = 0; dim < 3; dim++) {
+    for (unsigned int dim = 0; dim < 3; dim++)
       centroid_xyz[dim] /= count;
-    }
   }
 
   bool pointsAreIdentical(const unsigned int *indices,
@@ -630,17 +620,16 @@ private:
 
   static void deleteTree(Node *root) {
     if (!root) return;
-    if (root->is_leaf) {
+    if (root->is_leaf)
       delete root;
-    } else {
+    else
       for (int i = 0; i < 8; i++) deleteTree(root->children[i]);
-    }
   }
 
   static void boundProjectedAABB(
-          float (&bound_center)[2],// on image plane
+          float (&bound_center)[2],      // on image plane
           float (&bound_size)[2],
-          const float (&cube_center)[3],// in ruv (camera) coordinates
+          const float (&cube_center)[3], // in ruv (camera) coordinates
           const float cube_size, float z_near) {
     // following assumes cube_center[2] < -sqrt(3)/2*cube_size
     // also assumes z_near < 0
@@ -658,9 +647,9 @@ private:
   }
 
   static void boundOrthoProjectedAABB(
-          float (&bound_center)[2],// on image plane
+          float (&bound_center)[2],      // on image plane
           float (&bound_size)[2],
-          const float (&cube_center)[3],// in ruv (camera) coordinates
+          const float (&cube_center)[3], // in ruv (camera) coordinates
           const float cube_size) {
     float delta = 0.5f * sqrtf(3.0f) * cube_size;
     for (int i = 0; i < 2; i++) {
@@ -714,7 +703,7 @@ private:
           ruv[0] /= -ruv[2];
           ruv[1] /= -ruv[2];
           if (-ruv[2] >
-                      0.0f &&// note: view vector is opposite of view direction
+                      0.0f && // note: view vector is opposite of view direction
               ruv[0] < frustum.image_r &&
               ruv[0] > -frustum.image_r &&
               ruv[1] < frustum.image_t && ruv[1] > -frustum.image_t)
@@ -729,10 +718,10 @@ private:
           std::vector<unsigned int> &indices, const Node *node,
           const CameraFrustum &frustum, const float (&cube_corner)[3],
           const float cube_size,
-          const float eps,// measured on z = 1 image plane
+          const float eps, // measured on z = 1 image plane
           const ProjectionMode projection_mode = PERSPECTIVE,
           const float fudge_factor =
-                  0.25f,// factor by which projected area is reduced
+                  0.25f, // factor by which projected area is reduced
           const IntersectResult parent_intersect_result = UNCERTAIN) const {
     // TODO: this results in redundant calls to xyz2ruv
     // consider performing frustum culling prior to recursing
@@ -764,7 +753,7 @@ private:
       // if parent was entirely in frustum,
       // then this node is also entirely in frustum
       intersect_result = INSIDE;
-    else {// parent_intersect_result == UNCERTAIN
+    else { // parent_intersect_result == UNCERTAIN
       if (projection_mode == PERSPECTIVE &&
           -ruv[2] + 0.5f * cube_size * sqrtf(3.0f) < 0.0f)
         return;
@@ -802,7 +791,7 @@ private:
     } else if (node->is_leaf) {
       for (unsigned int i = 0; i < node->point_count; i++)
         indices.push_back(node->point_index + i);
-    } else {// inner node
+    } else { // inner node
       unsigned int b[3][2];
       if (projection_mode == PERSPECTIVE) {
         for (int i = 0; i < 3; i++) {
@@ -816,7 +805,7 @@ private:
             b[i][1] = 1;
           }
         }
-      } else {// ORTHOGRAPHIC
+      } else { // ORTHOGRAPHIC
         for (int i = 0; i < 3; i++) {
           // note: view is opposite viewing direction
           if (frustum.view[i] < 0.0f) {
@@ -876,4 +865,4 @@ private:
   std::vector<unsigned char> _labels;
 };
 
-#endif// __OCTREE_H__
+#endif // __OCTREE_H__

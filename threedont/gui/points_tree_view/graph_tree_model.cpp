@@ -58,9 +58,12 @@ QVariant GraphTreeModel::data(const QModelIndex &index, int role) const {
 QVariant GraphTreeModel::headerData(int section, Qt::Orientation orientation, int role) const {
   if (role != Qt::DisplayRole || orientation != Qt::Horizontal) return {};
   switch (section) {
-    case 0: return QString("Predicate");
-    case 1: return QString("Object");
-    default: return {};
+    case 0:
+      return QString("Predicate");
+    case 1:
+      return QString("Object");
+    default:
+      return {};
   }
 }
 
@@ -113,7 +116,7 @@ void GraphTreeModel::onChildrenLoaded(const QString &parentId, QStringList child
 
   parents.append(itemMap.values(parentId));
 
-  for (const auto &item : parents) {
+  for (const auto &item: parents) {
     if (item->areChildrenLoaded())
       continue;
 

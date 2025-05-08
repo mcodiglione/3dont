@@ -1,9 +1,9 @@
 #include "main_layout.h"
-#include <QDockWidget>
-#include <QMenu>
 #include <QAction>
-#include <QLineEdit>
 #include <QDebug>
+#include <QDockWidget>
+#include <QLineEdit>
+#include <QMenu>
 
 MainLayout::MainLayout(ControllerWrapper *controllerWrapper, QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainLayout), controllerWrapper(controllerWrapper) {
@@ -162,11 +162,9 @@ void MainLayout::setLegend(const QVariantList &colors, const QStringList &labels
   dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
 
   QList<QColor> colorList;
-  for (const auto &color: colors) {
-    if (color.canConvert<QString>()) {
+  for (const auto &color: colors)
+    if (color.canConvert<QString>())
       colorList.append(QColor(color.toString()));
-    }
-  }
 
   auto *legend = new ColorScaleLegend(colorList, labels, dock);
   dock->setWidget(legend);

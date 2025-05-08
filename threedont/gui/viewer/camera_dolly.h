@@ -101,7 +101,7 @@ public:
     _active = true;
     _timer = vltools::getTime();
     _current_time =
-            _start_time;// this shouldn't be necessary, but just in case
+            _start_time; // this shouldn't be necessary, but just in case
   }
   void stop() { _active = false; }
 
@@ -255,4 +255,4 @@ private:
   bool _active;
 };
 
-#endif// __CAMERADOLLY_H__
+#endif // __CAMERADOLLY_H__

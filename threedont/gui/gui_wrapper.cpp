@@ -22,9 +22,9 @@ static void GuiWrapper_dealloc(GuiWrapperObject *self) {
 static PyObject *GuiWrapper_new(PyTypeObject *type, PyObject *args, PyObject *kwds) {
   GuiWrapperObject *self;
   self = (GuiWrapperObject *) type->tp_alloc(type, 0);
-  if (self != nullptr) {
+  if (self != nullptr)
     self->mainLayout = nullptr;
-  }
+
   return (PyObject *) self;
 }
 
@@ -41,7 +41,7 @@ static int GuiWrapper_init(GuiWrapperObject *self, PyObject *args, PyObject *kwd
   self->guiThread = std::thread([&self]() { self->controllerWrapper->start(); });
 
   Py_ssize_t size = PyList_Size(argv);
-  int *argc = new int(static_cast<int>(size + 1));// +1 for program name
+  int *argc = new int(static_cast<int>(size + 1)); // +1 for program name
 
   // Allocate argv array on heap
   char **argvRaw = new char *[*argc];
@@ -91,7 +91,7 @@ static PyObject *GuiWrapper_run(GuiWrapperObject *self, PyObject *args) {
           << "Starting GUI event loop";
 
   self->mainLayout->show();
-  self->app->exec();// long running
+  self->app->exec(); // long running
 
   self->guiThread.join();
 
@@ -119,9 +119,8 @@ static PyObject *GuiWrapper_view_node_details(GuiWrapperObject *self, PyObject *
   // details are a list of tuples
   PyObject *details;
   const char *parentId;
-  if (!PyArg_ParseTuple(args, "Os", &details, &parentId)) {
+  if (!PyArg_ParseTuple(args, "Os", &details, &parentId))
     return nullptr;
-  }
 
   QStringList detailsList;
   if (PyList_Check(details)) {
@@ -161,9 +160,8 @@ static PyObject *GuiWrapper_plot_tabular(GuiWrapperObject *self, PyObject *args)
 
   PyObject *header;
   PyObject *rows;
-  if (!PyArg_ParseTuple(args, "OO", &header, &rows)) {
+  if (!PyArg_ParseTuple(args, "OO", &header, &rows))
     return nullptr;
-  }
 
   QStringList headerList;
   if (PyList_Check(header)) {
@@ -217,9 +215,8 @@ static PyObject *GuiWrapper_set_statusbar_content(GuiWrapperObject *self, PyObje
 
   const char *content;
   int seconds;
-  if (!PyArg_ParseTuple(args, "si", &content, &seconds)) {
+  if (!PyArg_ParseTuple(args, "si", &content, &seconds))
     return nullptr;
-  }
 
   QMetaObject::invokeMethod(self->mainLayout, "setStatusbarContent", Qt::QueuedConnection, Q_ARG(QString, QString(content)), Q_ARG(int, seconds));
   return Py_None;
@@ -232,9 +229,8 @@ static PyObject *GuiWrapper_set_query_error(GuiWrapperObject *self, PyObject *ar
   }
 
   const char *error;
-  if (!PyArg_ParseTuple(args, "s", &error)) {
+  if (!PyArg_ParseTuple(args, "s", &error))
     return nullptr;
-  }
 
   QMetaObject::invokeMethod(self->mainLayout, "setQueryError", Qt::QueuedConnection, Q_ARG(QString, QString(error)));
   return Py_None;
@@ -249,9 +245,8 @@ static PyObject *GuiWrapper_set_legend(GuiWrapperObject *self, PyObject *args) {
   // there is a list of colors and a list of labels
   PyObject *colorsObject;
   PyObject *labelsObject;
-  if (!PyArg_ParseTuple(args, "OO", &colorsObject, &labelsObject)) {
+  if (!PyArg_ParseTuple(args, "OO", &colorsObject, &labelsObject))
     return nullptr;
-  }
 
   QStringList labels;
   QVariantList colors;
@@ -321,14 +316,12 @@ static PyModuleDef guimodule = {
 
 PyMODINIT_FUNC PyInit_gui(void) {
   PyObject *m;
-  if (PyType_Ready(&GuiWrapperType) < 0) {
+  if (PyType_Ready(&GuiWrapperType) < 0)
     return nullptr;
-  }
 
   m = PyModule_Create(&guimodule);
-  if (m == nullptr) {
+  if (m == nullptr)
     return nullptr;
-  }
 
   Py_INCREF(&GuiWrapperType);
   PyModule_AddObject(m, "GuiWrapper", (PyObject *) &GuiWrapperType);
