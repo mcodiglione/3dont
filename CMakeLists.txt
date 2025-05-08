@@ -3,14 +3,10 @@ project(threedont)
 
 # set(CMAKE_BUILD_TYPE Release)
 
-# Qt5::QXcbGlxIntegrationPlugin
-# Qt5::QXcbIntegrationPlugin
-
 set(CMAKE_CXX_STANDARD 20)
 
 option(THREEDONT_DEVELOP_BUILD "Enable development build" OFF)
 
-find_package(OpenMP REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Widgets Network OpenGL Core)

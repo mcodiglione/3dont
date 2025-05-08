@@ -24,7 +24,7 @@
             inherit version;
             pyproject = true;
 
-            stdenv = pkgs.clangStdenv;
+            stdenv = pkgs.clangStdenv; # better interoperability with darwin build env
 
 #            cmakeFlags = [
 #              "-DCMAKE_BUILD_TYPE=Debug"
@@ -45,26 +45,13 @@
             
             buildInputs = with pkgs; [
               eigen
-              # tbb.dev
               qt6.qtbase
-              llvmPackages.openmp
-            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland libGL ]
-            ++ lib.optionals stdenv.hostPlatform.isDarwin [ llvmPackages.openmp ];
+            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland libGL ];
             
             dependencies = with pkgs.python3Packages; [
               numpy
               sparqlwrapper
             ];
-          };
-        };
-
-        apps = {
-          python = {
-            type = "app";
-            program = let
-              py = pkgs.python3.withPackages (_: [ self.packages.${system}.threedont ]);
-            in
-              "${py}/bin/python";
           };
         };
 

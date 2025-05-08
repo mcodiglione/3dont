@@ -12,10 +12,10 @@ classifiers = [
     "Operating System :: OS Independent",
     'Intended Audience :: Science/Research',
     'Topic :: Scientific/Engineering',
-    'License :: OSI Approved :: MIT License'
+    # 'License :: OSI Approved :: MIT License'
 ]
-license = { text = "MIT" }
-license-files = ["LICEN[CS]E*"]
+# license = { text = "MIT" }
+# license-files = ["LICEN[CS]E*"]
 
 [project.scripts]
 threedont = "threedont.__main__:main"
@@ -28,5 +28,6 @@ build-backend = "scikit_build_core.build"
 wheel.exclude = [
   "threedont/**/*.cpp",
   "threedont/**/*.h",
-  "threedont/**/*.hpp"
+  "threedont/**/*.hpp",
+  "threedont/**/*.ui",
 ]
