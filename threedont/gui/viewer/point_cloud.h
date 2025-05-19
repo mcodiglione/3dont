@@ -66,6 +66,16 @@ public:
 
     // create a buffer for storing color vectors
     glGenBuffers(1, &_buffer_colors);
+//    std::vector<float> default_colors(_num_points * 4);
+//    for(size_t i = 0; i < _num_points; ++i) {
+//      default_colors[i*4 + 0] = 1.0f; // R
+//      default_colors[i*4 + 1] = 1.0f; // G
+//      default_colors[i*4 + 2] = 1.0f; // B
+//      default_colors[i*4 + 3] = 1.0f; // A
+//    }
+//    glBindBuffer(GL_ARRAY_BUFFER, _buffer_colors);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * default_colors.size(),
+//                 (GLvoid *) &default_colors[0], GL_STATIC_DRAW);
 
     // create a buffer for storing per point scalars
     glGenBuffers(1, &_buffer_scalars);
@@ -254,7 +264,7 @@ public:
     bool use_color_map = _attributes.dim(curr_attr_idx) == 1;
     bool broadcast_attr = _attributes.size(curr_attr_idx) == 1;
     const std::vector<float> &attr = _attributes[curr_attr_idx];
-    // glEnable(GL_TEXTURE_1D);
+    glEnable(GL_TEXTURE_1D);
     checkOpenGLError("before active texture");
     glActiveTexture(GL_TEXTURE0 + 0);
     checkOpenGLError("active texture");

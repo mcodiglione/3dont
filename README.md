@@ -28,6 +28,7 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] add default to scalar queries equal to color
 - [ ] configure page (namespace)
 - [ ] fix viewer focus issue
+- [ ] persistent configuration (platformdirs)
  
 ## License
 
