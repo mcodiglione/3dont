@@ -33,7 +33,7 @@ View, query and manually annotate pointclouds ontologies.
 ## License
 
 The LICENSE_PPTK file is the license of the viewer used as a base for this project. It is relative to the content of the folder
-`threedont/gui/viewer` and the file `threedont/app/viewer`.
+`threedont/gui/viewer` and the file `threedont/app/viewer.py`.
 
 ## Install
 
