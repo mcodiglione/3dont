@@ -61,7 +61,7 @@
             packages = with pkgs; [
               python3Packages.build
               qt6.qttools
-              gdb
+              # gdb
               lldb
             ] ++ lib.optionals stdenv.hostPlatform.isLinux [ gammaray ];
             nativeBuildInputs = with pkgs; [

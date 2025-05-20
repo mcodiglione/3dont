@@ -9,7 +9,12 @@ from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetExcept
 from .viewer import Viewer, get_color_map
 from ..gui import GuiWrapper
 
-__all__ = ['Controller']
+from sensor_manager import Sensor_Management_Functions as smf
+from sensor_manager import Classes as cl
+from sensor_manager import aws_iot_interface as aws
+import owlready2 as owl2
+
+__all__ = ["Controller"]
 
 """
     The commands_pipe will transport function calls from the GUI to the Controller.
@@ -49,7 +54,7 @@ def report_errors_to_gui(func):
             self.gui.set_statusbar_content(f"Connection error: {e}", 5)
             raise e
         except QueryBadFormed as e:
-            response = str(e).split('Response:\n')[1]
+            response = str(e).split("Response:\n")[1]
             self.gui.set_query_error(f"Bad query: {response}")
             raise e
         except WrongResultFormatException as e:
@@ -70,6 +75,7 @@ class Controller:
         viewer_server_port = self.gui.get_viewer_server_port()
         self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None
+        self.Args = cl.Args()
 
     def stop(self):
         print("Stopping controller...")
@@ -87,7 +93,9 @@ class Controller:
             try:
                 getattr(self, function_name)(*args)
             except Exception:
-                logging.exception("Error in controller running function %s", function_name)
+                logging.exception(
+                    "Error in controller running function %s", function_name
+                )
 
             command = self.commands_queue.get()
 
@@ -137,6 +145,17 @@ class Controller:
         self.gui.set_statusbar_content("Points loaded", 5)
         self.viewer_client.load(coords, colors)
         self.viewer_client.set(point_size=0.01)
+        #######################################################################################
+        # self.Args.graph_uri = url
+        # self.Args.ont_path = TODO
+        # self.Args.pop_ont_path = TODO
+        # self.Args.onto = owl2.get_ontology(self.Args.pop_ont_path).load()
+        # self.Args.base = owl2.get_namespace(namespace)
+        # populated_namespace = TODO
+        # self.Args.populated_base = owl2.get_namespace(populated_namespace)
+        # self.Args.wrapper = TODO
+        # self.Args.virtuoso_isql = TODO
+        #######################################################################################
 
     def view_point_details(self, id):
         iri = self.sparql_client.get_point_iri(id)
@@ -173,10 +192,15 @@ class Controller:
         maximum = float(max(scalars))
         step = (maximum - minimum) / NUMBER_OF_LABELS_IN_LEGEND
         # TODO better float format
-        labels = [f"{minimum + step * i:.2f}" for i in range(NUMBER_OF_LABELS_IN_LEGEND)]
+        labels = [
+            f"{minimum + step * i:.2f}" for i in range(NUMBER_OF_LABELS_IN_LEGEND)
+        ]
         colors = get_color_map()
         # it's a numpy array of shape (N, 3), convert to list of hex colors
-        colors = ["#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255)) for (r, g, b) in colors]
+        colors = [
+            "#{:02x}{:02x}{:02x}".format(int(r * 255), int(g * 255), int(b * 255))
+            for (r, g, b) in colors
+        ]
         self.gui.set_legend(colors, labels)
 
     @report_errors_to_gui
@@ -184,3 +208,85 @@ class Controller:
         print("Natural language query: ", query)
         # TODO
         self.gui.set_query_error("Natural language query not implemented yet!")
+
+    @report_errors_to_gui
+    def configure_AWS_connection(
+        self, access_key_id, secret_access_key, region, profile_name
+    ):
+        aws.set_aws_credentials(access_key_id, secret_access_key, region, profile_name)
+        self.gui.set_statusbar_content("AWS configured for this device!", 5)
+
+    @report_errors_to_gui
+    def add_sensor(
+        self,
+        sensor_name,
+        object_name,
+        property_name,
+        cert_pem_path,
+        private_key_path,
+        root_ca_path,
+        mqtt_topic,
+        client_id,
+    ):
+        ##### set args
+        self.Args.sensor_name = sensor_name
+        self.Args.object_name = object_name
+        self.Args.property_name = property_name
+        self.Args.cert_pem_path = cert_pem_path
+        self.Args.private_key_path = private_key_path
+        self.Args.root_ca_path = root_ca_path
+        self.Args.mqtttopic = mqtt_topic
+        self.Args.client_id = client_id
+        self.gui.set_statusbar_content("Adding Sensor...", 5)
+        #####execute function
+        smf.command_add_sensor(self.Args)
+        self.gui.set_statusbar_content("Sensor Added!", 5)
+        ##### update onto
+        self.Args.onto = owl2.get_ontology(self.Args.ont_path).load()
+        self.gui.set_statusbar_content("Ontology Updated!", 5)
+        self.gui.set_statusbar_content(
+            "You can add other sensors or update their value, but refresh server connection to see it in the viewer",
+            5,
+        )
+
+    @report_errors_to_gui
+    def update_sensors_and_reason(self):
+        self.gui.set_statusbar_content("Updating all Sensors and Reasoning...", 5)
+        smf.command_update_sensors_and_reason(self.Args)
+        self.gui.set_statusbar_content("Sensors Updated, Reasoning executed!", 5)
+        ##### update onto
+        self.Args.onto = owl2.get_ontology(self.Args.ont_path).load()
+        self.gui.set_statusbar_content("Ontology Updated!", 5)
+        self.gui.set_statusbar_content(
+            "You can add other sensors or update their value, but refresh server connection to see it in the viewer",
+            5,
+        )
+
+    ##### ONLY FOR DEBUGGING, UNTIL REAL ARG SETTING IS PREPARED IN "CONNECT TO SERVER" METHOD
+    @report_errors_to_gui
+    def provisional_set_Args(
+        self,
+        graph_uri,
+        ont_path,
+        pop_ont_path,
+        namespace,
+        populated_namespace,
+        virtuoso_isql,
+    ):
+
+        self.Args.graph_uri = graph_uri
+        self.Args.ont_path = ont_path
+        self.Args.pop_ont_path = pop_ont_path
+        self.Args.onto = owl2.get_ontology(self.Args.pop_ont_path).load()
+        self.Args.base = owl2.get_namespace(namespace)
+        self.Args.populated_base = owl2.get_namespace(populated_namespace)
+        self.Args.virtuoso_isql = virtuoso_isql
+        import SPARQLWrapper
+
+        wrapper = SPARQLWrapper.Wrapper.SPARQLWrapper(
+            endpoint="http://localhost:8890/sparql"
+        )
+        wrapper.setReturnFormat("csv")
+        wrapper.setCredentials("dba", "dba")
+        self.Args.wrapper = wrapper
+        self.gui.set_statusbar_content("Args configured!", 5)

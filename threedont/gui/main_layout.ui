@@ -1,169 +1,199 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-    <class>MainLayout</class>
-    <widget class="QMainWindow" name="MainLayout">
-        <property name="geometry">
-            <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>646</width>
-                <height>428</height>
-            </rect>
+ <class>MainLayout</class>
+ <widget class="QMainWindow" name="MainLayout">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>646</width>
+    <height>428</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>3DONT</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="cursor">
+    <cursorShape>SizeVerCursor</cursorShape>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>646</width>
+     <height>37</height>
+    </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionConnect_to_server"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionLegend"/>
+   </widget>
+   <widget class="QMenu" name="menuSensors">
+    <property name="title">
+     <string>Sensors</string>
+    </property>
+    <addaction name="actionConfigure_AWS_Connection"/>
+    <addaction name="actionSet_Arguments_PROVISIONAL"/>
+    <addaction name="actionAdd_Sensor"/>
+    <addaction name="actionUpdate_Sensors_and_Reason"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuSensors"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::DockWidgetArea::LeftDockWidgetArea|Qt::DockWidgetArea::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>Query</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+      <horstretch>1</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTextEdit" name="queryTextBox"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="errorLabel">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">border: 1px solid red;</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <property name="textInteractionFlags">
+        <set>Qt::TextInteractionFlag::NoTextInteraction</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="queryType">
+       <item>
+        <property name="text">
+         <string>select</string>
         </property>
-        <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-            </sizepolicy>
+       </item>
+       <item>
+        <property name="text">
+         <string>scalar</string>
         </property>
-        <property name="windowTitle">
-            <string>3DONT</string>
+       </item>
+       <item>
+        <property name="text">
+         <string>natural language</string>
         </property>
-        <widget class="QWidget" name="centralwidget">
-            <property name="cursor">
-                <cursorShape>SizeVerCursor</cursorShape>
-            </property>
-            <property name="autoFillBackground">
-                <bool>false</bool>
-            </property>
-        </widget>
-        <widget class="QMenuBar" name="menubar">
-            <property name="geometry">
-                <rect>
-                    <x>0</x>
-                    <y>0</y>
-                    <width>646</width>
-                    <height>33</height>
-                </rect>
-            </property>
-            <property name="defaultUp">
-                <bool>false</bool>
-            </property>
-            <property name="nativeMenuBar">
-                <bool>true</bool>
-            </property>
-            <widget class="QMenu" name="menuFile">
-                <property name="title">
-                    <string>File</string>
-                </property>
-                <addaction name="actionConnect_to_server"/>
-            </widget>
-            <widget class="QMenu" name="menuView">
-                <property name="title">
-                    <string>View</string>
-                </property>
-                <addaction name="actionLegend"/>
-            </widget>
-            <addaction name="menuFile"/>
-            <addaction name="menuView"/>
-        </widget>
-        <widget class="QStatusBar" name="statusbar"/>
-        <widget class="QDockWidget" name="dockWidget">
-            <property name="floating">
-                <bool>false</bool>
-            </property>
-            <property name="features">
-                <set>QDockWidget::DockWidgetFeature::DockWidgetMovable</set>
-            </property>
-            <property name="allowedAreas">
-                <set>Qt::DockWidgetArea::LeftDockWidgetArea|Qt::DockWidgetArea::RightDockWidgetArea</set>
-            </property>
-            <property name="windowTitle">
-                <string>Query</string>
-            </property>
-            <attribute name="dockWidgetArea">
-                <number>2</number>
-            </attribute>
-            <widget class="QWidget" name="dockWidgetContents">
-                <property name="sizePolicy">
-                    <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-                        <horstretch>1</horstretch>
-                        <verstretch>0</verstretch>
-                    </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                    <size>
-                        <width>0</width>
-                        <height>0</height>
-                    </size>
-                </property>
-                <property name="styleSheet">
-                    <string notr="true"/>
-                </property>
-                <layout class="QVBoxLayout" name="verticalLayout">
-                    <item>
-                        <widget class="QTextEdit" name="queryTextBox"/>
-                    </item>
-                    <item>
-                        <widget class="QLabel" name="errorLabel">
-                            <property name="enabled">
-                                <bool>true</bool>
-                            </property>
-                            <property name="styleSheet">
-                                <string notr="true">border: 1px solid red;</string>
-                            </property>
-                            <property name="text">
-                                <string/>
-                            </property>
-                            <property name="wordWrap">
-                                <bool>true</bool>
-                            </property>
-                            <property name="textInteractionFlags">
-                                <set>Qt::TextInteractionFlag::NoTextInteraction</set>
-                            </property>
-                        </widget>
-                    </item>
-                    <item>
-                        <widget class="QComboBox" name="queryType">
-                            <item>
-                                <property name="text">
-                                    <string>select</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>scalar</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>natural language</string>
-                                </property>
-                            </item>
-                            <item>
-                                <property name="text">
-                                    <string>tabular</string>
-                                </property>
-                            </item>
-                        </widget>
-                    </item>
-                    <item>
-                        <widget class="QPushButton" name="executeQueryButton">
-                            <property name="text">
-                                <string>execute</string>
-                            </property>
-                        </widget>
-                    </item>
-                </layout>
-            </widget>
-        </widget>
-        <action name="actionConnect_to_server">
-            <property name="text">
-                <string>Connect to server</string>
-            </property>
-        </action>
-        <action name="actionLegend">
-            <property name="checkable">
-                <bool>true</bool>
-            </property>
-            <property name="checked">
-                <bool>true</bool>
-            </property>
-            <property name="text">
-                <string>Legend</string>
-            </property>
-        </action>
-    </widget>
-    <resources/>
-    <connections/>
+       </item>
+       <item>
+        <property name="text">
+         <string>tabular</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="executeQueryButton">
+       <property name="text">
+        <string>execute</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="actionConnect_to_server">
+   <property name="text">
+    <string>Connect to server</string>
+   </property>
+  </action>
+  <action name="actionLegend">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Legend</string>
+   </property>
+  </action>
+  <action name="actionConfigure_AWS_Connection">
+   <property name="text">
+    <string>Configure AWS Connection</string>
+   </property>
+  </action>
+  <action name="actionSet_Arguments_PROVISIONAL">
+   <property name="text">
+    <string>Set Arguments - PROVISIONAL</string>
+   </property>
+  </action>
+  <action name="actionAdd_Sensor">
+   <property name="text">
+    <string>Add Sensor</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Sensors_and_Reason">
+   <property name="text">
+    <string>Update Sensors and Reason</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
 </ui>

@@ -1,0 +1,8 @@
+# i sensori li aggiungo sempre sul file RDF, poi faccio upload su virtuoso
+# i dati da sensore li aggiorno sempre sul file RDF, poi faccio reasoning e faccio upload su virtuoso
+# gestisco i sensori con una quinta branch chiamata "Sensors", che riusa le stesse prop. i metadati temporali sara Acquisition_Time, non date, e non ci sarà import
+# i sensori avranno un nome, una prop con un valore, una relazione con l'oggetto descritto e una data di acquisizione dell'ultimo valore.
+# gli storici saranno salvati a parte.
+# per le regole avrò un file separato che prende le prop dai sensori e le unisce a considerazioni statiche senza counterpart sensoristica, come i materiali
+# per i test potrei avere anche una prop booleana legata alle finestre ("is open") con sensori di apertura
+# per la gestione delle unità di misura dovrei aggiungere roba nella ont, ma per ora non lo faccio
