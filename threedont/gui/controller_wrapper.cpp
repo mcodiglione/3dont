@@ -54,8 +54,8 @@ void ControllerWrapper::scalarQuery(const std::string &query) {
   callPythonMethod(controller, "scalar_query", "s", query.c_str());
 }
 
-void ControllerWrapper::connectToServer(const std::string &url, const std::string &ontologyNamespace) {
-  callPythonMethod(controller, "connect_to_server", "ss", url.c_str(), ontologyNamespace.c_str());
+void ControllerWrapper::connectToServer(const std::string &url) {
+  callPythonMethod(controller, "connect_to_server", "s", url.c_str());
 }
 
 void ControllerWrapper::stop() {

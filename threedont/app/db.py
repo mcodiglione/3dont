@@ -25,9 +25,9 @@ class EmptyResultSetException(Exception):
 
 
 class SparqlEndpoint:
-    def __init__(self, url, namespace):
+    def __init__(self, url, namespace="http:/3DOntCore#"):
         self.graph = url
-        if namespace.endswith('#'):
+        if namespace.endswith("#"):
             self.namespace = namespace
         else:
             self.namespace = namespace + "#"
@@ -36,7 +36,8 @@ class SparqlEndpoint:
         self.endpoint = parsed.scheme + "://" + parsed.netloc + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
         self.sparql.setReturnFormat(
-            TURTLE)  # works with virtuoso even if the header sent is accept */* (RuntimeWarning)
+            TURTLE
+        )  # works with virtuoso even if the header sent is accept */* (RuntimeWarning)
         self.iri_to_id = {}
         self.coords_to_id = {}
         self.id_to_iri = []
@@ -46,7 +47,9 @@ class SparqlEndpoint:
         offset = 0
         all_results = {}
         while True:
-            chunked_query = query + " OFFSET " + str(offset) + " LIMIT " + str(CHUNK_SIZE)
+            chunked_query = (
+                query + " OFFSET " + str(offset) + " LIMIT " + str(CHUNK_SIZE)
+            )
             self.sparql.setQuery(chunked_query)
             results = self.sparql.queryAndConvert()
             for key in results.keys():
@@ -76,14 +79,18 @@ class SparqlEndpoint:
         # fix values in form '"2.48e-05"^^xsd:decimal'
         for k, v in results.items():
             for i, x in enumerate(v):
-                if x.endswith('^^xsd:decimal'):
+                if x.endswith("^^xsd:decimal"):
                     v[i] = x.split('"')[1]
 
-        coords = np.array((results['x'], results['y'], results['z'])).T.astype(np.float32)
-        colors = np.array((results['r'], results['g'], results['b'])).T.astype(np.float32)
-        self.iri_to_id = {p: i for i, p in enumerate(results['p'])}
+        coords = np.array((results["x"], results["y"], results["z"])).T.astype(
+            np.float32
+        )
+        colors = np.array((results["r"], results["g"], results["b"])).T.astype(
+            np.float32
+        )
+        self.iri_to_id = {p: i for i, p in enumerate(results["p"])}
         self.coords_to_id = {tuple(c): i for i, c in enumerate(coords)}
-        self.id_to_iri = results['p']
+        self.id_to_iri = results["p"]
 
         if colors.max() > 255:
             colors = colors / (1 << 16)  # 16 bit color
@@ -98,10 +105,10 @@ class SparqlEndpoint:
         results = self._execute_chunked_query(query)
 
         colors = np.copy(self.colors)
-        if not 'p' in results:
-            raise WrongResultFormatException(['p'], list(results.keys()))
+        if not "p" in results:
+            raise WrongResultFormatException(["p"], list(results.keys()))
 
-        for p in results['p']:
+        for p in results["p"]:
             try:
                 i = self.iri_to_id[p]
             except KeyError:
@@ -112,16 +119,16 @@ class SparqlEndpoint:
 
     def execute_scalar_query(self, query):
         results = self._execute_chunked_query(query)
-        if not 's' in results or not 'x' in results:
-            raise WrongResultFormatException(['s', 'x'], list(results.keys()))
+        if not "s" in results or not "x" in results:
+            raise WrongResultFormatException(["s", "x"], list(results.keys()))
 
-        minimum = float(min(results['x']))
-        maximum = float(max(results['x']))
+        minimum = float(min(results["x"]))
+        maximum = float(max(results["x"]))
         # print(minimum, maximum)
         default = minimum - (maximum - minimum) / 10
         # scalars = np.empty(len(self.colors), dtype=np.float32)
         scalars = np.full(len(self.colors), default, dtype=np.float32)
-        for subject, scalar in zip(results['s'], results['x']):
+        for subject, scalar in zip(results["s"], results["x"]):
             i = self.iri_to_id[subject]
             scalars[i] = scalar
         return scalars
@@ -130,32 +137,45 @@ class SparqlEndpoint:
         return self.id_to_iri[point_id]
 
     def get_node_details(self, iri):
-        query = GET_NODE_DETAILS.format(graph=self.graph, point=iri, namespace=self.namespace)
+        query = GET_NODE_DETAILS.format(
+            graph=self.graph, point=iri, namespace=self.namespace
+        )
         self.sparql.setQuery(query)
         results = self.sparql.queryAndConvert()
 
-        if 'p' not in results or 'o' not in results:
+        if "p" not in results or "o" not in results:
             # assume empty result
             return []
 
-        out = list(zip(results['p'], results['o']))
+        out = list(zip(results["p"], results["o"]))
 
         return out
 
     def execute_predicate_query(self, predicate):
-        query = PREDICATE_QUERY.format(graph=self.graph, predicate=predicate, namespace=self.namespace)
+        query = PREDICATE_QUERY.format(
+            graph=self.graph, predicate=predicate, namespace=self.namespace
+        )
         return self.execute_scalar_query(query)
 
     def annotate_node(self, subject, predicate, object):
-        query = ANNOTATE_NODE.format(graph=self.graph, subject=subject, predicate=predicate, object=object,
-                                     namespace=self.namespace)
+        query = ANNOTATE_NODE.format(
+            graph=self.graph,
+            subject=subject,
+            predicate=predicate,
+            object=object,
+            namespace=self.namespace,
+        )
         self.sparql.setQuery(query)
         self.sparql.query()
 
     def select_all_subjects(self, predicate, object):
-        query = SELECT_ALL_WITH_PREDICATE.format(graph=self.graph, predicate=predicate, object=object,
-                                                 namespace=self.namespace)
-        iris = self._execute_chunked_query(query)['p']
+        query = SELECT_ALL_WITH_PREDICATE.format(
+            graph=self.graph,
+            predicate=predicate,
+            object=object,
+            namespace=self.namespace,
+        )
+        iris = self._execute_chunked_query(query)["p"]
         colors = np.copy(self.colors)
         for p in iris:
             try:
@@ -167,6 +187,7 @@ class SparqlEndpoint:
 
     def raw_query(self, query):
         return self._execute_chunked_query(query)
+
 
 # Expceptions:
 # urllib.error.URLError no connection to server

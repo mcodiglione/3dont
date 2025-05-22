@@ -9,15 +9,15 @@ import subprocess
 import SPARQLWrapper
 
 # QUESTE FUNZIONI LEGGONO DIRETTAMENTE DA AWS IOT CORE, INCLUDENDO LE FUNZIONI DEDICATE.
-"""LE RELATIONSHIPS TRA OGGETTI E SENSORI SARANNO:
-        - Sends_datastream_about
-        - Is_dynamically_described_by
-"""
 
 
 def RDF_link_sensor_to_object(ontosensor, ontoobject):
-    ontosensor.Sends_datastream_about.append(ontoobject)
+    ontosensor.Contains_dynamic_original_data_relative_to.append(ontoobject)
+    ontosensor.Contains_dynamic_data_relative_to.append(ontoobject)
+    ontosensor.Contains_data_relative_to.append(ontoobject)
+    ontoobject.Is_dynamically_originally_described_by.append(ontosensor)
     ontoobject.Is_dynamically_described_by.append(ontosensor)
+    ontoobject.Is_described_by.append(ontosensor)
     return
 
 
@@ -26,7 +26,7 @@ def RDF_add_sensor_to_graph(SensorMetadata, onto, populated_namespace):
     sensor_name = SensorMetadata.name
     object_name = SensorMetadata.DescribedObject
     property_name = SensorMetadata.property
-    sensor = onto.Sensors(f"{sensor_name}", namespace=populated_namespace)
+    sensor = onto.Sensor_Datastream(f"{sensor_name}", namespace=populated_namespace)
     object = getattr(onto, object_name)
     RDF_link_sensor_to_object(sensor, object)
     value_dict = aws.get_sensor_data_from_name(
@@ -34,6 +34,8 @@ def RDF_add_sensor_to_graph(SensorMetadata, onto, populated_namespace):
     )  # lo storico qui viene aggiornato automaticamente
     setattr(sensor, property_name, value_dict["Value"])
     sensor.Acquisition_Time = value_dict["AcquisitionTime"]
+    sensor.is_a.append(onto.Dynamic_Import)
+    sensor.is_a.append(onto.Data_Import)
     return
 
 
@@ -49,15 +51,8 @@ def RDF_update_sensor_value(sensor_name, onto):
 
 
 def RDF_update_all_sensors(onto):
-    for sensor in onto.Sensors.instances():
+    for sensor in onto.Sensor_Datastream.instances():
         RDF_update_sensor_value(sensor.name, onto)
-    return
-
-
-def RDF_update_sensors_from_object(object_name, onto):
-    object = getattr(onto, object_name)
-    for sensor in object.Is_dynamically_described_by:
-        RDF_update_sensor_value(sensor.name)
     return
 
 
@@ -144,7 +139,7 @@ def RDF_check_and_create_graph(GRAPH_URI, wrapper):
     print("checking and creating graph")
     """Check if the graph exists and create it if not. Clear its content if it exists."""
     # check_query = "ASK WHERE {GRAPH <" f"{GRAPH_URI}>" + " {OPTIONAL { ?s ?p ?o }}}"
-    clear_query = f"DROP GRAPH <{GRAPH_URI}>"
+    clear_query = f"CLEAR GRAPH <{GRAPH_URI}>"
     create_query = f"CREATE GRAPH <{GRAPH_URI}>"
 
     # wrapper.setQuery(check_query)
@@ -153,21 +148,15 @@ def RDF_check_and_create_graph(GRAPH_URI, wrapper):
     try:
         wrapper.setMethod(SPARQLWrapper.POST)
         print("wrapper set to 'post'")
-        wrapper.setQuery(clear_query)
-        print("clear query execution")
-        wrapper.query()
-        print("Graph Dropped")
-        wrapper.setQuery(create_query)
-        wrapper.query()
-        print("Graph Created")
-        wrapper.addNamedGraph(str(GRAPH_URI))
-        wrapper.setMethod(SPARQLWrapper.GET)
-    except:
-        wrapper.setMethod(SPARQLWrapper.POST)
-        print("wrapper set to 'post'")
         wrapper.setQuery(create_query)
         print("create query execution")
         wrapper.query()
-        print("Graph Created")
+        print("Graph Created!")
         wrapper.addNamedGraph(str(GRAPH_URI))
+        wrapper.setMethod(SPARQLWrapper.GET)
+    except:
+        wrapper.setQuery(clear_query)
+        print("clear query execution")
+        wrapper.query()
+        print("Graph Cleared!")
         wrapper.setMethod(SPARQLWrapper.GET)

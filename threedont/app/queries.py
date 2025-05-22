@@ -71,7 +71,7 @@ INSERT DATA
 
 # sample scalar
 """
-PREFIX base:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?s ?x 
@@ -84,7 +84,7 @@ WHERE {
 
 # sample select
 """
-PREFIX base:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT ?p
@@ -101,7 +101,7 @@ WHERE {
 
 # sample table (avg x, avg y, avg z)
 """
-PREFIX base:<http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#>
+PREFIX base:<{namespace}>
 PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:<http://www.w3.org/2000/01/rdf-schema#>
 SELECT DISTINCT (AVG(?x) AS ?avg_x) (AVG(?y) AS ?avg_y) (AVG(?z) AS ?avg_z)

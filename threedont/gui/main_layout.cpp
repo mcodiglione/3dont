@@ -86,11 +86,7 @@ void MainLayout::on_actionConnect_to_server_triggered() {
                                         QLineEdit::Normal, "http://localhost:8890/Nettuno", &ok);
   if (!ok || dbUrl.isEmpty()) return;
 
-  QString ontologyNamespace = QInputDialog::getText(this, tr("Connect to server"), tr("Ontology namespace:"),
-                                                    QLineEdit::Normal, "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
-  if (!ok || ontologyNamespace.isEmpty()) return;
-
-  controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
+  controllerWrapper->connectToServer(dbUrl.toStdString());
 }
 
 void MainLayout::on_actionLegend_toggled(bool checked) {
