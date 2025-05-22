@@ -40,7 +40,7 @@ public:
   void viewNodeDetails(const std::string &node_id);
   void scalarWithPredicate(const std::string &predicate);
   void start();
-  void annotateNode(const std::string &subject, const std::string &predicate, const std::string &object);
+  void annotateNode(const std::string &subject, const std::string &predicate, const std::string &object, const std::string &author);
   void selectAllSubjects(const std::string &predicate, const std::string &object);
   void tabularQuery(const std::string &query);
   void naturalLanguageQuery(const std::string &query);

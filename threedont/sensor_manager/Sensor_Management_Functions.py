@@ -75,3 +75,17 @@ def command_update_sensors_and_reason(args: cl.Args):  # faster, only saves at t
     RDF.RDF_upload_rdf(args.pop_ont_path, args.graph_uri, args.virtuoso_isql)
     print("RDF uploaded into virtuoso")
     return
+
+
+def command_manual_annotation(args: cl.Args, subject, predicate, object, author_name):
+    RDF.RDF_manual_annotation(args, subject, predicate, object, author_name)
+    print("annotation recorded")
+    RDF.RDF_sensor_reasoning(args.onto, args.base, args.populated_base, args.ont_path)
+    print("reasoning executed")
+    onto = args.onto
+    onto.save(args.pop_ont_path)
+    print("onto saved")
+    RDF.RDF_check_and_create_graph(args.graph_uri, args.wrapper)
+    RDF.RDF_upload_rdf(args.pop_ont_path, args.graph_uri, args.virtuoso_isql)
+    print("RDF uploaded into virtuoso")
+    return

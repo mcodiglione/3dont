@@ -7,6 +7,8 @@ import ast
 import logging
 import subprocess
 import SPARQLWrapper
+import datetime
+import owlready2 as owl2
 
 # QUESTE FUNZIONI LEGGONO DIRETTAMENTE DA AWS IOT CORE, INCLUDENDO LE FUNZIONI DEDICATE.
 
@@ -54,6 +56,56 @@ def RDF_update_all_sensors(onto):
     for sensor in onto.Sensor_Datastream.instances():
         RDF_update_sensor_value(sensor.name, onto)
     return
+
+
+def RDF_manual_annotation(args: cl.Args, subject, predicate, object, author_name):
+    onto = args.onto
+    pop_namespace = args.populated_base
+    with onto:
+        # check_for_number
+        starting_n = 1
+        while getattr(onto, f"Manual_Annotation_number_{starting_n}_"):
+            starting_n += 1
+        n = starting_n
+        annotation_name = f"Manual_Annotation_number_{n}_"
+        annotation = onto.Manual_Annotation(annotation_name, namespace=pop_namespace)
+        # rdf:type
+        annotation.is_a.append(onto.Static_Import)
+        annotation.is_a.append(onto.Data_Import)
+        # author
+        annotation.Annotation_Author = author_name
+        # time
+        time = datetime.datetime.now()
+        annotation.Acquisition_Time = time
+        # subject
+        annotation.Contains_static_original_data_relative_to.append(subject)
+        annotation.Contains_static_data_relative_to.append(subject)
+        annotation.Contains_data_relative_to.append(subject)
+        subject.Is_statically_originally_described_by.append(annotation)
+        subject.Is_statically_described_by.append(annotation)
+        subject.Is_described_by.append(annotation)
+        # if predicate is data prop object is type str
+        xsd = owl2.default_world.get_namespace("http://www.w3.org/2001/XMLSchema#")
+        if not type(object) == str:
+            try:
+                predicate[annotation] = object
+            except:
+                predicate[annotation].append(object)
+        elif xsd.string in predicate.range:
+            try:
+                predicate[annotation] = object
+            except:
+                predicate[annotation].append(object)
+        elif xsd.integer in predicate.range:
+            try:
+                predicate[annotation] = int(object)
+            except:
+                predicate[annotation].append(int(object))
+        else:
+            try:
+                predicate[annotation] = float(object)
+            except:
+                predicate[annotation].append(float(object))
 
 
 def RDF_sensor_reasoning(onto, base, populated_base, ont_path):

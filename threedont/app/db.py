@@ -25,7 +25,7 @@ class EmptyResultSetException(Exception):
 
 
 class SparqlEndpoint:
-    def __init__(self, url, namespace="http:/3DOntCore#"):
+    def __init__(self, url, namespace="http://3DOntCore#"):
         self.graph = url
         if namespace.endswith("#"):
             self.namespace = namespace

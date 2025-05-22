@@ -134,10 +134,10 @@ class Controller:
         self._send_legend(scalars)
 
     @report_errors_to_gui
-    def connect_to_server(self, url, namespace="http:/3DOntCore"):
+    def connect_to_server(self, url, namespace="http://3DOntCore"):
         print("Loading all the points... ", url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
-        self.sparql_client = SparqlEndpoint(url, namespace="http:/3DOntCore")
+        self.sparql_client = SparqlEndpoint(url, namespace="http://3DOntCore")
         print("Connected to server")
         self.gui.set_statusbar_content("Loading points from server...", 60)
         coords, colors = self.sparql_client.get_all()
@@ -167,13 +167,16 @@ class Controller:
         self.gui.view_node_details(details, iri)
 
     @report_errors_to_gui
-    def annotate_node(self, iri, predicate, value):
-        print("Controller: ", iri, predicate, value)
-        if self.sparql_client is None:
-            print("No connection to server")
-            return
-
-        self.sparql_client.annotate_node(iri, predicate, value)
+    def annotate_node(
+        self, subject_iri, predicate_name, object_name_or_value, author_name
+    ):
+        onto = self.Args.onto
+        predicate = getattr(onto, predicate_name)
+        pop_base = self.Args.populated_base
+        subject = owl2.IRIS[subject_iri]
+        if predicate in onto.object_properties():
+            obj = getattr(onto, object_name_or_value)
+        smf.command_manual_annotation(self.Args, subject, predicate, obj, author_name)
 
     def select_all_subjects(self, predicate, object):
         colors = self.sparql_client.select_all_subjects(predicate, object)

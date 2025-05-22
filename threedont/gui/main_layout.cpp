@@ -188,14 +188,17 @@ void MainLayout::onTreeViewContexMenuRequested(const QPoint &pos) {
   connect(annotate, &QAction::triggered, [this, object]() {
     QString subject = object;
     bool ok;
-    QString predicate = QInputDialog::getText(this, tr("Annotate"), tr("Predicate:"), QLineEdit::Normal,
-                                              "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
+    QString predicate = QInputDialog::getText(this, tr("Annotate"), tr("Predicate Name:"), QLineEdit::Normal,
+                                              "type here", &ok);
     if (!ok || predicate.isEmpty()) return;
-    QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Object:"), QLineEdit::Normal,
-                                              "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#", &ok);
+    QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Object name or Value:"), QLineEdit::Normal,
+                                              "type here", &ok);
     if (!ok || newObject.isEmpty()) return;
+    QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Annotation Author (Name Surname):"), QLineEdit::Normal,
+                                              "type here", &ok);
+    if (!ok || authorName.isEmpty()) return;
 
-    controllerWrapper->annotateNode(subject.toStdString(), predicate.toStdString(), newObject.toStdString());
+    controllerWrapper->annotateNode(subject.toStdString(), predicate.toStdString(), newObject.toStdString(), authorName.toStdString());
   });
 
   QAction *selectAll = contextMenu.addAction("Select all");
