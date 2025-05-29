@@ -136,7 +136,7 @@ class Controller:
         print("Points received from db")
         self.gui.set_statusbar_content("Points loaded", 5)
         self.viewer_client.load(coords, colors)
-        self.viewer_client.set(point_size=0.01)
+        self.viewer_client.set(point_size=0.01) # TODO no magic numbers
 
     def view_point_details(self, id):
         iri = self.sparql_client.get_point_iri(id)
