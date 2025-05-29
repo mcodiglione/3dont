@@ -63,7 +63,9 @@ def report_errors_to_gui(func):
 
 
 class Controller:
-    def __init__(self):
+    def __init__(self, config, app_state):
+        self.config = config
+        self.app_state = app_state
         self.commands_queue = Queue()
         action_controller = ActionController(self.commands_queue, self.run_event_loop)
         self.gui = GuiWrapper(action_controller, sys.argv)
@@ -136,7 +138,8 @@ class Controller:
         print("Points received from db")
         self.gui.set_statusbar_content("Points loaded", 5)
         self.viewer_client.load(coords, colors)
-        self.viewer_client.set(point_size=0.01) # TODO no magic numbers
+        print("Point size is ", self.config.get_visualizer_pointsSize())
+        self.viewer_client.set(point_size=self.config.get_visualizer_pointsSize())
 
     def view_point_details(self, id):
         iri = self.sparql_client.get_point_iri(id)

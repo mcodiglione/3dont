@@ -11,39 +11,39 @@ CONFIG_FILE = "config.ini"
 STATE_FILE = "state.json"
 
 DEFAULT_CONFIG = {
-    "visualization": {
-        "points_size": 0.01,
-        "scalar_color_scheme": "jet",
-        "highlight_color": "#FF0000",
+    "visualizer": {
+        "pointsSize": 0.01,
+        "scalarColorScheme": "jet",
+        "highlightColor": "#FF0000",
     },
     "general": {
     },
 }
 
 DEFAULT_STATE = {
-    "last_opened_file": "",
-    "last_server_url": "",
-    "last_namespace": "",
-    "last_query": "",
-    "show_legend": True,
+    "lastOpenedFile": "",
+    "lastServerUrl": "",
+    "lastNamespace": "",
+    "lastQuery": "",
+    "showLegend": True,
 }
 
 CONFIG_SCHEMA = {
-    "visualization": {
-        "points_size": float,
-        "scalar_color_scheme": str,
-        "highlight_color": str,
+    "visualizer": {
+        "pointsSize": float,
+        "scalarColorScheme": str,
+        "highlightColor": str,
     },
     "general": {
     },
 }
 
 STATE_SCHEMA = {
-    "last_opened_file": str,
-    "last_server_url": str,
-    "last_namespace": str,
-    "last_query": str,
-    "show_legend": bool,
+    "lastOpenedFile": str,
+    "lastServerUrl": str,
+    "lastNamespace": str,
+    "lastQuery": str,
+    "showLegend": bool,
 }
 
 class AbstractConfig(ABC):
@@ -92,18 +92,18 @@ class AbstractConfig(ABC):
             current = current.setdefault(part, {})
         current[path[-1]] = value
 
-    def _get_config_value(self, attr):
+    def _get_config_value(self, attr, field_type):
         path = attr.split('_')
         current = self.config
         for part in path:
             current = current[part]
-        return current
+        return field_type(current)
 
     def _build_get_config(self, attr):
         path = attr.split('_')
         try:
-            self._validate_config_path(path)
-            return partial(self._get_config_value, attr)
+            field_type = self._validate_config_path(path)
+            return partial(self._get_config_value, attr, field_type=field_type)
         except KeyError:
             raise AttributeError(f"Configuration attribute '{attr}' not found.")
 
@@ -116,11 +116,11 @@ class AbstractConfig(ABC):
             raise AttributeError(f"Configuration attribute '{attr}' not found.")
 
     def __getattr__(self, item):
-        if item.startswith('get'):
-            attr = item[3:].lower()
+        if item.startswith('get_'):
+            attr = item[4:]
             return self._build_get_config(attr)
-        elif item.startswith('set'):
-            attr = item[3:].lower()
+        elif item.startswith('set_'):
+            attr = item[4:]
             return self._build_set_config(attr)
         else:
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")

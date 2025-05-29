@@ -12,7 +12,7 @@ def main():
     app_state = AppState("threedont")
     config = Config("threedont")
 
-    controller = Controller()
+    controller = Controller(config, app_state)
 
     controller.run()
     print("Application stopped gracefully")
