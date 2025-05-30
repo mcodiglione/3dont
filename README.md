@@ -31,6 +31,7 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] fix viewer focus issue
 - [ ] better loading screen
 - [ ] gui error report (generic)
+- [ ] override config with cli arguments
  
 ## License
 
