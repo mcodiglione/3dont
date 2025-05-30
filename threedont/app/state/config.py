@@ -38,10 +38,12 @@ class Config(AbstractConfig):
     def write_config_to_file(self, file):
         config = configparser.ConfigParser()
         for section, options in self.config.items():
-            print(f"Writing section: {section} with options: {options}")
             config[section] = {k: str(v) for k, v in options.items()}
         config.write(file)
 
+    """
+    Ini makes everything lowercase, so we need to convert it back to camel case
+    """
     def _to_camel_case(self, lower_str, options):
         for option in options:
             if lower_str == option.lower():
@@ -56,6 +58,8 @@ class Config(AbstractConfig):
             section = self._to_camel_case(section, CONFIG_SCHEMA.keys())
             for option, value in config.items(section):
                 camel_case_option = self._to_camel_case(option, CONFIG_SCHEMA[section].keys())
+                if CONFIG_SCHEMA[section][camel_case_option] == bool:
+                    value = config[section].getboolean(option)
                 section_dict[camel_case_option] = value
             result[section] = section_dict
         return result
