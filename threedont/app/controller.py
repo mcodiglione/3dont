@@ -8,6 +8,7 @@ from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetException
 from .viewer import Viewer, get_color_map
 from ..gui import GuiWrapper
+from .state import Project
 
 __all__ = ['Controller']
 
@@ -63,13 +64,16 @@ def report_errors_to_gui(func):
 
 
 class Controller:
-    def __init__(self):
+    def __init__(self, config, app_state):
+        self.config = config
+        self.app_state = app_state
         self.commands_queue = Queue()
         action_controller = ActionController(self.commands_queue, self.run_event_loop)
         self.gui = GuiWrapper(action_controller, sys.argv)
         viewer_server_port = self.gui.get_viewer_server_port()
         self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None
+        self.project = None
 
     def stop(self):
         print("Stopping controller...")
@@ -81,6 +85,12 @@ class Controller:
 
     def run_event_loop(self):
         print("Running controller")
+        self.update_project_list()
+        if self.config.get_general_loadLastProject():
+            last_project = self.app_state.get_projectName()
+            if last_project and Project.exists(last_project):
+                self.open_project(last_project)
+
         command = self.commands_queue.get()
         while command is not None:
             function_name, args = command
@@ -126,17 +136,19 @@ class Controller:
         self._send_legend(scalars)
 
     @report_errors_to_gui
-    def connect_to_server(self, url, namespace):
-        print("Loading all the points... ", url)
+    def connect_to_server(self, graph_url, db_url, namespace):
+        print("Loading all the points... ", graph_url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
-        self.sparql_client = SparqlEndpoint(url, namespace)
+        # TODO handle graph_url in GUI
+        self.sparql_client = SparqlEndpoint(graph_url, db_url,  namespace)
         print("Connected to server")
         self.gui.set_statusbar_content("Loading points from server...", 60)
         coords, colors = self.sparql_client.get_all()
         print("Points received from db")
         self.gui.set_statusbar_content("Points loaded", 5)
         self.viewer_client.load(coords, colors)
-        self.viewer_client.set(point_size=0.01)
+        print("Point size is ", self.config.get_visualizer_pointsSize())
+        self.viewer_client.set(point_size=self.config.get_visualizer_pointsSize())
 
     def view_point_details(self, id):
         iri = self.sparql_client.get_point_iri(id)
@@ -184,3 +196,30 @@ class Controller:
         print("Natural language query: ", query)
         # TODO
         self.gui.set_query_error("Natural language query not implemented yet!")
+
+    def update_project_list(self):
+        lst =  Project.get_project_list()
+        self.gui.set_project_list(lst)
+
+    def open_project(self, project_name):
+        print("Opening project: ", project_name)
+        self.project = Project(project_name)
+        self.app_state.set_projectName(self.project.get_name())
+        self.gui.set_statusbar_content(f"Opened project: {project_name}", 5)
+        self.connect_to_server(self.project.get_graphUri(), self.project.get_dbUrl(), self.project.get_graphNamespace())
+
+    def create_project(self, project_name, db_url, graph_uri, graph_namespace):
+        print("Creating project: ", project_name)
+        if Project.exists(project_name):
+            # TODO use proper error handling in GUI
+            self.gui.set_query_error(f"Project '{project_name}' already exists!")
+            return
+
+        self.project = Project(project_name)
+        self.project.set_name(project_name)
+        self.project.set_dbUrl(db_url)
+        self.project.set_graphUri(graph_uri)
+        self.project.set_graphNamespace(graph_namespace)
+        self.project.save()
+        self.gui.set_statusbar_content(f"Created project: {project_name}", 5)
+        self.open_project(project_name) # maybe remove this

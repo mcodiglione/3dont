@@ -54,10 +54,6 @@ void ControllerWrapper::scalarQuery(const std::string &query) {
   callPythonMethod(controller, "scalar_query", "s", query.c_str());
 }
 
-void ControllerWrapper::connectToServer(const std::string &url, const std::string &ontologyNamespace) {
-  callPythonMethod(controller, "connect_to_server", "ss", url.c_str(), ontologyNamespace.c_str());
-}
-
 void ControllerWrapper::stop() {
   callPythonMethod(controller, "stop", "");
 }
@@ -92,4 +88,13 @@ void ControllerWrapper::tabularQuery(const std::string &query) {
 
 void ControllerWrapper::naturalLanguageQuery(const std::string &query) {
   callPythonMethod(controller, "natural_language_query", "s", query.c_str());
+}
+void ControllerWrapper::openProject(const std::string &projectName) {
+  callPythonMethod(controller, "open_project", "s", projectName.c_str());
+}
+void ControllerWrapper::createProject(const std::string &projectName, const std::string &dbUrl, const std::string &graphUri, const std::string &ontologyNamespace) {
+  callPythonMethod(controller, "create_project", "ssss", projectName.c_str(), dbUrl.c_str(), graphUri.c_str(), ontologyNamespace.c_str());
+}
+void ControllerWrapper::askProjectList() {
+  callPythonMethod(controller, "update_project_list", "");
 }

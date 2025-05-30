@@ -1,6 +1,7 @@
 import argparse
 
 from threedont import Controller
+from .app.state import Config, AppState
 
 
 def main():
@@ -8,7 +9,10 @@ def main():
     parser.add_argument('--test', action='store_true', help='Test the viewer')
     args = parser.parse_args()
 
-    controller = Controller()
+    app_state = AppState("threedont")
+    config = Config("threedont")
+
+    controller = Controller(config, app_state)
 
     controller.run()
     print("Application stopped gracefully")

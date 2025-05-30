@@ -51,6 +51,7 @@
             dependencies = with pkgs.python3Packages; [
               numpy
               sparqlwrapper
+              platformdirs
             ];
           };
         };

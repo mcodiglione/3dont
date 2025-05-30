@@ -25,15 +25,14 @@ class EmptyResultSetException(Exception):
 
 
 class SparqlEndpoint:
-    def __init__(self, url, namespace):
-        self.graph = url
+    def __init__(self, graph_uri, db_url, namespace):
+        self.graph = graph_uri
         if namespace.endswith('#'):
             self.namespace = namespace
         else:
             self.namespace = namespace + "#"
-        parsed = urlparse(url)
         # TODO generalize outside of virtuoso
-        self.endpoint = parsed.scheme + "://" + parsed.netloc + "/sparql"
+        self.endpoint = db_url + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
         self.sparql.setReturnFormat(
             TURTLE)  # works with virtuoso even if the header sent is accept */* (RuntimeWarning)

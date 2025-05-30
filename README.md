@@ -21,6 +21,7 @@ View, query and manually annotate pointclouds ontologies.
 - [x] highlight subject name
 - [x] legend scalar
 - [x] adjust licensing
+- [x] persistent configuration (platformdirs)
 - [ ] scalar templates
 - [ ] nl queries
 - [ ] refactor input dialogs
@@ -28,7 +29,10 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] add default to scalar queries equal to color
 - [ ] configure page (namespace)
 - [ ] fix viewer focus issue
-- [ ] persistent configuration (platformdirs)
+- [ ] better loading screen
+- [ ] gui error report (generic)
+- [ ] override config with cli arguments
+- [ ] embed virtuoso in the application
  
 ## License
 
