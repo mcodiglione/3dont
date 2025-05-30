@@ -14,6 +14,7 @@ DEFAULT_CONFIG = {
         "highlightColor": "#FF0000",
     },
     "general": {
+        "loadLastProject": True,
     },
 }
 
@@ -25,6 +26,7 @@ CONFIG_SCHEMA = {
         "highlightColor": str,
     },
     "general": {
+        "loadLastProject": bool,
     },
 }
 
@@ -32,7 +34,7 @@ class Config(AbstractConfig):
     def __init__(self, app_name: str = "threedont"):
         self.config_path = Path(user_config_dir(app_name)) / CONFIG_FILE
         self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        super().__init__(self.config_path, DEFAULT_CONFIG, CONFIG_SCHEMA)
+        super().__init__(self.config_path, DEFAULT_CONFIG, CONFIG_SCHEMA, auto_save=False)
 
     def write_config_to_file(self, file):
         config = configparser.ConfigParser()

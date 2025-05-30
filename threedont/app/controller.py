@@ -85,6 +85,11 @@ class Controller:
 
     def run_event_loop(self):
         print("Running controller")
+        if self.config.get_general_loadLastProject():
+            last_project = self.app_state.get_projectName()
+            if last_project:
+                self.open_project(last_project)
+
         command = self.commands_queue.get()
         while command is not None:
             function_name, args = command
@@ -196,13 +201,14 @@ class Controller:
     def open_project(self, project_name):
         print("Opening project: ", project_name)
         self.project = Project(project_name)
-        self.app_state.set_project(self.project.get_name())
+        self.app_state.set_projectName(self.project.get_name())
         self.gui.set_statusbar_content(f"Opened project: {project_name}", 5)
-        # TODO: Load project data into the viewer and SPARQL client
+        self.connect_to_server(self.project.get_dbUrl(), self.project.get_graphNamespace())
 
     def create_project(self, project_name, db_url, graph_uri, graph_namespace):
         print("Creating project: ", project_name)
         if Project.exists(project_name):
+            # TODO use proper error handling in GUI
             self.gui.set_query_error(f"Project '{project_name}' already exists!")
             return
 

@@ -3,6 +3,7 @@ from pathlib import Path
 import json
 import re
 import unicodedata
+from copy import deepcopy
 
 from .abstract_config import AbstractConfig
 
@@ -33,11 +34,12 @@ def safe_filename(input_string, replacement='_', max_length=255):
 
 class Project(AbstractConfig):
     def __init__(self, project_name):
+        # TODO pass app_name as parameter (not really needed, but for consistency)
         self.project_path = Path(user_data_dir("threedont")) / "projects" / f"{safe_filename(project_name)}"
         self.project_path.mkdir(parents=True, exist_ok=True)
-        config = DEFAULT_PROJECT_CONFIG.copy()
+        config = deepcopy(DEFAULT_PROJECT_CONFIG)
         config["name"] = project_name
-        super().__init__(self.project_path / PROJECT_FILE, config, PROJECT_SCHEMA)
+        super().__init__(self.project_path / PROJECT_FILE, config, PROJECT_SCHEMA, auto_save=False)
 
     def write_config_to_file(self, file):
         json.dump(self.config, file, indent=2)

@@ -12,6 +12,7 @@ DEFAULT_STATE = {
     "lastNamespace": "",
     "lastQuery": "",
     "showLegend": True,
+    "projectName": "",
 }
 
 STATE_SCHEMA = {
@@ -20,13 +21,14 @@ STATE_SCHEMA = {
     "lastNamespace": str,
     "lastQuery": str,
     "showLegend": bool,
+    "projectName": str,
 }
 
 class AppState(AbstractConfig):
     def __init__(self, app_name: str = "threedont"):
         self.state_path = Path(user_data_dir(app_name)) / STATE_FILE
         self.state_path.parent.mkdir(parents=True, exist_ok=True)
-        super().__init__(self.state_path, DEFAULT_STATE, STATE_SCHEMA)
+        super().__init__(self.state_path, DEFAULT_STATE, STATE_SCHEMA, auto_save=True)
         self.load()
 
     def write_config_to_file(self, file):

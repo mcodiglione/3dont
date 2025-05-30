@@ -1,14 +1,31 @@
 from abc import ABC, abstractmethod
 from functools import partial
 from pathlib import Path
+from copy import deepcopy
 
 
 class AbstractConfig(ABC):
-    def __init__(self, file_path: Path, default_config: dict, config_schema: dict):
+    def __init__(self, file_path: Path, default_config: dict, config_schema: dict, auto_save: bool = False):
         self.file_path = file_path
-        self.config = default_config.copy()
+        self.config = deepcopy(default_config)
         self.load()
+        self.update_config_with_default(default_config)
+        self.save()
         self.schema = config_schema
+        self.auto_save = auto_save
+
+    """
+    When adding a config value to the application we want to add it in the existing config file
+    """
+    def update_config_with_default(self, default_config: dict, config = None):
+        if config is None:
+            config = self.config
+        for key, value in default_config.items():
+            if key not in config:
+                self.config[key] = deepcopy(value)
+            else:
+                if isinstance(value, dict):
+                    self.update_config_with_default(value, config[key])
 
     @abstractmethod
     def write_config_to_file(self, file):
@@ -48,6 +65,8 @@ class AbstractConfig(ABC):
         for part in path[:-1]:
             current = current.setdefault(part, {})
         current[path[-1]] = value
+        if self.auto_save:
+            self.save()
 
     def _get_config_value(self, attr, field_type):
         path = attr.split('_')
