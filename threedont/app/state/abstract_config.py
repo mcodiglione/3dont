@@ -1,50 +1,7 @@
 from abc import ABC, abstractmethod
 from functools import partial
 from pathlib import Path
-from platformdirs import user_config_dir, user_data_dir
-import json
-import configparser
 
-__all__ = ["Config", "AppState"]
-
-CONFIG_FILE = "config.ini"
-STATE_FILE = "state.json"
-
-DEFAULT_CONFIG = {
-    "visualizer": {
-        "pointsSize": 0.01,
-        "scalarColorScheme": "jet",
-        "highlightColor": "#FF0000",
-    },
-    "general": {
-    },
-}
-
-DEFAULT_STATE = {
-    "lastOpenedFile": "",
-    "lastServerUrl": "",
-    "lastNamespace": "",
-    "lastQuery": "",
-    "showLegend": True,
-}
-
-CONFIG_SCHEMA = {
-    "visualizer": {
-        "pointsSize": float,
-        "scalarColorScheme": str,
-        "highlightColor": str,
-    },
-    "general": {
-    },
-}
-
-STATE_SCHEMA = {
-    "lastOpenedFile": str,
-    "lastServerUrl": str,
-    "lastNamespace": str,
-    "lastQuery": str,
-    "showLegend": bool,
-}
 
 class AbstractConfig(ABC):
     def __init__(self, file_path: Path, default_config: dict, config_schema: dict):
@@ -115,6 +72,9 @@ class AbstractConfig(ABC):
         except KeyError:
             raise AttributeError(f"Configuration attribute '{attr}' not found.")
 
+    """
+    Dynamically create getter and setter methods for configuration attributes.
+    """
     def __getattr__(self, item):
         if item.startswith('get_'):
             attr = item[4:]
@@ -124,34 +84,3 @@ class AbstractConfig(ABC):
             return self._build_set_config(attr)
         else:
             raise AttributeError(f"'{self.__class__.__name__}' object has no attribute '{item}'")
-
-
-class Config(AbstractConfig):
-    def __init__(self, app_name: str = "threedont"):
-        self.config_path = Path(user_config_dir(app_name)) / CONFIG_FILE
-        self.config_path.parent.mkdir(parents=True, exist_ok=True)
-        super().__init__(self.config_path, DEFAULT_CONFIG, CONFIG_SCHEMA)
-
-    def write_config_to_file(self, file):
-        config = configparser.ConfigParser()
-        for section, options in self.config.items():
-            config[section] = options
-        config.write(file)
-
-    def read_config_from_file(self, file):
-        config = configparser.ConfigParser()
-        config.read_file(file)
-        return {section: dict(config[section]) for section in config.sections()}
-
-class AppState(AbstractConfig):
-    def __init__(self, app_name: str = "threedont"):
-        self.state_path = Path(user_data_dir(app_name)) / STATE_FILE
-        self.state_path.parent.mkdir(parents=True, exist_ok=True)
-        super().__init__(self.state_path, DEFAULT_STATE, STATE_SCHEMA)
-        self.load()
-
-    def write_config_to_file(self, file):
-        json.dump(self.config, file, indent=2)
-
-    def read_config_from_file(self, file):
-        return json.load(file)
