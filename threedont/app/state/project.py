@@ -35,10 +35,25 @@ class Project(AbstractConfig):
     def __init__(self, project_name):
         self.project_path = Path(user_data_dir("threedont")) / "projects" / f"{safe_filename(project_name)}"
         self.project_path.mkdir(parents=True, exist_ok=True)
-        super().__init__(self.project_path / PROJECT_FILE, DEFAULT_PROJECT_CONFIG, PROJECT_SCHEMA)
+        config = DEFAULT_PROJECT_CONFIG.copy()
+        config["name"] = project_name
+        super().__init__(self.project_path / PROJECT_FILE, config, PROJECT_SCHEMA)
 
     def write_config_to_file(self, file):
         json.dump(self.config, file, indent=2)
 
     def read_config_from_file(self, file):
         return json.load(file)
+
+    @staticmethod
+    def get_project_list():
+        projects_dir = Path(user_data_dir("threedont")) / "projects"
+        if not projects_dir.exists():
+            return []
+        # get all directories in the projects directory
+        return [Project(p).get_name() for p in projects_dir.iterdir() if p.is_dir() and (p / PROJECT_FILE).exists()]
+
+    @staticmethod
+    def exists(project_name):
+        project_path = Path(user_data_dir("threedont")) / "projects" / f"{safe_filename(project_name)}"
+        return (project_path / PROJECT_FILE).exists()

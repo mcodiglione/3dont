@@ -8,6 +8,7 @@ from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetException
 from .viewer import Viewer, get_color_map
 from ..gui import GuiWrapper
+from .state import Project
 
 __all__ = ['Controller']
 
@@ -72,6 +73,7 @@ class Controller:
         viewer_server_port = self.gui.get_viewer_server_port()
         self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None
+        self.project = None
 
     def stop(self):
         print("Stopping controller...")
@@ -187,3 +189,29 @@ class Controller:
         print("Natural language query: ", query)
         # TODO
         self.gui.set_query_error("Natural language query not implemented yet!")
+
+    def get_project_list(self):
+        return Project.get_project_list()
+
+    def open_project(self, project_name):
+        print("Opening project: ", project_name)
+        self.project = Project(project_name)
+        self.app_state.set_project(self.project.get_name())
+        self.gui.set_statusbar_content(f"Opened project: {project_name}", 5)
+        # TODO: Load project data into the viewer and SPARQL client
+
+    def create_project(self, project_name, db_url, graph_uri, graph_namespace):
+        print("Creating project: ", project_name)
+        if Project.exists(project_name):
+            self.gui.set_query_error(f"Project '{project_name}' already exists!")
+            return
+
+        self.project = Project(project_name)
+        self.project.set_name(project_name)
+        self.project.set_dbUrl(db_url)
+        self.project.set_graphUri(graph_uri)
+        self.project.set_graphNamespace(graph_namespace)
+        self.project.save()
+        self.app_state.set_project(self.project.get_name())
+        self.gui.set_statusbar_content(f"Created project: {project_name}", 5)
+        self.open_project(project_name) # maybe remove this

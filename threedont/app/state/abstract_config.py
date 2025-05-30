@@ -6,7 +6,7 @@ from pathlib import Path
 class AbstractConfig(ABC):
     def __init__(self, file_path: Path, default_config: dict, config_schema: dict):
         self.file_path = file_path
-        self.config = default_config
+        self.config = default_config.copy()
         self.load()
         self.schema = config_schema
 
