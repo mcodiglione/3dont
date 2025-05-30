@@ -32,6 +32,7 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] better loading screen
 - [ ] gui error report (generic)
 - [ ] override config with cli arguments
+- [ ] embed virtuoso in the application
  
 ## License
 

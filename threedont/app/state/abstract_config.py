@@ -15,7 +15,7 @@ class AbstractConfig(ABC):
         self.auto_save = auto_save
 
     """
-    When adding a config value to the application we want to add it in the existing config file
+    When adding a new config value to the application we want to update the existing config files (easy migration)
     """
     def update_config_with_default(self, default_config: dict, config = None):
         if config is None:
