@@ -8,6 +8,15 @@ import datetime
 import time
 import csv
 
+################################################ TODO
+# TODO
+#DA SISTEMARE PER GESTIONE DI SENSORI MULTI-PROPRIETA E PER ELASTICITà SULLE KEY CON CUI ACCEDERE AL JSON DI OUTPUT:
+#- [ ] sistemare di modo da gestire più prop in tutte le mie funzioni
+#- [ ] in fase di setup del sensore chiedere all’utente i nomi delle prop da misurare:
+#    - [ ] nomi nell’ontologia
+#    - [ ] nomi come chiavi nel json
+#- [ ] storare i nomi delle chiavi nel dict di config associati alle varie prop della ont con una struttura a dizionari innestati
+################################################ TODO
 
 # ---------- CONFIGURATION ----------
 

@@ -27,7 +27,7 @@ def RDF_add_sensor_to_graph(SensorMetadata, onto, populated_namespace):
     aws.setup_sensor_connection(SensorMetadata)
     sensor_name = SensorMetadata.name
     object_name = SensorMetadata.DescribedObject
-    property_name = SensorMetadata.property
+    property_name = SensorMetadata.properties
     sensor = onto.Sensor_Datastream(f"{sensor_name}", namespace=populated_namespace)
     object = getattr(onto, object_name)
     RDF_link_sensor_to_object(sensor, object)
@@ -146,13 +146,14 @@ def RDF_sensor_reasoning(onto, base, populated_base, ont_path):
         # Execute each function found in the module
         with onto:
             for func_name in functions:
-                func = getattr(module, func_name)
-                if inspect.isfunction(func):
-                    try:
-                        func(base, populated_base)
-                        print(f"Sensor_Rule '{func_name}' executed")
-                    except Exception as e:
-                        print(f"Error executing function '{func_name}': {e}")
+                if func_name.startswith("SENSOR_"):
+                    func = getattr(module, func_name)
+                    if inspect.isfunction(func):
+                        try:
+                            func(base, populated_base)
+                            print(f"Sensor_Rule '{func_name}' executed")
+                        except Exception as e:
+                            print(f"Error executing function '{func_name}': {e}")
     return
 
 

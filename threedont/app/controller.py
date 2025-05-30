@@ -173,7 +173,7 @@ class Controller:
         onto = self.Args.onto
         predicate = getattr(onto, predicate_name)
         pop_base = self.Args.populated_base
-        subject = owl2.IRIS[subject_iri]
+        subject = owl2.IRIS[subject_iri[1:-1]]
         if predicate in onto.object_properties():
             obj = getattr(onto, object_name_or_value)
         smf.command_manual_annotation(self.Args, subject, predicate, obj, author_name)
