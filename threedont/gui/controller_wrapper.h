@@ -12,7 +12,6 @@ private:
   inline static std::string neededMethods[] = {
           "select_query",
           "scalar_query",
-          "connect_to_server",
           "stop",
           "view_point_details",
           "view_node_details",
@@ -23,7 +22,7 @@ private:
           "scalar_with_predicate",
           "open_project",
           "create_project",
-          "ask_project_list",
+          "update_project_list",
           "tabular_query"};
 
   static void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...);

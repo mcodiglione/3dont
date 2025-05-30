@@ -22,7 +22,7 @@ class AbstractConfig(ABC):
             config = self.config
         for key, value in default_config.items():
             if key not in config:
-                self.config[key] = deepcopy(value)
+                config[key] = deepcopy(value)
             else:
                 if isinstance(value, dict):
                     self.update_config_with_default(value, config[key])

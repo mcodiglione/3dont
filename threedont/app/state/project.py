@@ -53,7 +53,7 @@ class Project(AbstractConfig):
         if not projects_dir.exists():
             return []
         # get all directories in the projects directory
-        return [Project(p).get_name() for p in projects_dir.iterdir() if p.is_dir() and (p / PROJECT_FILE).exists()]
+        return [Project(p.name).get_name() for p in projects_dir.iterdir() if p.is_dir() and (p / PROJECT_FILE).exists()]
 
     @staticmethod
     def exists(project_name):

@@ -31,9 +31,8 @@ class SparqlEndpoint:
             self.namespace = namespace
         else:
             self.namespace = namespace + "#"
-        parsed = urlparse(db_url)
         # TODO generalize outside of virtuoso
-        self.endpoint = parsed.scheme + "://" + parsed.netloc + "/sparql"
+        self.endpoint = db_url + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
         self.sparql.setReturnFormat(
             TURTLE)  # works with virtuoso even if the header sent is accept */* (RuntimeWarning)

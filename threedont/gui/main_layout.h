@@ -36,7 +36,7 @@ private slots:
   void singlePointSelected(unsigned int index);
   void setStatusbarContent(const QString &content, int seconds);
   void on_executeQueryButton_clicked();
-  void on_actionConnect_to_server_triggered();
+  void on_actionCreate_project_triggered();
   void on_actionLegend_toggled(bool checked);
   void displayNodeDetails(const QStringList &details, const QString &parentId);
   void plotTabular(const QStringList &header, const QStringList &rows);

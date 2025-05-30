@@ -85,6 +85,7 @@ class Controller:
 
     def run_event_loop(self):
         print("Running controller")
+        self.update_project_list()
         if self.config.get_general_loadLastProject():
             last_project = self.app_state.get_projectName()
             if last_project and Project.exists(last_project):
@@ -135,11 +136,11 @@ class Controller:
         self._send_legend(scalars)
 
     @report_errors_to_gui
-    def connect_to_server(self, graph_url, namespace):
+    def connect_to_server(self, graph_url, db_url, namespace):
         print("Loading all the points... ", graph_url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
         # TODO handle graph_url in GUI
-        self.sparql_client = SparqlEndpoint(graph_url, graph_url,  namespace)
+        self.sparql_client = SparqlEndpoint(graph_url, db_url,  namespace)
         print("Connected to server")
         self.gui.set_statusbar_content("Loading points from server...", 60)
         coords, colors = self.sparql_client.get_all()
@@ -196,7 +197,7 @@ class Controller:
         # TODO
         self.gui.set_query_error("Natural language query not implemented yet!")
 
-    def get_project_list(self):
+    def update_project_list(self):
         lst =  Project.get_project_list()
         self.gui.set_project_list(lst)
 
@@ -205,7 +206,7 @@ class Controller:
         self.project = Project(project_name)
         self.app_state.set_projectName(self.project.get_name())
         self.gui.set_statusbar_content(f"Opened project: {project_name}", 5)
-        self.connect_to_server(self.project.get_dbUrl(), self.project.get_graphNamespace())
+        self.connect_to_server(self.project.get_graphUri(), self.project.get_dbUrl(), self.project.get_graphNamespace())
 
     def create_project(self, project_name, db_url, graph_uri, graph_namespace):
         print("Creating project: ", project_name)
@@ -220,6 +221,5 @@ class Controller:
         self.project.set_graphUri(graph_uri)
         self.project.set_graphNamespace(graph_namespace)
         self.project.save()
-        self.app_state.set_project(self.project.get_name())
         self.gui.set_statusbar_content(f"Created project: {project_name}", 5)
         self.open_project(project_name) # maybe remove this

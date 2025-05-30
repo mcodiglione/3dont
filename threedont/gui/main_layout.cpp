@@ -80,19 +80,6 @@ void MainLayout::on_executeQueryButton_clicked() {
   }
 }
 
-void MainLayout::on_actionConnect_to_server_triggered() {
-  bool ok;
-  QString dbUrl = QInputDialog::getText(this, tr("Connect to server"), tr("Server URL:"),
-                                        QLineEdit::Normal, "http://localhost:8890/Nettuno", &ok);
-  if (!ok || dbUrl.isEmpty()) return;
-
-  QString ontologyNamespace = QInputDialog::getText(this, tr("Connect to server"), tr("Ontology namespace:"),
-                                                    QLineEdit::Normal, "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
-  if (!ok || ontologyNamespace.isEmpty()) return;
-
-  controllerWrapper->connectToServer(dbUrl.toStdString(), ontologyNamespace.toStdString());
-}
-
 void MainLayout::on_actionLegend_toggled(bool checked) {
   showLegend = checked;
   if (!checked && legendDock) {
@@ -225,5 +212,42 @@ void MainLayout::detailsClosed(bool visible) {
 
 
 void MainLayout::setProjectList(const QStringList &projects) {
-  // TODO
+  auto *fileMenu = ui->menubar->findChild<QMenu *>("menuFile");
+  auto *openProjectMenu = fileMenu->findChild<QMenu *>("menuOpen_project");
+  if (!openProjectMenu) {
+    openProjectMenu = new QMenu(tr("Open project"), this);
+    openProjectMenu->setObjectName("menuOpen_project");
+    fileMenu->addMenu(openProjectMenu);
+  } else {
+    openProjectMenu->clear();
+  }
+
+  for (const QString &project : projects) {
+    QAction *action = openProjectMenu->addAction(project);
+    connect(action, &QAction::triggered, this, [this, project]() {
+      controllerWrapper->openProject(project.toStdString());
+    });
+  }
+}
+
+void MainLayout::on_actionCreate_project_triggered() {
+  bool ok;
+  QString projectName = QInputDialog::getText(this, tr("Connect to server"), tr("Project name:"),
+                                        QLineEdit::Normal, "test", &ok);
+  if (!ok || projectName.isEmpty()) return;
+
+  QString dbUrl = QInputDialog::getText(this, tr("Connect to server"), tr("Server URL:"),
+                                        QLineEdit::Normal, "http://localhost:8890", &ok);
+  if (!ok || dbUrl.isEmpty()) return;
+
+  QString graphUri = QInputDialog::getText(this, tr("Connect to server"), tr("Graph uri:"),
+                                        QLineEdit::Normal, "http://localhost:8890/Nettuno", &ok);
+  if (!ok || graphUri.isEmpty()) return;
+
+  QString ontologyNamespace = QInputDialog::getText(this, tr("Connect to server"), tr("Ontology namespace:"),
+                                                    QLineEdit::Normal, "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
+  if (!ok || ontologyNamespace.isEmpty()) return;
+
+  controllerWrapper->createProject(projectName.toStdString(), dbUrl.toStdString(), graphUri.toStdString(), ontologyNamespace.toStdString());
+  controllerWrapper->askProjectList();
 }

@@ -325,6 +325,7 @@ static PyMethodDef GuiWrapper_methods[] = {
         {"set_query_error", (PyCFunction) GuiWrapper_set_query_error, METH_VARARGS, "Sets the query error"},
         {"plot_tabular", (PyCFunction) GuiWrapper_plot_tabular, METH_VARARGS, "Plots the tabular data"},
         {"set_legend", (PyCFunction) GuiWrapper_set_legend, METH_VARARGS, "Sets the legend"},
+        {"set_project_list", (PyCFunction) GuiWrapper_set_project_list, METH_VARARGS, "Sets the project list"},
         {nullptr}};
 
 static PyTypeObject GuiWrapperType = {

@@ -18,7 +18,6 @@ DEFAULT_CONFIG = {
     },
 }
 
-
 CONFIG_SCHEMA = {
     "visualizer": {
         "pointsSize": float,
@@ -39,11 +38,25 @@ class Config(AbstractConfig):
     def write_config_to_file(self, file):
         config = configparser.ConfigParser()
         for section, options in self.config.items():
-            config[section] = options
+            print(f"Writing section: {section} with options: {options}")
+            config[section] = {k: str(v) for k, v in options.items()}
         config.write(file)
+
+    def _to_camel_case(self, lower_str, options):
+        for option in options:
+            if lower_str == option.lower():
+                return option
 
     def read_config_from_file(self, file):
         config = configparser.ConfigParser()
         config.read_file(file)
-        return {section: dict(config[section]) for section in config.sections()}
+        result = {}
+        for section in config.sections():
+            section_dict = {}
+            section = self._to_camel_case(section, CONFIG_SCHEMA.keys())
+            for option, value in config.items(section):
+                camel_case_option = self._to_camel_case(option, CONFIG_SCHEMA[section].keys())
+                section_dict[camel_case_option] = value
+            result[section] = section_dict
+        return result
 
