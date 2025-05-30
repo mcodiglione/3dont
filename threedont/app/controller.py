@@ -87,7 +87,7 @@ class Controller:
         print("Running controller")
         if self.config.get_general_loadLastProject():
             last_project = self.app_state.get_projectName()
-            if last_project:
+            if last_project and Project.exists(last_project):
                 self.open_project(last_project)
 
         command = self.commands_queue.get()
@@ -135,10 +135,11 @@ class Controller:
         self._send_legend(scalars)
 
     @report_errors_to_gui
-    def connect_to_server(self, url, namespace):
-        print("Loading all the points... ", url)
+    def connect_to_server(self, graph_url, namespace):
+        print("Loading all the points... ", graph_url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
-        self.sparql_client = SparqlEndpoint(url, namespace)
+        # TODO handle graph_url in GUI
+        self.sparql_client = SparqlEndpoint(graph_url, graph_url,  namespace)
         print("Connected to server")
         self.gui.set_statusbar_content("Loading points from server...", 60)
         coords, colors = self.sparql_client.get_all()
@@ -196,7 +197,8 @@ class Controller:
         self.gui.set_query_error("Natural language query not implemented yet!")
 
     def get_project_list(self):
-        return Project.get_project_list()
+        lst =  Project.get_project_list()
+        self.gui.set_project_list(lst)
 
     def open_project(self, project_name):
         print("Opening project: ", project_name)

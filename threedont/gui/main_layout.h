@@ -44,6 +44,7 @@ private slots:
   void setLegend(const QVariantList &colors, const QStringList &labels);
   void onTreeViewContexMenuRequested(const QPoint &pos);
   void detailsClosed(bool visible);
+  void setProjectList(const QStringList &projects);
 
 private:
   Ui::MainLayout *ui;

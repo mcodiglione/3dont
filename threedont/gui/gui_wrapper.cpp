@@ -286,6 +286,37 @@ static PyObject *GuiWrapper_set_legend(GuiWrapperObject *self, PyObject *args) {
   return Py_None;
 }
 
+static PyObject *GuiWrapper_set_project_list(GuiWrapperObject *self, PyObject *args) {
+  if (self->mainLayout == nullptr) {
+    PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+    return nullptr;
+  }
+
+  // project list is a list of strings
+  PyObject *projectList;
+  if (!PyArg_ParseTuple(args, "O", &projectList))
+    return nullptr;
+
+  QStringList projects;
+  if (!PyList_Check(projectList)) {
+    PyErr_SetString(PyExc_TypeError, "Project list must be a list");
+    return nullptr;
+  }
+  Py_ssize_t size = PyList_Size(projectList);
+  for (Py_ssize_t i = 0; i < size; i++) {
+    PyObject *item = PyList_GetItem(projectList, i);
+    if (!PyUnicode_Check(item)) {
+      PyErr_SetString(PyExc_TypeError, "Project list must be a list of strings");
+      return nullptr;
+    }
+    projects.append(QString(PyUnicode_AsUTF8(item)));
+  }
+
+
+  QMetaObject::invokeMethod(self->mainLayout, "setProjectList", Qt::QueuedConnection, Q_ARG(QStringList, projects));
+  return Py_None;
+}
+
 static PyMethodDef GuiWrapper_methods[] = {
         {"run", (PyCFunction) GuiWrapper_run, METH_NOARGS, "Runs the GUI event loop"},
         {"set_statusbar_content", (PyCFunction) GuiWrapper_set_statusbar_content, METH_VARARGS, "Sets the content of the status bar"},

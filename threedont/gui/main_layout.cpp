@@ -222,3 +222,8 @@ void MainLayout::detailsClosed(bool visible) {
   qDebug() << "Details closed";
   isDetailsOpen = false;
 }
+
+
+void MainLayout::setProjectList(const QStringList &projects) {
+  // TODO
+}
