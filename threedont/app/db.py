@@ -167,8 +167,31 @@ class SparqlEndpoint:
     def raw_query(self, query):
         return self._execute_chunked_query(query)
 
-# Expceptions:
-# urllib.error.URLError no connection to server
-# SPARQLWrapper.SPARQLExceptions.QueryBadFormed, get .response to get error
-# No right result (custom)
-# Empty result set (custom)
+    def autodetect_query_nl(self, query):
+        # TODO refactor
+        result = self._execute_chunked_query(query)
+        columns = list(result.keys())
+        if 'x' in columns and 'y' in columns and 'z' in columns:
+            # select query
+            colors = np.copy(self.colors)
+            coords = np.array((result['x'], result['y'], result['z'])).T.astype(np.float32)
+            for coord in coords :
+                try:
+                    i = self.coords_to_id[tuple(coord)]
+                except KeyError:
+                    continue  # not all the results of a select are points
+                colors[i] = [1.0, 0.0, 0.0]
+                return colors, "select"
+
+        if 'x' in columns and 'x' in columns and 'y' in columns and 'z' in columns:
+            minimum = float(min(result['x']))
+            maximum = float(max(result['x']))
+            default = minimum - (maximum - minimum) / 10
+            scalars = np.full(len(self.colors), default, dtype=np.float32)
+            coords = np.array((result['x'], result['y'], result['z'])).T.astype(np.float32)
+            for coord, scalar in zip(coords, result['x']):
+                i = self.coords_to_id[tuple(coord)]
+                scalars[i] = scalar
+            return scalars, "scalar"
+
+        return result, "tabular"

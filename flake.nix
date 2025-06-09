@@ -56,6 +56,9 @@
               openai
               owlready2
               platformdirs
+              nltk
+              editdistance
+              jarowinkler
             ];
           };
           owlready2 = pkgs.python3Packages.callPackage ({buildPythonPackage, fetchPypi, distutils}:

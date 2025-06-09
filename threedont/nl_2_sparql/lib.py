@@ -210,7 +210,7 @@ def ask_user_for_manual_mapping(unmapped_list, parsed_ontology_schema, type_dict
 def map_query(parsed_query, parsed_ontology_schema, base):  # base is a namespace object
     from nltk.corpus import wordnet as wn
     import editdistance as ed
-    import jaro
+    from jarowinkler import jarowinkler_similarity
 
     unmapped_list = []
     string_filters_dict = (
@@ -268,7 +268,7 @@ def map_query(parsed_query, parsed_ontology_schema, base):  # base is a namespac
                         ed_score = ed.eval(root_word.lower(), ont_word.lower())
                         max_len = max(len(root_word), len(ont_word))
                         normalized_ed_score = 1 - (ed_score / max_len)
-                        jw_score = jaro.jaro_winkler_metric(
+                        jw_score = jarowinkler_similarity(
                             root_word.lower(), ont_word.lower()
                         )
                         average_score = (normalized_ed_score + jw_score) / 2
@@ -289,7 +289,7 @@ def map_query(parsed_query, parsed_ontology_schema, base):  # base is a namespac
                                 ed_score = ed.eval(syn.lower(), ont_word.lower())
                                 max_len = max(len(syn), len(ont_word))
                                 normalized_ed_score = 1 - (ed_score / max_len)
-                                jw_score = jaro.jaro_winkler_metric(
+                                jw_score = jarowinkler_similarity(
                                     syn.lower(), ont_word.lower()
                                 )
                                 average_score = (normalized_ed_score + jw_score) / 2
@@ -2432,13 +2432,14 @@ def fix_L1_L2_discrepances(L1, L2):
 
 def nl_2_sparql(
         nl_query,
-        ontology_schema,
-        ontology_graph,
+        ont_path,
         ont_namespace,
         graph_uri,
         client,
 ):
     try:
+        ontology_schema = owl2.get_ontology(ont_path).load()
+        ontology_graph = onto_to_graph(ont_path)  # type:ignore
         # GPT-based part
         wordlist = parse_wordlist(ontology_schema)
         parsed_query_lists = gpt_process_query_no_wordlist(

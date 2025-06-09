@@ -9,6 +9,7 @@ from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetExcept
 from .viewer import Viewer, get_color_map
 from ..gui import GuiWrapper
 from .state import Project
+from ..nl_2_sparql import nl_2_sparql, init_client
 
 __all__ = ['Controller']
 
@@ -192,10 +193,26 @@ class Controller:
         self.gui.set_legend(colors, labels)
 
     @report_errors_to_gui
-    def natural_language_query(self, query):
-        print("Natural language query: ", query)
-        # TODO
-        self.gui.set_query_error("Natural language query not implemented yet!")
+    def natural_language_query(self, nl_query):
+        print("Natural language query: ", nl_query)
+        onto_path = self.project.get_onto_path()
+        openai_client = init_client() # TODO understand if must be done only once
+        query = nl_2_sparql(nl_query, onto_path, self.project.get_graphNamespace(), self.project.get_graphUri(), openai_client)
+        result, query_type = self.sparql_client.autodetect_query_nl(query)
+        if query_type == "tabular":
+            header = list(result.keys())
+            rows = list(zip(*(result[key] for key in result)))
+            self.gui.plot_tabular(header, rows)
+        elif query_type == "scalar":
+            self.viewer_client.attributes(self.sparql_client.colors, result)
+            self.viewer_client.set(curr_attribute_id=1)
+            self._send_legend(result)
+        elif query_type == "select":
+            self.viewer_client.attributes(result)
+            self.viewer_client.set(curr_attribute_id=0)
+        else:
+            print("Error, unknown query type: ", query_type) # TODO remove shouldn't happen
+
 
     def update_project_list(self):
         lst =  Project.get_project_list()

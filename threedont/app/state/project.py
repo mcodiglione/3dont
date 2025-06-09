@@ -4,6 +4,7 @@ import json
 import re
 import unicodedata
 from copy import deepcopy
+from importlib import resources
 
 from .abstract_config import AbstractConfig
 
@@ -59,3 +60,17 @@ class Project(AbstractConfig):
     def exists(project_name):
         project_path = Path(user_data_dir("threedont")) / "projects" / f"{safe_filename(project_name)}"
         return (project_path / PROJECT_FILE).exists()
+
+    def get_onto_path(self):
+        # ugly way for now
+        assets_folder = resources.files("threedont.assets")
+        namespace = self.get_graphNamespace().lower()
+        if "heritage" in namespace:
+            path = assets_folder / "Heritage_Ontology.rdf"
+        elif "urban" in namespace:
+            path = assets_folder / "Urban_Ontology.rdf"
+        else:
+            raise Exception("Namespace not recognized: " + namespace) # TODO make better
+        if not path.exists():
+            raise Exception("Path should exists but doesn't: " + str(path)) # TODO make better also here
+        return str(path)
