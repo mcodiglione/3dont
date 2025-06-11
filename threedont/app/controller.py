@@ -196,7 +196,7 @@ class Controller:
     def natural_language_query(self, nl_query):
         print("Natural language query: ", nl_query)
         onto_path = self.project.get_onto_path()
-        openai_client = init_client() # TODO understand if must be done only once
+        openai_client = init_client() # TODO understand if can be done only once
         query = nl_2_sparql(nl_query, onto_path, self.project.get_graphNamespace(), self.project.get_graphUri(), openai_client)
         result, query_type = self.sparql_client.autodetect_query_nl(query)
         if query_type == "tabular":
@@ -211,8 +211,7 @@ class Controller:
             self.viewer_client.attributes(result)
             self.viewer_client.set(curr_attribute_id=0)
         else:
-            print("Error, unknown query type: ", query_type) # TODO remove shouldn't happen
-
+            print("Error, unknown query type: ", query_type) # TODO remove, shouldn't happen
 
     def update_project_list(self):
         lst =  Project.get_project_list()
