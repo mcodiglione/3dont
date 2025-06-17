@@ -150,7 +150,7 @@ def RDF_sensor_reasoning(onto, base, populated_base, ont_path):
                     func = getattr(module, func_name)
                     if inspect.isfunction(func):
                         try:
-                            func(base, populated_base)
+                            func(base, populated_base, onto)
                             print(f"Sensor_Rule '{func_name}' executed")
                         except Exception as e:
                             print(f"Error executing function '{func_name}': {e}")
