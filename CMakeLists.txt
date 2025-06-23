@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(THREEDONT_DEVELOP_BUILD "Enable development build" OFF)
 
+add_definitions(-DGL_SILENCE_DEPRECATION)
+
 find_package(OpenGL REQUIRED)
 find_package(Eigen3 REQUIRED)
 find_package(Qt6 CONFIG REQUIRED COMPONENTS Widgets Network OpenGL Core)

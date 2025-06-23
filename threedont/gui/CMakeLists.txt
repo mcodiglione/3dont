@@ -1,7 +1,7 @@
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 
-add_library(gui MODULE
+add_library(gui SHARED
         gui_wrapper.cpp
         controller_wrapper.cpp
         main_layout.cpp
