@@ -171,10 +171,10 @@ class SparqlEndpoint:
         # TODO refactor
         result = self._execute_chunked_query(query)
         columns = list(result.keys())
-        if 'x' in columns and 'y' in columns and 'z' in columns:
+        if 'x1' in columns and 'y1' in columns and 'z1' in columns:
             # select query
             colors = np.copy(self.colors)
-            coords = np.array((result['x'], result['y'], result['z'])).T.astype(np.float32)
+            coords = np.array((result['x1'], result['y1'], result['z1'])).T.astype(np.float32)
             for coord in coords :
                 try:
                     i = self.coords_to_id[tuple(coord)]
@@ -183,13 +183,13 @@ class SparqlEndpoint:
                 colors[i] = [1.0, 0.0, 0.0]
                 return colors, "select"
 
-        if 'x' in columns and 'x' in columns and 'y' in columns and 'z' in columns:
-            minimum = float(min(result['x']))
-            maximum = float(max(result['x']))
+        if 'x1' in columns and 'y1' in columns and 'z1' in columns:
+            minimum = float(min(result['x1']))
+            maximum = float(max(result['x1']))
             default = minimum - (maximum - minimum) / 10
             scalars = np.full(len(self.colors), default, dtype=np.float32)
-            coords = np.array((result['x'], result['y'], result['z'])).T.astype(np.float32)
-            for coord, scalar in zip(coords, result['x']):
+            coords = np.array((result['x1'], result['y1'], result['z1'])).T.astype(np.float32)
+            for coord, scalar in zip(coords, result['x1']):
                 i = self.coords_to_id[tuple(coord)]
                 scalars[i] = scalar
             return scalars, "scalar"

@@ -25,12 +25,12 @@ public:
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
 
     // Headers
-    QHBoxLayout* headerLayout = new QHBoxLayout(this);
+    QHBoxLayout* headerLayout = new QHBoxLayout();
     headerLayout->addWidget(new QLabel("<b>Words</b>"));
     headerLayout->addWidget(new QLabel("<b>Mapped To</b>"));
     mainLayout->addLayout(headerLayout);
 
-    QFormLayout* formLayout = new QFormLayout(this);
+    QFormLayout* formLayout = new QFormLayout();
 
     // Create form rows
     for (int i = 0; i < words.size(); ++i) {
