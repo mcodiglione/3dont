@@ -33,4 +33,3 @@ wheel.exclude = [
 ]
 
 sdist.include = ["threedont/assets/**"]
-wheel.include = ["threedont/assets/**"]
