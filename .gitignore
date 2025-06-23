@@ -10,3 +10,6 @@ result
 *.so
 /virtuoso/
 /tmp.*.tdb
+
+.DS_Store
+__MACOSX/

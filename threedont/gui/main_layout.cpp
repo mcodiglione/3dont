@@ -1,4 +1,5 @@
 #include "main_layout.h"
+#include "dialogs/properties_mapping_selection.h"
 #include <QAction>
 #include <QDebug>
 #include <QDockWidget>
@@ -80,15 +81,6 @@ void MainLayout::on_executeQueryButton_clicked() {
   }
 }
 
-void MainLayout::on_actionConnect_to_server_triggered() {
-  bool ok;
-  QString dbUrl = QInputDialog::getText(this, tr("Connect to server"), tr("Server URL:"),
-                                        QLineEdit::Normal, "http://localhost:8890/Nettuno", &ok);
-  if (!ok || dbUrl.isEmpty()) return;
-
-  controllerWrapper->connectToServer(dbUrl.toStdString());
-}
-
 void MainLayout::on_actionLegend_toggled(bool checked) {
   showLegend = checked;
   if (!checked && legendDock) {
@@ -149,7 +141,7 @@ void MainLayout::setQueryError(const QString &error) {
   ui->errorLabel->setVisible(true);
 }
 
-void MainLayout::setLegend(const QVariantList &colors, const QStringList &labels) {
+void MainLayout::setLegend(const QStringList &colors, const QStringList &labels) {
   if (!showLegend) return;
   if (legendDock) legendDock->close();
 
@@ -159,8 +151,7 @@ void MainLayout::setLegend(const QVariantList &colors, const QStringList &labels
 
   QList<QColor> colorList;
   for (const auto &color: colors)
-    if (color.canConvert<QString>())
-      colorList.append(QColor(color.toString()));
+    colorList.append(QColor(color));
 
   auto *legend = new ColorScaleLegend(colorList, labels, dock);
   dock->setWidget(legend);
@@ -314,3 +305,49 @@ void MainLayout::on_actionAdd_Sensor_triggered() {
 void MainLayout::on_actionUpdate_Sensors_and_Reason_triggered() {
   controllerWrapper->updateSensorsAndReason();
 }
+void MainLayout::setProjectList(const QStringList &projects) {
+  auto *fileMenu = ui->menubar->findChild<QMenu *>("menuFile");
+  auto *openProjectMenu = fileMenu->findChild<QMenu *>("menuOpen_project");
+  if (!openProjectMenu) {
+    openProjectMenu = new QMenu(tr("Open project"), this);
+    openProjectMenu->setObjectName("menuOpen_project");
+    fileMenu->addMenu(openProjectMenu);
+  } else {
+    openProjectMenu->clear();
+  }
+
+  for (const QString &project : projects) {
+    QAction *action = openProjectMenu->addAction(project);
+    connect(action, &QAction::triggered, this, [this, project]() {
+      controllerWrapper->openProject(project.toStdString());
+    });
+  }
+}
+
+void MainLayout::on_actionCreate_project_triggered() {
+  bool ok;
+  QString projectName = QInputDialog::getText(this, tr("Connect to server"), tr("Project name:"),
+                                        QLineEdit::Normal, "test", &ok);
+  if (!ok || projectName.isEmpty()) return;
+
+  QString dbUrl = QInputDialog::getText(this, tr("Connect to server"), tr("Server URL:"),
+                                        QLineEdit::Normal, "http://localhost:8890", &ok); // TODO make this defaults parameters
+  if (!ok || dbUrl.isEmpty()) return;
+
+  QString graphUri = QInputDialog::getText(this, tr("Connect to server"), tr("Graph uri:"),
+                                        QLineEdit::Normal, "http://localhost:8890/Nettuno", &ok);
+  if (!ok || graphUri.isEmpty()) return;
+
+  QString ontologyNamespace = QInputDialog::getText(this, tr("Connect to server"), tr("Ontology namespace:"),
+                                                    QLineEdit::Normal, "http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology", &ok);
+  if (!ok || ontologyNamespace.isEmpty()) return;
+
+  controllerWrapper->createProject(projectName.toStdString(), dbUrl.toStdString(), graphUri.toStdString(), ontologyNamespace.toStdString());
+  controllerWrapper->askProjectList();
+}
+
+QStringList MainLayout::getPropertiesMapping(const QStringList &properties, const QStringList &words, const QStringList &defaults) {
+  return PropertiesMappingDialog::getPropertiesMapping(this, properties, words, defaults);
+}
+
+#include "moc_main_layout.cpp"

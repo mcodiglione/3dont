@@ -13,6 +13,26 @@ typedef struct {
 
 } GuiWrapperObject;
 
+static bool pyListToQStringList(PyObject *pyList, QStringList &qStringList, const std::string& name="List") {
+  if (!PyList_Check(pyList)) {
+    PyErr_SetString(PyExc_TypeError, (name + " must be a list").c_str());
+    return false;
+  }
+
+  Py_ssize_t size = PyList_Size(pyList);
+  for (Py_ssize_t i = 0; i < size; ++i) {
+    PyObject *item = PyList_GetItem(pyList, i);
+    if (PyUnicode_Check(item)) {
+      qStringList.append(QString(PyUnicode_AsUTF8(item)));
+    } else {
+      PyErr_SetString(PyExc_TypeError, (name + " items must be strings").c_str());
+      return false;
+    }
+  }
+  return true;
+}
+
+
 static void GuiWrapper_dealloc(GuiWrapperObject *self) {
   // qt handles the deletion of the main layout and the app
   delete self->controllerWrapper;
@@ -164,20 +184,8 @@ static PyObject *GuiWrapper_plot_tabular(GuiWrapperObject *self, PyObject *args)
     return nullptr;
 
   QStringList headerList;
-  if (PyList_Check(header)) {
-    Py_ssize_t size = PyList_Size(header);
-    for (Py_ssize_t i = 0; i < size; i++) {
-      PyObject *item = PyList_GetItem(header, i);
-      if (!PyUnicode_Check(item)) {
-        PyErr_SetString(PyExc_TypeError, "Header must be a list of strings");
-        return nullptr;
-      }
-      headerList.append(QString(PyUnicode_AsUTF8(item)));
-    }
-  } else {
-    PyErr_SetString(PyExc_TypeError, "Header must be a list of strings");
-    return nullptr;
-  }
+  if (!pyListToQStringList(header, headerList, "Header"))
+    return nullptr; // Error already set in pyListToQStringList
 
   QStringList rowsList;
   if (PyList_Check(rows)) {
@@ -249,41 +257,80 @@ static PyObject *GuiWrapper_set_legend(GuiWrapperObject *self, PyObject *args) {
     return nullptr;
 
   QStringList labels;
-  QVariantList colors;
+  QStringList colors;
 
-  if (!PyList_Check(labelsObject)) {
-    PyErr_SetString(PyExc_TypeError, "Labels must be a list");
-    return nullptr;
-  }
+  if (!pyListToQStringList(labelsObject, labels, "Labels"))
+    return nullptr; // Error already set in pyListToQStringList
+  if (!pyListToQStringList(colorsObject, colors, "Colors"))
+    return nullptr; // Error already set in pyListToQStringList
 
-  if (!PyList_Check(colorsObject)) {
-    PyErr_SetString(PyExc_TypeError, "Colors must be a list");
-    return nullptr;
-  }
-
-  Py_ssize_t size = PyList_Size(labelsObject);
-  for (Py_ssize_t i = 0; i < size; i++) {
-    PyObject *item = PyList_GetItem(labelsObject, i);
-    if (!PyUnicode_Check(item)) {
-      PyErr_SetString(PyExc_TypeError, "Labels must be a list of strings");
-      return nullptr;
-    }
-    labels.append(QString(PyUnicode_AsUTF8(item)));
-  }
-
-  size = PyList_Size(colorsObject);
-  for (Py_ssize_t i = 0; i < size; i++) {
-    PyObject *item = PyList_GetItem(colorsObject, i);
-    if (PyUnicode_Check(item)) {
-      colors.append(QVariant(QString(PyUnicode_AsUTF8(item))));
-    } else {
-      PyErr_SetString(PyExc_TypeError, "Colors must be a list of strings");
-      return nullptr;
-    }
-  }
-
-  QMetaObject::invokeMethod(self->mainLayout, "setLegend", Qt::QueuedConnection, Q_ARG(QVariantList, colors), Q_ARG(QStringList, labels));
+  QMetaObject::invokeMethod(self->mainLayout, "setLegend", Qt::QueuedConnection, Q_ARG(QStringList, colors), Q_ARG(QStringList, labels));
   return Py_None;
+}
+
+static PyObject *GuiWrapper_set_project_list(GuiWrapperObject *self, PyObject *args) {
+  if (self->mainLayout == nullptr) {
+    PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+    return nullptr;
+  }
+
+  // project list is a list of strings
+  PyObject *projectList;
+  if (!PyArg_ParseTuple(args, "O", &projectList))
+    return nullptr;
+
+  QStringList projects;
+  if (!pyListToQStringList(projectList, projects, "Project List"))
+    return nullptr; // Error already set in pyListToQStringList
+
+  QMetaObject::invokeMethod(self->mainLayout, "setProjectList", Qt::QueuedConnection, Q_ARG(QStringList, projects));
+  return Py_None;
+}
+
+static PyObject *GuiWrapper_get_properties_mapping(GuiWrapperObject *self, PyObject *args) {
+  if (self->mainLayout == nullptr) {
+    PyErr_SetString(PyExc_RuntimeError, "MainLayout not initialized");
+    return nullptr;
+  }
+
+  // get two lists of strings
+  PyObject *propertiesObject, *defaultsObject, *wordsObject;
+  if (!PyArg_ParseTuple(args, "OOO", &propertiesObject, &wordsObject, &defaultsObject)) {
+    PyErr_SetString(PyExc_TypeError, "GuiWrapper.get_properties_mapping requires two lists of strings");
+    return nullptr;
+  }
+
+  QStringList properties, defaults, words;
+  if (!pyListToQStringList(propertiesObject, properties, "Properties"))
+    return nullptr; // Error already set in pyListToQStringList
+
+  if (!pyListToQStringList(defaultsObject, defaults, "Defaults"))
+    return nullptr; // Error already set in pyListToQStringList
+
+  if (!pyListToQStringList(wordsObject, words, "Words"))
+    return nullptr; // Error already set in pyListToQStringList
+
+  QStringList result;
+  QMetaObject::invokeMethod(self->mainLayout, "getPropertiesMapping", Qt::BlockingQueuedConnection,
+                            Q_RETURN_ARG(QStringList, result),
+                            Q_ARG(QStringList, properties), Q_ARG(QStringList, words), Q_ARG(QStringList, defaults));
+
+  PyObject *pyResult = PyList_New(result.size());
+  if (!pyResult) {
+    PyErr_SetString(PyExc_RuntimeError, "Failed to create result list");
+    return nullptr;
+  }
+  for (int i = 0; i < result.size(); ++i) {
+    PyObject *item = PyUnicode_FromString(result[i].toStdString().c_str());
+    if (!item) {
+      Py_DECREF(pyResult);
+      PyErr_SetString(PyExc_RuntimeError, "Failed to create string item for result list");
+      return nullptr;
+    }
+    PyList_SetItem(pyResult, i, item); // Transfers ownership of item to pyResult
+  }
+
+  return pyResult;
 }
 
 static PyMethodDef GuiWrapper_methods[] = {
@@ -294,6 +341,8 @@ static PyMethodDef GuiWrapper_methods[] = {
         {"set_query_error", (PyCFunction) GuiWrapper_set_query_error, METH_VARARGS, "Sets the query error"},
         {"plot_tabular", (PyCFunction) GuiWrapper_plot_tabular, METH_VARARGS, "Plots the tabular data"},
         {"set_legend", (PyCFunction) GuiWrapper_set_legend, METH_VARARGS, "Sets the legend"},
+        {"set_project_list", (PyCFunction) GuiWrapper_set_project_list, METH_VARARGS, "Sets the project list"},
+        {"get_properties_mapping", (PyCFunction) GuiWrapper_get_properties_mapping, METH_VARARGS, "Gets the properties mapping from the user"},
         {nullptr}};
 
 static PyTypeObject GuiWrapperType = {

@@ -1,0 +1,1966 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology/"
+     xml:base="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+     xmlns:swrl="http://www.w3.org/2003/11/swrl#"
+     xmlns:swrla="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#"
+     xmlns:swrlb="http://www.w3.org/2003/11/swrlb#"
+     xmlns:Urban_Ontology="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Annotation properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled -->
+
+    <owl:AnnotationProperty rdf:about="http://swrl.stanford.edu/ontologies/3.3/swrla.owl#isRuleEnabled"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Datatypes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.w3.org/2001/XMLSchema#date -->
+
+    <rdfs:Datatype rdf:about="http://www.w3.org/2001/XMLSchema#date"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Constitutes -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Constitutes">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_constituted_by"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Contains_data_relative_to -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Contains_data_relative_to">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_described_by"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Contains_parts_made_of -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Contains_parts_made_of">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_as_part -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_as_part">
+        <owl:inverseOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_part_of"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ReflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_On -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_On">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Objects"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas"/>
+        <rdfs:comment>just used for objects that stands on ground surfaces</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_a_point_made_of -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_a_point_made_of">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_a_specimen_of -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_a_specimen_of">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Categories"/>
+        <rdfs:comment>Used just for categories not included into the &quot;Marker_Classes&quot; branch, which are assessable as classes containing markers through the name &quot;Type_&lt;typename&gt;&quot; (senza&lt;&gt;)</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_constituted_by -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_constituted_by">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_described_by -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_described_by">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#AsymmetricProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#IrreflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_part_of -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Is_part_of">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#TransitiveProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ReflexiveProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisition_date -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisition_date">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisition_tag -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisition_tag">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#B -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#B">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Flooding_Risk_Index -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Flooding_Risk_Index">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surface_points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#G -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#G">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_X_Lenght -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_X_Lenght">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_X_Max -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_X_Max">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_X_Min -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_X_Min">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Y_Lenght -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Y_Lenght">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Y_Max -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Y_Max">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Y_Min -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Y_Min">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Z_Lenght -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Z_Lenght">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Z_Max -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Z_Max">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Z_Min -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Has_Z_Min">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Heating_Propension_Index -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Heating_Propension_Index">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Import_date -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Import_date">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#date"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Permeability_To_Water -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Permeability_To_Water">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+        <rdfs:comment>saturated hydraulic conductivity, expressed in Ksat (mm/h)</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#R -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#R">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#int"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Specific_Heat_Capacity -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Specific_Heat_Capacity">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Temperature -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Temperature">
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#float"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tree_Falling_Risk_Index -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tree_Falling_Risk_Index"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#X -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#X">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Y -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Y">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Z -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Z">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#decimal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Acquisitions"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Bicycles -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Bicycles">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Two-Wheeled_Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">58</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_Parts -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_Parts">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Objects"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Object_points"/>
+        <rdfs:comment>Mereological_Root</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">6</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Buildings -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Buildings">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">6</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Bus_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Bus_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">51</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Buses -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Buses">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">51</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Car_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Car_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">52</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Cars -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Cars">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">52</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Categories -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Categories">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Macro_Entities"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Chimney_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Chimney_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">16</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Chimneys -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Chimneys">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">16</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Disorganized_Region_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Disorganized_Region_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">38</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Disorganized_Regions -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Disorganized_Regions">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">38</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Dome_Roof_Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Dome_Roof_Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">17</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Dome_Roof_Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Dome_Roof_Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">17</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Pipeline_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Pipeline_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">11</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Pipelines -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Pipelines">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">11</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">12</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">12</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Ventilation_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Ventilation_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">13</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Ventilations -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Ventilations">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">13</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Window_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Window_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">14</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Windows -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_Windows">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">14</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">9</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">9</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Fence_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Fence_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">25</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Fences -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Fences">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">25</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Garbage_Box_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Garbage_Box_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">26</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Garbage_Boxes -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Garbage_Boxes">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">26</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">36</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">36</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entities">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">34</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entity_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entity_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entity_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">34</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Object_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Object_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Objects -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Objects">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">39</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">39</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Industrial_Roof_Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Industrial_Roof_Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">18</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Industrial_Roof_Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Industrial_Roof_Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">18</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Lamp_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Lamp_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">27</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Lamps -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Lamps">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">27</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Area_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Area_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">40</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Areas -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Areas">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">40</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Entities">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">35</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Entity_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation_Entity_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entity_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">35</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities">
+        <rdfs:comment>Here the subclass relation is a relation of specification. superclass is the gender of the subclass (i.e. roof is under building part, not building)</rdfs:comment>
+        <rdfs:comment>To be populated just by macro-entities</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Points"/>
+        <rdfs:comment>This class will contain all materials as individuals. They are gonna be bonded to points by an object relation. To be defined if it&apos;s gonna be the same object relation that will hold between markers and categories</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Motorbikes_Bicycles_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Motorbikes_Bicycles_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">53</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Motorcycles -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Motorcycles">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Two-Wheeled_Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">59</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Object_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Object_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">5</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Objects -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Objects">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">5</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_Relations_Predicates -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_Relations_Predicates"/>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Objects -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Objects">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Facade_Accessories -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Facade_Accessories">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facades"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">15</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Facade_Accessory_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Facade_Accessory_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Facade_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">15</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_High_Vegetation_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_High_Vegetation_Entities">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_High_Vegetation_Entity_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_High_Vegetation_Entity_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entity_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Impervious_Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Impervious_Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">43</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Impervious_Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Impervious_Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">43</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Roof_Accessories -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Roof_Accessories">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">19</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Roof_Accessory_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Roof_Accessory_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">19</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Urban_Furniture_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Urban_Furniture_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">28</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Urban_Furnitures -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other_Urban_Furnitures">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">28</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Parking_Lot_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Parking_Lot_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">44</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Parking_Lots -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Parking_Lots">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">44</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Person_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Person_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">48</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Persons -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Persons">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">48</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Pet_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Pet_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">49</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Pets -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Pets">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">49</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#PlayGround_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#PlayGround_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">29</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Playgrounds -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Playgrounds">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">29</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points">
+        <rdfs:comment>here subclass relation works a bit different than for the macro_entities branch, due to the different nature of the individuals admitted. A roof is not a building, but a roof point is a building point. In mereological branches here we find parts as subclasses of their whole, while in macro_entities branch we find a &quot;gender_X_parts&quot; branch as a sibling branch of &quot;gender_X&quot;</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Pole_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Pole_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">30</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Poles -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Poles">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">30</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Macro_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Macro_Entities">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_Relations_Predicates"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Predicates_For_Points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Object_Relations_Predicates"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#River_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#River_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">57</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Rivers -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Rivers">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water_Areas"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">57</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_Parts"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Pipeline_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Pipeline_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">20</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Pipelines -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Pipelines">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">20</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Ventilation_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Ventilation_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">21</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Ventilations -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Ventilations">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">21</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Window_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Window_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">22</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Windows -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Windows">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">22</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roofs -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roofs">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Building_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Sidewalk_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Sidewalk_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">45</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Sidewalks -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Sidewalks">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">45</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Soil_Gravel_Areas -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Soil_Gravel_Areas">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">41</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Soil_Gravel_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Soil_Gravel_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">41</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Solar_Panel_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Solar_Panel_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">23</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Solar_Panels -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Solar_Panels">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">23</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stair_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stair_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">46</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stairs -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stairs">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">46</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stone_Areas -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stone_Areas">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_Areas"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">42</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stone_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Stone_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Ground_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">42</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Street_Separator_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Street_Separator_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">31</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Street_Separators -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Street_Separators">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">31</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Street_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Street_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">47</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Streets -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Streets">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Impervious_Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">47</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">2</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">2</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tile_Roof_Surface_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tile_Roof_Surface_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_points"/>
+        <rdfs:comment>Mereological_Part</rdfs:comment>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">24</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tile_Roof_Surfaces -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tile_Roof_Surfaces">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Roof_Parts"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">24</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Traffic_Signature_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Traffic_Signature_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">32</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Traffic_Signatures -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Traffic_Signatures">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">32</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tree_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tree_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entity_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Trees -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Trees">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Truck_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Truck_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">54</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Trucks -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Trucks">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">54</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Two-Wheeled_Veichles -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Two-Wheeled_Veichles">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">53</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Unclassified_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Unclassified_Entities">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Macro_Entities"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Unclassified_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Unclassified_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">3</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">7</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">7</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Van_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Van_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">55</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vans -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vans">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">55</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entities -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entities">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">8</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entity_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Vegetation_Entity_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Immovable_Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">8</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Object_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">50</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Movable_Objects"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">50</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Wall_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Wall_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furniture_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">33</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Walls -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Walls">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Urban_Furnitures"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">33</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water_Areas -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water_Areas">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surfaces"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">37</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Surface_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">37</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Work_Machine_points -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Work_Machine_points">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichle_points"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">56</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Work_Machines -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Work_Machines">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Veichles"/>
+        <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">56</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Asphalt -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Asphalt">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.92</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Bare_Ground -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Bare_Ground">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.01</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.9</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Biomass -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Biomass">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Categories"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Black_Bitumen -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Black_Bitumen">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.92</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Brick -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Brick">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.84</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Cement -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Cement">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.84</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Cobblestone -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Cobblestone">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.01</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.9</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Concrete -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Concrete">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.88</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Energy_Consuming_Entity -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Energy_Consuming_Entity">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Categories"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Energy_Producing_Entity -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Energy_Producing_Entity">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Categories"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Glass -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Glass">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.84</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Gravel -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Gravel">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.84</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#High_Vegetation">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.1</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.7</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Low_Vegetation">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.1</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.5</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Marble -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Marble">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.00000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.88</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Meadow -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Meadow">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.1</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.5</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Metal -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Metal">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.7</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Mixed_Vegetation_Soil -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Mixed_Vegetation_Soil">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.1</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.5</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Other">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Materials"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Paved -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Paved">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.88</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Porphyry -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Porphyry">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.9</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Red_Earth -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Red_Earth">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.01</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.8</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Red_Tile -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Red_Tile">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Sand -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Sand">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">10</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.83</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Shadow -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Shadow">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Solar_Panel -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Solar_Panel">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.87</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Synthetic_Grass -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Synthetic_Grass">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">2.3</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tartan -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Tartan">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">2.0</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Travertine -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Travertine">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.00000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.09</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Water">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">4.18</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#White_Sheath -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#White_Sheath">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Improper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.0000001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.0</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Wood -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Wood">
+        <rdf:type rdf:resource="http://www.semanticweb.org/mcodi/ontologies/2024/3/Urban_Ontology#Proper_Materials"/>
+        <Urban_Ontology:Permeability_To_Water rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">0.001</Urban_Ontology:Permeability_To_Water>
+        <Urban_Ontology:Specific_Heat_Capacity rdf:datatype="http://www.w3.org/2001/XMLSchema#decimal">1.76</Urban_Ontology:Specific_Heat_Capacity>
+    </owl:NamedIndividual>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.5.26.2023-07-17T20:34:13Z) https://github.com/owlcs/owlapi -->
+

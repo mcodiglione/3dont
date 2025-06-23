@@ -36,18 +36,21 @@ private slots:
   void singlePointSelected(unsigned int index);
   void setStatusbarContent(const QString &content, int seconds);
   void on_executeQueryButton_clicked();
-  void on_actionConnect_to_server_triggered();
+  void on_actionCreate_project_triggered();
   void on_actionLegend_toggled(bool checked);
   void displayNodeDetails(const QStringList &details, const QString &parentId);
   void plotTabular(const QStringList &header, const QStringList &rows);
   void setQueryError(const QString &error);
-  void setLegend(const QVariantList &colors, const QStringList &labels);
+  void setLegend(const QStringList &colors, const QStringList &labels);
   void onTreeViewContexMenuRequested(const QPoint &pos);
   void detailsClosed(bool visible);
   void on_actionConfigure_AWS_Connection_triggered();
   void on_actionSet_Arguments_PROVISIONAL_triggered();
   void on_actionAdd_Sensor_triggered();
   void on_actionUpdate_Sensors_and_Reason_triggered();
+  void setProjectList(const QStringList &projects);
+
+  [[nodiscard]] QStringList getPropertiesMapping(const QStringList &properties, const QStringList& words, const QStringList &defaults);
 
 private:
   Ui::MainLayout *ui;

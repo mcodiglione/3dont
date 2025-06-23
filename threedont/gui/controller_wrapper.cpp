@@ -54,10 +54,6 @@ void ControllerWrapper::scalarQuery(const std::string &query) {
   callPythonMethod(controller, "scalar_query", "s", query.c_str());
 }
 
-void ControllerWrapper::connectToServer(const std::string &url) {
-  callPythonMethod(controller, "connect_to_server", "s", url.c_str());
-}
-
 void ControllerWrapper::stop() {
   callPythonMethod(controller, "stop", "");
 }
@@ -108,4 +104,13 @@ void ControllerWrapper::updateSensorsAndReason() {
 
 void ControllerWrapper::provisionalSetArgs(const std::string &graph_uri, const std::string &ont_path, const std::string &pop_ont_path, const std::string &namespace, const std::string &populated_namespace, const std::string &virtuoso_isql) {
   callPythonMethod(controller, "provisional_set_args", "ssssss", graph_uri.c_str(), ont_path.c_str(), pop_ont_path.c_str(), namespace.c_str(), populated_namespace.c_str(), virtuoso_isql.c_str());
+}
+void ControllerWrapper::openProject(const std::string &projectName) {
+  callPythonMethod(controller, "open_project", "s", projectName.c_str());
+}
+void ControllerWrapper::createProject(const std::string &projectName, const std::string &dbUrl, const std::string &graphUri, const std::string &ontologyNamespace) {
+  callPythonMethod(controller, "create_project", "ssss", projectName.c_str(), dbUrl.c_str(), graphUri.c_str(), ontologyNamespace.c_str());
+}
+void ControllerWrapper::askProjectList() {
+  callPythonMethod(controller, "update_project_list", "");
 }

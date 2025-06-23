@@ -865,7 +865,7 @@ private:
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_POINT_SPRITE); // TODO
+    glEnable(GL_POINT_SPRITE); // TODO maybe is deprecated
     _render_time = vltools::getTime();
     _background->draw();
     _floor_grid->draw(_camera);

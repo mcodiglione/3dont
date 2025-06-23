@@ -8,10 +8,12 @@ from SPARQLWrapper.SPARQLExceptions import QueryBadFormed
 from .db import SparqlEndpoint, WrongResultFormatException, EmptyResultSetException
 from .viewer import Viewer, get_color_map
 from ..gui import GuiWrapper
+from .state import Project
+from ..nl_2_sparql import nl_2_sparql, init_client
 
-from sensor_manager import Sensor_Management_Functions as smf
-from sensor_manager import Classes as cl
-from sensor_manager import aws_iot_interface as aws
+from ..sensor_manager import Sensor_Management_Functions as smf
+from ..sensor_manager import Classes as cl
+from ..sensor_manager import aws_iot_interface as aws
 import owlready2 as owl2
 
 __all__ = ["Controller"]
@@ -68,7 +70,9 @@ def report_errors_to_gui(func):
 
 
 class Controller:
-    def __init__(self):
+    def __init__(self, config, app_state):
+        self.config = config
+        self.app_state = app_state
         self.commands_queue = Queue()
         action_controller = ActionController(self.commands_queue, self.run_event_loop)
         self.gui = GuiWrapper(action_controller, sys.argv)
@@ -76,6 +80,7 @@ class Controller:
         self.viewer_client = Viewer(viewer_server_port)
         self.sparql_client = None
         self.Args = cl.Args()
+        self.project = None
 
     def stop(self):
         print("Stopping controller...")
@@ -87,6 +92,12 @@ class Controller:
 
     def run_event_loop(self):
         print("Running controller")
+        self.update_project_list()
+        if self.config.get_general_loadLastProject():
+            last_project = self.app_state.get_projectName()
+            if last_project and Project.exists(last_project):
+                self.open_project(last_project)
+
         command = self.commands_queue.get()
         while command is not None:
             function_name, args = command
@@ -156,6 +167,8 @@ class Controller:
         # self.Args.wrapper = TODO
         # self.Args.virtuoso_isql = TODO
         #######################################################################################
+        print("Point size is ", self.config.get_visualizer_pointsSize())
+        self.viewer_client.set(point_size=self.config.get_visualizer_pointsSize())
 
     def view_point_details(self, id):
         iri = self.sparql_client.get_point_iri(id)
@@ -205,12 +218,6 @@ class Controller:
             for (r, g, b) in colors
         ]
         self.gui.set_legend(colors, labels)
-
-    @report_errors_to_gui
-    def natural_language_query(self, query):
-        print("Natural language query: ", query)
-        # TODO
-        self.gui.set_query_error("Natural language query not implemented yet!")
 
     @report_errors_to_gui
     def configure_AWS_connection(
@@ -293,3 +300,64 @@ class Controller:
         wrapper.setCredentials("dba", "dba")
         self.Args.wrapper = wrapper
         self.gui.set_statusbar_content("Args configured!", 5)
+
+    def natural_language_query(self, nl_query):
+        print("Natural language query: ", nl_query)
+        onto_path = self.project.get_onto_path()
+        openai_client = init_client()  # TODO understand if can be done only once
+        query = nl_2_sparql(
+            nl_query,
+            onto_path,
+            self.project.get_graphNamespace(),
+            self.project.get_graphUri(),
+            openai_client,
+            self.gui,
+        )
+        query = "\n".join(query)
+        result, query_type = self.sparql_client.autodetect_query_nl(query)
+        if query_type == "tabular":
+            header = list(result.keys())
+            rows = list(zip(*(result[key] for key in result)))
+            self.gui.plot_tabular(header, rows)
+        elif query_type == "scalar":
+            self.viewer_client.attributes(self.sparql_client.colors, result)
+            self.viewer_client.set(curr_attribute_id=1)
+            self._send_legend(result)
+        elif query_type == "select":
+            self.viewer_client.attributes(result)
+            self.viewer_client.set(curr_attribute_id=0)
+        else:
+            print(
+                "Error, unknown query type: ", query_type
+            )  # TODO remove, shouldn't happen
+
+    def update_project_list(self):
+        lst = Project.get_project_list()
+        self.gui.set_project_list(lst)
+
+    def open_project(self, project_name):
+        print("Opening project: ", project_name)
+        self.project = Project(project_name)
+        self.app_state.set_projectName(self.project.get_name())
+        self.gui.set_statusbar_content(f"Opened project: {project_name}", 5)
+        self.connect_to_server(
+            self.project.get_graphUri(),
+            self.project.get_dbUrl(),
+            self.project.get_graphNamespace(),
+        )
+
+    def create_project(self, project_name, db_url, graph_uri, graph_namespace):
+        print("Creating project: ", project_name)
+        if Project.exists(project_name):
+            # TODO use proper error handling in GUI
+            self.gui.set_query_error(f"Project '{project_name}' already exists!")
+            return
+
+        self.project = Project(project_name)
+        self.project.set_name(project_name)
+        self.project.set_dbUrl(db_url)
+        self.project.set_graphUri(graph_uri)
+        self.project.set_graphNamespace(graph_namespace)
+        self.project.save()
+        self.gui.set_statusbar_content(f"Created project: {project_name}", 5)
+        self.open_project(project_name)  # maybe remove this

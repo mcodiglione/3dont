@@ -12,7 +12,6 @@ private:
   inline static std::string neededMethods[] = {
           "select_query",
           "scalar_query",
-          "connect_to_server",
           "stop",
           "view_point_details",
           "view_node_details",
@@ -20,11 +19,15 @@ private:
           "annotate_node",
           "select_all_subjects",
           "natural_language_query",
-          "tabular_query",
           "configure_AWS_connection",
           "add_sensor",
           "update_sensors_and_reason",
           "provisional_set_args"};
+          "scalar_with_predicate",
+          "open_project",
+          "create_project",
+          "update_project_list",
+          "tabular_query"};
 
   static void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...);
 
@@ -34,7 +37,6 @@ public:
 
   void selectQuery(const std::string &query);
   void scalarQuery(const std::string &query);
-  void connectToServer(const std::string &url);
   void stop();
   void viewPointDetails(unsigned int index);
   void viewNodeDetails(const std::string &node_id);
@@ -49,6 +51,9 @@ public:
   void updateSensorsAndReason();
   void provisionalSetArgs(const std::string &graph_uri, const std::string &ont_path, const std::string &pop_ont_path, const std::string &namespace, const std::string &populated_namespace, const std::string &virtuoso_isql);
 
+  void openProject(const std::string &projectName);
+  void createProject(const std::string &projectName, const std::string& dbUrl, const std::string& graphUri, const std::string &ontologyNamespace);
+  void askProjectList();
 };
 
 #endif // THREEDONT_CONTROLLER_WRAPPER_H

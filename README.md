@@ -21,19 +21,24 @@ View, query and manually annotate pointclouds ontologies.
 - [x] highlight subject name
 - [x] legend scalar
 - [x] adjust licensing
+- [x] persistent configuration (platformdirs)
+- [x] nl queries
+- [ ] select min max scalar
 - [ ] scalar templates
-- [ ] nl queries
 - [ ] refactor input dialogs
 - [ ] import pointclouds etc.
 - [ ] add default to scalar queries equal to color
 - [ ] configure page (namespace)
 - [ ] fix viewer focus issue
-- [ ] persistent configuration (platformdirs)
+- [ ] better loading screen
+- [ ] gui error report (generic)
+- [ ] override config with cli arguments
+- [ ] embed virtuoso in the application
  
 ## License
 
 The LICENSE_PPTK file is the license of the viewer used as a base for this project. It is relative to the content of the folder
-`threedont/gui/viewer` and the file `threedont/app/viewer`.
+`threedont/gui/viewer` and the file `threedont/app/viewer.py`.
 
 ## Install
 
