@@ -185,7 +185,7 @@ void MainLayout::onTreeViewContexMenuRequested(const QPoint &pos) {
     QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Object name or Value:"), QLineEdit::Normal,
                                               "type here", &ok);
     if (!ok || newObject.isEmpty()) return;
-    QString newObject = QInputDialog::getText(this, tr("Annotate"), tr("Annotation Author (Name Surname):"), QLineEdit::Normal,
+    QString authorName = QInputDialog::getText(this, tr("Annotate"), tr("Annotation Author (Name Surname):"), QLineEdit::Normal,
                                               "type here", &ok);
     if (!ok || authorName.isEmpty()) return;
 
@@ -249,9 +249,9 @@ void MainLayout::on_actionSet_Arguments_PROVISIONAL_triggered() {
                                         QLineEdit::Normal, "type here", &ok);
   if (!ok || popOntPath.isEmpty()) return;
 
-  QString namespace = QInputDialog::getText(this, tr("Set Arguments"), tr("Domain Ontology Namespace:"),
+  QString ontNamespace = QInputDialog::getText(this, tr("Set Arguments"), tr("Domain Ontology Namespace:"),
                                         QLineEdit::Normal, "type here", &ok);
-  if (!ok || namespace.isEmpty()) return;
+  if (!ok || ontNamespace.isEmpty()) return;
 
   QString populatedNamespace = QInputDialog::getText(this, tr("Set Arguments"), tr("3DGraph-specific Namespace:"),
                                         QLineEdit::Normal, "type here", &ok);
@@ -261,7 +261,7 @@ void MainLayout::on_actionSet_Arguments_PROVISIONAL_triggered() {
                                                     QLineEdit::Normal, "type here", &ok);
   if (!ok || virtuosoIsql.isEmpty()) return;
 
-  controllerWrapper->provisionalSetArgs(graphUri.toStdString(), ontPath.toStdString(), popOntPath.toStdString(), namespace.toStdString(), populatedNamespace.toStdString(), virtuosoIsql.toStdString());
+  controllerWrapper->provisionalSetArgs(graphUri.toStdString(), ontPath.toStdString(), popOntPath.toStdString(), ontNamespace.toStdString(), populatedNamespace.toStdString(), virtuosoIsql.toStdString());
 }
 
 void MainLayout::on_actionAdd_Sensor_triggered() {
