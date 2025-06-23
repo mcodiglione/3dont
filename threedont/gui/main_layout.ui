@@ -157,11 +157,6 @@
     </layout>
    </widget>
   </widget>
-  <action name="actionConnect_to_server">
-   <property name="text">
-    <string>Connect to server</string>
-   </property>
-  </action>
   <action name="actionLegend">
    <property name="checkable">
     <bool>true</bool>
@@ -191,6 +186,8 @@
   <action name="actionUpdate_Sensors_and_Reason">
    <property name="text">
     <string>Update Sensors and Reason</string>
+    </property>
+  </action>
   <action name="actionOpen_project">
    <property name="text">
     <string>Open project</string>

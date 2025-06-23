@@ -1,1 +1,2 @@
 add_subdirectory(gui)
+add_compile_definitions(GL_SILENCE_DEPRECATION)

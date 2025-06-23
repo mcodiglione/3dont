@@ -199,7 +199,7 @@ protected:
     }
   }
 
-  virtual void mouseMoveEvent(QMouseEvent *ev) {
+  virtual void mouseMoveEvent(QMouseEvent *ev) override {
     // note: +x right, +y down
     if (ev->buttons() & Qt::LeftButton) {
       if (_fine_render_state != INACTIVE) _fine_render_state = TERMINATE;
