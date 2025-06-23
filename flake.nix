@@ -51,9 +51,29 @@
             dependencies = with pkgs.python3Packages; [
               numpy
               sparqlwrapper
+              rdflib
+              networkx
+              openai
+              owlready2
               platformdirs
+              nltk
+              editdistance
+              jarowinkler
             ];
           };
+          owlready2 = pkgs.python3Packages.callPackage ({buildPythonPackage, fetchPypi, distutils}:
+            buildPythonPackage rec {
+              pname = "owlready2";
+              version = "0.47";
+              src = fetchPypi {
+                inherit pname version;
+                hash = "sha256-r34dIgXAtYhtLjQ5erjBDKKf9ow9w3AtQzk5Zqx/brA=";
+              };
+              propagatedBuildInputs = [
+                distutils
+              ];
+            }
+          ) {};
         };
 
         devShells = {

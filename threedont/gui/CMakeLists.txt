@@ -16,6 +16,7 @@ target_sources(gui PRIVATE
         main_layout.h
         widgets/scale_legend.h
         points_tree_view/graph_tree_model.h
+        dialogs/properties_mapping_selection.h
 )
 
 if (WIN32)

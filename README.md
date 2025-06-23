@@ -22,8 +22,9 @@ View, query and manually annotate pointclouds ontologies.
 - [x] legend scalar
 - [x] adjust licensing
 - [x] persistent configuration (platformdirs)
+- [x] nl queries
+- [ ] select min max scalar
 - [ ] scalar templates
-- [ ] nl queries
 - [ ] refactor input dialogs
 - [ ] import pointclouds etc.
 - [ ] add default to scalar queries equal to color

@@ -31,3 +31,5 @@ wheel.exclude = [
   "threedont/**/*.hpp",
   "threedont/**/*.ui",
 ]
+
+sdist.include = ["threedont/assets/**"]
