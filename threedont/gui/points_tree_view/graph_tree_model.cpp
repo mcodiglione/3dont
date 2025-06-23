@@ -163,3 +163,5 @@ void GraphTreeModel::onRowCollapsed(const QModelIndex &index) {
     highlightedIndex = QModelIndex();
   emit dataChanged(siblingIndex, siblingIndex, {Qt::FontRole});
 }
+
+#include "moc_graph_tree_model.cpp"

@@ -33,7 +33,6 @@ public:
 
   void selectQuery(const std::string &query);
   void scalarQuery(const std::string &query);
-  void connectToServer(const std::string &url, const std::string &ontologyNamespace);
   void stop();
   void viewPointDetails(unsigned int index);
   void viewNodeDetails(const std::string &node_id);

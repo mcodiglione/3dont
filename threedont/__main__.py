@@ -3,6 +3,9 @@ import argparse
 from threedont import Controller
 from .app.state import Config, AppState
 
+# Setup dependencies
+import nltk
+nltk.download("wordnet")
 
 def main():
     parser = argparse.ArgumentParser(description='3Dont')

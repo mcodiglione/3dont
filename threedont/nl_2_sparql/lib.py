@@ -104,110 +104,45 @@ def parse_ontology_schema(
     """
 
 
-def ask_user_for_confirmation(mapping_dict, parsed_ontology_schema, type_dict):
-    window = tk.Toplevel()
-    window.title("Mapping executed")
-    subtitle = tk.Label(
-        window,
-        text="Check the mapping and adjust if needed, then press ok",
-        font=("Arial", 14, "italic"),
-    )
-    subtitle.grid(row=0, column=0, columnspan=2, padx=10, pady=10)
-
+def ask_user_for_confirmation(mapping_dict, parsed_ontology_schema, type_dict, gui):
     final_mapping_dict = {}
     dropdowns = {}
 
-    # Iterate through the dictionary to create labels and dropdowns
-    for index, (key, default_value) in enumerate(mapping_dict.items()):
-        # Label for the key
-        label = tk.Label(window, text=key)
-        label.grid(row=index + 1, column=0, padx=10, pady=5)
+    parsed_ontology_schema_merged = [
+        item for sublist in parsed_ontology_schema for item in sublist
+    ]
 
-        parsed_ontology_schema_merged = [
-            item for sublist in parsed_ontology_schema for item in sublist
-        ]
+    words = list(mapping_dict.keys())
+    defaults = [mapping_dict[word][0] for word in words]
+    result = gui.get_properties_mapping(parsed_ontology_schema_merged, words, defaults)
 
-        # Dropdown menu for the value associated with the key
-        dropdown = ttk.Combobox(window, values=parsed_ontology_schema_merged)
-        dropdown.set(default_value[0])  # Set the default value
-        dropdown.grid(row=index + 1, column=1, padx=10, pady=5)
-        dropdowns[key] = dropdown
+    for word, mapped_word in zip(words, result):
+        for index, l in enumerate(parsed_ontology_schema):
+            if mapped_word in l and mapped_word != "":
+                final_mapping_dict[word] = [mapped_word, type_dict[str(index)]]
 
-    def on_ok():
-        for word, var in dropdowns.items():
-            mapped_word = var.get()
-            for index, l in enumerate(parsed_ontology_schema):
-                if mapped_word in l and mapped_word != "":
-                    final_mapping_dict[word] = [mapped_word, type_dict[str(index)]]
-        window.destroy()  # Close the sub-window
-
-    ok_button = tk.Button(window, text="OK", command=on_ok)
-    ok_button.grid(
-        row=index + 2,
-        column=0,
-        columnspan=2,
-        pady=10,
-    )
-    window.wait_window()
+    # TODO if result is empty abort
 
     return final_mapping_dict
 
 
-def ask_user_for_manual_mapping(unmapped_list, parsed_ontology_schema, type_dict):
+def ask_user_for_manual_mapping(unmapped_list, parsed_ontology_schema, type_dict, gui):
     mapping_result = {}
-    sub_window = tk.Toplevel()
-    sub_window.title("Manual Mapping")
 
-    # Configure the grid
-    sub_window.grid_columnconfigure(0, weight=1)
-    sub_window.grid_columnconfigure(1, weight=1)
+    parsed_ontology_schema_merged = [
+        item for sublist in parsed_ontology_schema for item in sublist
+    ]
 
-    # Add headers
-    tk.Label(sub_window, text="Unmapped Words", font=("Arial", 12, "bold")).grid(
-        row=0, column=0, padx=10, pady=10
-    )
-    tk.Label(sub_window, text="Mapped To", font=("Arial", 12, "bold")).grid(
-        row=0, column=1, padx=10, pady=10
-    )
+    result = gui.get_properties_mapping(parsed_ontology_schema_merged, unmapped_list, [])
+    for mapped_word, word in zip(result, unmapped_list):
+        for index, l in enumerate(parsed_ontology_schema):
+            if mapped_word in l and mapped_word != "":
+                mapping_result[word] = [mapped_word, type_dict[str(index)]]
 
-    # Create a dictionary to store the dropdown menus
-    dropdown_vars = {}
-
-    # Populate the sub-window with unmapped words and dropdown menus
-    for idx, word in enumerate(unmapped_list):
-        # Label for the unmapped word
-        tk.Label(sub_window, text=word, font=("Arial", 10)).grid(
-            row=idx + 1, column=0, padx=10, pady=5, sticky="w"
-        )
-
-        parsed_ontology_schema_merged = [
-            item for sublist in parsed_ontology_schema for item in sublist
-        ]
-
-        # Dropdown menu for the mapped words
-        var = tk.StringVar(value="")  # Default value is empty
-        dropdown = ttk.Combobox(
-            sub_window, textvariable=var, values=parsed_ontology_schema_merged
-        )
-        dropdown.grid(row=idx + 1, column=1, padx=10, pady=5, sticky="ew")
-        dropdown_vars[word] = var  # Store the variable for later retrieval
-
-    # OK button to finalize the mapping
-    def on_ok():
-        for word, var in dropdown_vars.items():
-            mapped_word = var.get()
-            for index, l in enumerate(parsed_ontology_schema):
-                if mapped_word in l and mapped_word != "":
-                    mapping_result[word] = [mapped_word, type_dict[str(index)]]
-        sub_window.destroy()  # Close the sub-window
-
-    ok_button = tk.Button(sub_window, text="OK", command=on_ok)
-    ok_button.grid(row=len(unmapped_list) + 1, column=0, columnspan=2, pady=10)
-    sub_window.wait_window()
     return mapping_result
 
 
-def map_query(parsed_query, parsed_ontology_schema, base):  # base is a namespace object
+def map_query(parsed_query, parsed_ontology_schema, base, gui):  # base is a namespace object
     from nltk.corpus import wordnet as wn
     import editdistance as ed
     from jarowinkler import jarowinkler_similarity
@@ -376,12 +311,12 @@ def map_query(parsed_query, parsed_ontology_schema, base):  # base is a namespac
         )
         # request to the user for a manual mapping
         unmapped_mapping_dict = ask_user_for_manual_mapping(
-            unmapped_list, parsed_ontology_schema, type_dict
+            unmapped_list, parsed_ontology_schema, type_dict, gui
         )
         mapping_dict = mapping_dict | unmapped_mapping_dict
 
     confirmed_mapping_dict = ask_user_for_confirmation(
-        mapping_dict, parsed_ontology_schema, type_dict
+        mapping_dict, parsed_ontology_schema, type_dict, gui
     )
 
     # here i have a mapping_dict and a string_filters_dict (can be empty).
@@ -2436,6 +2371,7 @@ def nl_2_sparql(
         ont_namespace,
         graph_uri,
         client,
+        gui, # TODO make a class and avoid passing gui around
 ):
     try:
         ontology_schema = owl2.get_ontology(ont_path).load()
@@ -2444,7 +2380,7 @@ def nl_2_sparql(
         wordlist = parse_wordlist(ontology_schema)
         parsed_query_lists = gpt_process_query_no_wordlist(
             nl_query, client
-        )  # possible also to use wordlist for guidance and use gpt_process_query_with_wordlist(), but at the present time the model cagasburra
+        )  # possible also to use wordlist for guidance and use gpt_process_query_with_wordlist(), but at the present time the model
         print(parsed_query_lists)
         parsed_query_lists = add_commas_and_quotes(parsed_query_lists)
         # GEQB-based part
@@ -2463,7 +2399,7 @@ def nl_2_sparql(
         )  # for correcting minor issues of missing rows for L1 which are in L2"""
         parsed_query = [fixL1, fixL2, L3, L4, L5]  # type: ignore
         base = owl2.get_namespace(ont_namespace)
-        mapped_query = map_query(parsed_query, parsed_onto, base)
+        mapped_query = map_query(parsed_query, parsed_onto, base, gui)
         subgraph = generate_query_subgraph(mapped_query[0], ontology_graph)
         class_occurrence_generation(subgraph, mapped_query[0], mapped_query[1])
         triples_rdf_list = single_paths_annotation(

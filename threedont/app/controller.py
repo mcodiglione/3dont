@@ -197,7 +197,8 @@ class Controller:
         print("Natural language query: ", nl_query)
         onto_path = self.project.get_onto_path()
         openai_client = init_client() # TODO understand if can be done only once
-        query = nl_2_sparql(nl_query, onto_path, self.project.get_graphNamespace(), self.project.get_graphUri(), openai_client)
+        query = nl_2_sparql(nl_query, onto_path, self.project.get_graphNamespace(), self.project.get_graphUri(), openai_client, self.gui)
+        query  = '\n'.join(query)
         result, query_type = self.sparql_client.autodetect_query_nl(query)
         if query_type == "tabular":
             header = list(result.keys())

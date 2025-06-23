@@ -15,11 +15,11 @@ class PropertiesMappingDialog : public QDialog {
   Q_OBJECT
 
 public:
-  PropertiesMappingDialog(const QStringList& unmappedList,
-                      const QList<QStringList>& parsedOntologySchema,
-                      const QMap<QString, QString>& typeDict,
+  PropertiesMappingDialog(const QStringList& words,
+                      const QStringList & options,
+                      const QStringList & defaults = {},
                       QWidget* parent = nullptr)
-      : QDialog(parent), typeDict(typeDict), parsedOntologySchema(parsedOntologySchema) {
+      : QDialog(parent)  {
 
     setWindowTitle("Manual Mapping");
     QVBoxLayout* mainLayout = new QVBoxLayout(this);
@@ -32,18 +32,18 @@ public:
 
     QFormLayout* formLayout = new QFormLayout(this);
 
-    // Flatten the ontology schema
-    QStringList flattenedSchema;
-    for (const QStringList& sublist : parsedOntologySchema)
-      flattenedSchema.append(sublist);
-
     // Create form rows
-    for (const QString& word : unmappedList) {
-      QLabel* wordLabel = new QLabel(word);
-      QComboBox* comboBox = new QComboBox();
-      comboBox->addItems(flattenedSchema);
+    for (int i = 0; i < words.size(); ++i) {
+      auto* wordLabel = new QLabel(words[i], this);
+      auto* comboBox = new QComboBox(this);
+      comboBox->addItems(options);
+      if (defaults.size() > i)
+        comboBox->setCurrentText(defaults[i]);
+      else
+        comboBox->setCurrentIndex(0);  // Default to first option if no defaults provided
+
       formLayout->addRow(wordLabel, comboBox);
-      comboBoxes[word] = comboBox;
+      comboBoxes.append(comboBox);
     }
 
     mainLayout->addLayout(formLayout);
@@ -57,34 +57,33 @@ public:
   }
 
   // use only if the dialog was accepted
-  QMap<QString, QStringList> getMappingResult() const {
-    return mappingResult;
+  QStringList getMappingResult() const {
+    return result;
+  }
+
+  static QStringList getPropertiesMapping(QWidget* parent,
+                                     const QStringList& options,
+                                     const QStringList& words,
+                                     const QStringList& defaults = {}) {
+    PropertiesMappingDialog dialog(words, options, defaults, parent);
+    if (dialog.exec() == QDialog::Accepted)
+      return dialog.getMappingResult();
+
+    return {};  // Return empty list if dialog was rejected
   }
 
 private slots:
   void onOkClicked() {
-    mappingResult.clear();
-    for (const auto& [word, comboBox] : comboBoxes.toStdMap()) {
-      QString mapped = comboBox->currentText();
+    result.clear();
+    for (QComboBox* comboBox : comboBoxes)
+      result.append(comboBox->currentText());
 
-      if (!mapped.isEmpty()) {
-        for (int i = 0; i < parsedOntologySchema.size(); ++i) {
-          if (parsedOntologySchema[i].contains(mapped)) {
-            QString type = typeDict.value(QString::number(i));
-            mappingResult[word] = {mapped, type};
-            break;
-          }
-        }
-      }
-    }
     accept();  // Close dialog
   }
 
 private:
-  QMap<QString, QComboBox*> comboBoxes;
-  QMap<QString, QStringList> mappingResult;
-  QMap<QString, QString> typeDict;
-  QList<QStringList> parsedOntologySchema;
+  QList<QComboBox*> comboBoxes;
+  QStringList result;
 };
 
 #endif // THREEDONT_PROPERTIES_MAPPING_SELECTION_H

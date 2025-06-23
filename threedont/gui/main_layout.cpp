@@ -1,4 +1,5 @@
 #include "main_layout.h"
+#include "dialogs/properties_mapping_selection.h"
 #include <QAction>
 #include <QDebug>
 #include <QDockWidget>
@@ -140,7 +141,7 @@ void MainLayout::setQueryError(const QString &error) {
   ui->errorLabel->setVisible(true);
 }
 
-void MainLayout::setLegend(const QVariantList &colors, const QStringList &labels) {
+void MainLayout::setLegend(const QStringList &colors, const QStringList &labels) {
   if (!showLegend) return;
   if (legendDock) legendDock->close();
 
@@ -150,8 +151,7 @@ void MainLayout::setLegend(const QVariantList &colors, const QStringList &labels
 
   QList<QColor> colorList;
   for (const auto &color: colors)
-    if (color.canConvert<QString>())
-      colorList.append(QColor(color.toString()));
+    colorList.append(QColor(color));
 
   auto *legend = new ColorScaleLegend(colorList, labels, dock);
   dock->setWidget(legend);
@@ -237,7 +237,7 @@ void MainLayout::on_actionCreate_project_triggered() {
   if (!ok || projectName.isEmpty()) return;
 
   QString dbUrl = QInputDialog::getText(this, tr("Connect to server"), tr("Server URL:"),
-                                        QLineEdit::Normal, "http://localhost:8890", &ok);
+                                        QLineEdit::Normal, "http://localhost:8890", &ok); // TODO make this defaults parameters
   if (!ok || dbUrl.isEmpty()) return;
 
   QString graphUri = QInputDialog::getText(this, tr("Connect to server"), tr("Graph uri:"),
@@ -251,3 +251,9 @@ void MainLayout::on_actionCreate_project_triggered() {
   controllerWrapper->createProject(projectName.toStdString(), dbUrl.toStdString(), graphUri.toStdString(), ontologyNamespace.toStdString());
   controllerWrapper->askProjectList();
 }
+
+QStringList MainLayout::getPropertiesMapping(const QStringList &properties, const QStringList &words, const QStringList &defaults) {
+  return PropertiesMappingDialog::getPropertiesMapping(this, properties, words, defaults);
+}
+
+#include "moc_main_layout.cpp"

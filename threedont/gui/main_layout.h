@@ -41,10 +41,12 @@ private slots:
   void displayNodeDetails(const QStringList &details, const QString &parentId);
   void plotTabular(const QStringList &header, const QStringList &rows);
   void setQueryError(const QString &error);
-  void setLegend(const QVariantList &colors, const QStringList &labels);
+  void setLegend(const QStringList &colors, const QStringList &labels);
   void onTreeViewContexMenuRequested(const QPoint &pos);
   void detailsClosed(bool visible);
   void setProjectList(const QStringList &projects);
+
+  [[nodiscard]] QStringList getPropertiesMapping(const QStringList &properties, const QStringList& words, const QStringList &defaults);
 
 private:
   Ui::MainLayout *ui;
