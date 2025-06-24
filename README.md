@@ -23,7 +23,8 @@ View, query and manually annotate pointclouds ontologies.
 - [x] adjust licensing
 - [x] persistent configuration (platformdirs)
 - [x] nl queries
-- [ ] select min max scalar
+- [x] select min max scalar
+- [ ] block dock floating
 - [ ] scalar templates
 - [ ] refactor input dialogs
 - [ ] import pointclouds etc.
