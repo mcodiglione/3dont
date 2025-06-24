@@ -15,10 +15,29 @@ public:
 
 protected:
   void paintEvent(QPaintEvent *event) override;
+  void mousePressEvent(QMouseEvent* aEvent) override;
+  void mouseMoveEvent(QMouseEvent* aEvent) override;
+  void mouseReleaseEvent(QMouseEvent* aEvent) override;
+  void resizeEvent(QResizeEvent *event) override;
+
+signals:
+  void rangeUpdated(double min, double max);
 
 private:
   QList<QColor> colors;
   QStringList labels;
+  double absMin, absMax, currMin, currMax;
+  int colorStartX, colorEndX, scaleHeight;
+
+  QRect legendRegion;
+
+  int barX[2] = {-1, -1};
+  int currentSlider = -1;
+
+  int getXInLegendRegion(int x);
+  double maxXtoValueInRegion(int x);
+  void updateLegendFromSliders();
+  void drawSliderHandle(QPainter *painter, int x, int height);
 };
 
 #endif // THREEDONT_SCALE_LEGEND_H

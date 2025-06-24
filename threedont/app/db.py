@@ -7,7 +7,7 @@ from SPARQLWrapper import TURTLE
 from .queries import *
 from .turtle_parse import SPARQLWrapperWithTurtle as SPARQLWrapper
 
-TEST_FAST = False  # remove true before commit
+TEST_FAST = True  # remove true before commit
 CHUNK_SIZE = 1000000 if not TEST_FAST else 1000
 HIGHLIGHT_COLOR = [1.0, 0.0, 0.0]  # TODO make this a parameter
 
