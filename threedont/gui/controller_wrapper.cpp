@@ -98,3 +98,7 @@ void ControllerWrapper::createProject(const std::string &projectName, const std:
 void ControllerWrapper::askProjectList() {
   callPythonMethod(controller, "update_project_list", "");
 }
+
+void ControllerWrapper::setColorScale(double min, double max) {
+  callPythonMethod(controller, "set_color_scale", "dd", min, max);
+}

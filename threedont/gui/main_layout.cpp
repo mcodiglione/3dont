@@ -154,6 +154,8 @@ void MainLayout::setLegend(const QStringList &colors, const QStringList &labels)
     colorList.append(QColor(color));
 
   auto *legend = new ColorScaleLegend(colorList, labels, dock);
+  connect(legend, &ColorScaleLegend::rangeUpdated, [this](double min, double max) {controllerWrapper->setColorScale(min, max); });
+
   dock->setWidget(legend);
   addDockWidget(Qt::BottomDockWidgetArea, dock);
   legendDock = dock;

@@ -23,6 +23,7 @@ private:
           "open_project",
           "create_project",
           "update_project_list",
+          "set_color_scale",
           "tabular_query"};
 
   static void callPythonMethod(PyObject *object, const char *methodName, const char *format, ...);
@@ -45,6 +46,7 @@ public:
   void openProject(const std::string &projectName);
   void createProject(const std::string &projectName, const std::string& dbUrl, const std::string& graphUri, const std::string &ontologyNamespace);
   void askProjectList();
+  void setColorScale(double min, double max);
 };
 
 #endif // THREEDONT_CONTROLLER_WRAPPER_H
