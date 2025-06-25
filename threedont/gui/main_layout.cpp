@@ -95,7 +95,7 @@ void MainLayout::displayNodeDetails(const QStringList &details, const QString &p
   if (!isDetailsOpen) {
     QDockWidget *dock = new QDockWidget(tr("Point details"), this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+    dock->setFeatures(QDockWidget::DockWidgetClosable);
     connect(dock, &QDockWidget::visibilityChanged, this, &MainLayout::detailsClosed);
 
     graphTreeModel = new GraphTreeModel(controllerWrapper, this);
@@ -147,7 +147,7 @@ void MainLayout::setLegend(const QStringList &colors, const QStringList &labels)
 
   QDockWidget *dock = new QDockWidget(tr("Legend"), this);
   dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-  dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+  dock->setFeatures(QDockWidget::DockWidgetClosable);
 
   QList<QColor> colorList;
   for (const auto &color: colors)
