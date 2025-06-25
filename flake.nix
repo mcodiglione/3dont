@@ -2,7 +2,7 @@
 {
   description = "3dont, ontology pointcloud visualizer";
 
-  inputs.nixpkgs.url = "nixpkgs/nixos-unstable"; # 24.11
+  inputs.nixpkgs.url = "nixpkgs/nixos-25.05";
 
   inputs.flake-utils.url = "github:numtide/flake-utils";
 
@@ -42,11 +42,16 @@
               cmake
               ninja
             ];
+
+            # Fix problem caused by https://github.com/NixOS/nixpkgs/pull/395556 skipping non binary executables (very discriminatory)
+            postFixup = ''
+                wrapQtApp "$out/bin/threedont"
+            '';
             
             buildInputs = with pkgs; [
               eigen
               qt6.qtbase
-            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland libGL ];
+            ] ++ lib.optionals stdenv.hostPlatform.isLinux [ qt6.qtwayland.dev libGL ];
             
             dependencies = with pkgs.python3Packages; [
               numpy
