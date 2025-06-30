@@ -75,6 +75,7 @@ public:
     _fine_render_state = INACTIVE;
     _render_time = std::numeric_limits<double>::infinity();
     _show_text = true;
+    _render_scheduled = false;
 
     // set up TCP server for receiving commands from Python terminal (client)
     _server = new QTcpServer();
@@ -199,7 +200,7 @@ protected:
     }
   }
 
-  virtual void mouseMoveEvent(QMouseEvent *ev) {
+  void mouseMoveEvent(QMouseEvent *ev) override {
     // note: +x right, +y down
     if (ev->buttons() & Qt::LeftButton) {
       if (_fine_render_state != INACTIVE) _fine_render_state = TERMINATE;
@@ -213,7 +214,11 @@ protected:
         else if (ev->modifiers() == Qt::NoModifier)
           _camera.rotate(QVector2D(ev->scenePosition() - _pressPos));
       }
-      renderPoints();
+
+      if (!_render_scheduled) {
+        _render_scheduled = true;
+        QMetaObject::invokeMethod(this, "renderNow", Qt::QueuedConnection); // schedule rendering
+      }
     } else {
       QWindow::mouseMoveEvent(ev);
     }
@@ -259,7 +264,10 @@ protected:
     // note: angleDelta() is in units of 1/8 degree
     _camera.zoom(ev->angleDelta().y() / 120.0f);
     _camera.save();
-    renderPoints();
+    if (!_render_scheduled) {
+      _render_scheduled = true;
+      QMetaObject::invokeMethod(this, "renderNow", Qt::QueuedConnection); // schedule rendering
+    }
     renderPointsFine(500);
   }
 
@@ -276,6 +284,11 @@ protected:
     qreal pixelRatio = this->devicePixelRatio();
     glViewport(0, 0, width() * pixelRatio, height() * pixelRatio);
     _context->doneCurrent();
+  }
+
+  Q_INVOKABLE void renderNow() {
+    _render_scheduled = false;
+    renderPoints();
   }
 
 private slots:
@@ -913,6 +926,8 @@ private:
   QTcpSocket *_socket_waiting_on_enter_key;
   double _render_time;
   bool _show_text;
+
+  bool _render_scheduled;
 };
 
 #endif // __VIEWER_H__
