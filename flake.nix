@@ -43,7 +43,8 @@
               ninja
             ];
 
-            # Fix problem caused by https://github.com/NixOS/nixpkgs/pull/395556 skipping non binary executables (very discriminatory)
+            dontWrapQtApps = true;
+            # See note here: https://nixos.org/manual/nixpkgs/unstable/#qt-runtime-dependencies
             postFixup = ''
                 wrapQtApp "$out/bin/threedont"
             '';

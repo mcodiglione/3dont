@@ -24,7 +24,7 @@ View, query and manually annotate pointclouds ontologies.
 - [x] persistent configuration (platformdirs)
 - [x] nl queries
 - [x] select min max scalar
-- [ ] block dock floating
+- [x] block dock floating
 - [ ] scalar templates
 - [ ] refactor input dialogs
 - [ ] import pointclouds etc.

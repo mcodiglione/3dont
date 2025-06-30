@@ -27,16 +27,16 @@ QModelIndex GraphTreeModel::parent(const QModelIndex &index) const {
   GraphTreeItem *childItem = itemFromIndex(index);
   GraphTreeItem *parentItem = childItem->parent();
   if (parentItem == rootItem) return {};
-  return createIndex(parentItem->childCount(), 0, parentItem);
+  return createIndex(parentItem->childIndex(), 0, parentItem);
 }
 
-int GraphTreeModel::rowCount(const QModelIndex &parent) const {
-  GraphTreeItem *parentItem = parent.isValid() ? itemFromIndex(parent) : rootItem;
-  return parentItem->childCount();
+int GraphTreeModel::rowCount(const QModelIndex &index) const {
+  GraphTreeItem *item = index.isValid() ? itemFromIndex(index) : rootItem;
+  return item->childCount();
 }
 
-int GraphTreeModel::columnCount(const QModelIndex &parent) const {
-  return parent.isValid() ? itemFromIndex(parent)->columnCount() : rootItem->columnCount();
+int GraphTreeModel::columnCount(const QModelIndex &index) const {
+  return index.isValid() ? itemFromIndex(index)->columnCount() : rootItem->columnCount();
 }
 
 QVariant GraphTreeModel::data(const QModelIndex &index, int role) const {
@@ -67,15 +67,15 @@ QVariant GraphTreeModel::headerData(int section, Qt::Orientation orientation, in
   }
 }
 
-bool GraphTreeModel::canFetchMore(const QModelIndex &parent) const {
-  if (!parent.isValid()) return false;
-  GraphTreeItem *item = itemFromIndex(parent);
+bool GraphTreeModel::canFetchMore(const QModelIndex &index) const {
+  if (!index.isValid()) return false;
+  GraphTreeItem *item = itemFromIndex(index);
   return !item->areChildrenLoaded() && !item->isLeaf();
 }
 
-bool GraphTreeModel::hasChildren(const QModelIndex &parent) const {
-  if (!parent.isValid()) return true;
-  GraphTreeItem *item = itemFromIndex(parent);
+bool GraphTreeModel::hasChildren(const QModelIndex &index) const {
+  if (!index.isValid()) return true;
+  GraphTreeItem *item = itemFromIndex(index);
   return (item->areChildrenLoaded() && item->childCount() > 0) || !item->isLeaf();
 }
 
@@ -83,17 +83,17 @@ QModelIndex GraphTreeModel::indexForItem(GraphTreeItem *item) const {
   return item == rootItem ? QModelIndex() : createIndex(item->childIndex(), 0, item->parent());
 }
 
-void GraphTreeModel::fetchMore(const QModelIndex &parent) {
-  if (!parent.isValid()) return;
-  auto *item = itemFromIndex(parent);
+void GraphTreeModel::fetchMore(const QModelIndex &index) {
+  if (!index.isValid()) return;
+  auto *item = itemFromIndex(index);
   if (item->areChildrenLoaded()) return;
   controllerWrapper->viewNodeDetails(item->nodeId().toStdString());
 }
 
-bool GraphTreeModel::removeRows(int row, int count, const QModelIndex &parent) {
-  if (!hasIndex(row, 0, parent)) return false;
-  beginRemoveRows(parent, row, row + count - 1);
-  GraphTreeItem *parentItem = itemFromIndex(parent);
+bool GraphTreeModel::removeRows(int row, int count, const QModelIndex &index) {
+  if (!hasIndex(row, 0, index)) return false;
+  beginRemoveRows(index, row, row + count - 1);
+  GraphTreeItem *parentItem = itemFromIndex(index);
   for (int i = 0; i < count; ++i)
     parentItem->removeChild(row);
   endRemoveRows();

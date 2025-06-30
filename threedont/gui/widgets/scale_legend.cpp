@@ -118,7 +118,6 @@ void ColorScaleLegend::mouseReleaseEvent(QMouseEvent *aEvent) {
   if (aEvent->button() == Qt::LeftButton) {
     currentSlider = -1; // Reset the slider when the mouse is released
     emit rangeUpdated(currMin, currMax);
-    std::cout << "Range updated: " << currMin << " - " << currMax << std::endl;
   } else
     QWidget::mouseReleaseEvent(aEvent);
 }
