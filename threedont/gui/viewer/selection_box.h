@@ -85,7 +85,7 @@ public:
 private:
   void compileProgram() {
     std::string vsCode =
-            "#version 120\n"
+            "#version 150\n"
             "uniform vec2 box_min;\n"
             "uniform vec2 box_max;\n"
             "layout(location = 0) in vec3 position;\n"
@@ -93,7 +93,7 @@ private:
             "  gl_Position = vec4(position.xy * (box_max - box_min) + box_min, 0.0, 1.0);\n"
             "}\n";
     std::string fsCode =
-            "#version 120\n"
+            "#version 150\n"
             "out vec4 fragColor;\n"
             "void main() {\n"
             "  fragColor = vec4(1.0, 1.0, 0.0, 1.0);\n"

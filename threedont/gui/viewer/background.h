@@ -63,7 +63,7 @@ public:
 private:
   void compileProgram() {
     std::string vsCode =
-            "#version 120\n"
+            "#version 150\n"
             "\n"
             "layout(location = 0) in vec4 position;\n"
             "out vec2 coordinate;\n"
@@ -72,7 +72,7 @@ private:
             "  coordinate = position.xy;\n"
             "}\n";
     std::string fsCode =
-            "#version 120\n"
+            "#version 150\n"
             "\n"
             "uniform vec4 colorBottom;\n"
             "uniform vec4 colorTop;\n"

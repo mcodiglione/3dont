@@ -137,7 +137,7 @@ public:
 private:
   void compilePerspProgram() {
     std::string vsCode =
-            "#version 120\n"
+            "#version 150\n"
             "\n"
             "// camera coordinate frame\n"
             "uniform vec3 eye;\n"
@@ -167,7 +167,7 @@ private:
             "  distance = length(p_world);\n"
             "}\n";
     std::string fsCode =
-            "#version 120\n"
+            "#version 150\n"
             "\n"
             "uniform vec3 eye;\n"
             "uniform vec3 right;\n"
@@ -228,7 +228,7 @@ private:
   }
   void compileOrthoProgram() {
     std::string vsCode =
-            "#version 120\n"
+            "#version 150\n"
             "uniform vec3 eye;\n"
             "uniform vec3 right;\n"
             "uniform vec3 up;\n"
@@ -246,7 +246,7 @@ private:
             "  gl_Position = vec4(image_coord, 0.0, 1.0);\n"
             "}\n";
     std::string fsCode =
-            "#version 120\n"
+            "#version 150\n"
             "uniform float eps_x;\n"
             "uniform float eps_y;\n"
             "uniform float cell_size;    // for minor grid cells\n"
