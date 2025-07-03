@@ -78,7 +78,7 @@ private:
             "uniform vec4 colorTop;\n"
             "varying vec2 coordinate;\n"
             "void main() {\n"
-            "  gl_fragColor = mix(colorBottom, colorTop, coordinate.y);\n"
+            "  gl_FragColor = mix(colorBottom, colorTop, coordinate.y);\n"
             "}\n";
 
     _context->makeCurrent(_window);

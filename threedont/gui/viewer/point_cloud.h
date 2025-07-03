@@ -536,13 +536,13 @@ private:
             "uniform float point_size;\n"
             "varying vec4 frag_color;\n"
             "varying vec2 frag_center;\n"
-            "in float inner_radius;\n"
-            "in float outer_radius;\n"
+            "varying float inner_radius;\n"
+            "varying float outer_radius;\n"
             "\n"
             "\n"
             "void main() {\n"
             "  float weight = clamp((outer_radius - length(frag_center - gl_FragCoord.xy)) / (outer_radius - inner_radius), 0, 1);\n"
-            "  gl_fragColor = frag_color * vec4(1, 1, 1, weight);\n"
+            "  gl_FragColor = frag_color * vec4(1, 1, 1, weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());

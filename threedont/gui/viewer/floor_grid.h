@@ -215,7 +215,7 @@ private:
             "\n"
             "  float blur_weight = clamp((max_dist_visible - distance) / (max_dist_visible - max_dist_in_focus), 0.0, 1.0);\n"
             "  vec4 c = line_color * weight + floor_color * (1.0 - weight);\n"
-            "  gl_fragColor = vec4(c.xyz, c.w * blur_weight);\n"
+            "  gl_FragColor = vec4(c.xyz, c.w * blur_weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _persp_program.addShaderFromSourceCode(QOpenGLShader::Vertex,
@@ -270,7 +270,7 @@ private:
             "  weight = max(weight, y_max_weight * (1.0 + (floor_coord.y - cell_max.y) / eps_y));\n"
             "  weight *= 0.7;\n"
 
-            "  gl_fragColor = floor_color * (1.0 - weight) + line_color * (weight);\n"
+            "  gl_FragColor = floor_color * (1.0 - weight) + line_color * (weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _ortho_program.addShaderFromSourceCode(QOpenGLShader::Vertex,

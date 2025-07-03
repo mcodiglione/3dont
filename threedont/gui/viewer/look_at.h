@@ -83,7 +83,7 @@ private:
             "#version 120\n"
             "varying vec3 vcolor;\n"
             "void main() {\n"
-            "  gl_fragColor = vec4(vcolor, 1.0);\n"
+            "  gl_FragColor = vec4(vcolor, 1.0);\n"
             "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());
