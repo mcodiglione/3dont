@@ -74,8 +74,8 @@ void ControllerWrapper::start() {
   callPythonMethod(controller, "start", "");
 }
 
-void ControllerWrapper::annotateNode(const std::string &subject, const std::string &predicate, const std::string &object) {
-  callPythonMethod(controller, "annotate_node", "sss", subject.c_str(), predicate.c_str(), object.c_str());
+void ControllerWrapper::annotateNode(const std::string &subject, const std::string &predicate, const std::string &object, const std::string &author) {
+  callPythonMethod(controller, "annotate_node", "ssss", subject.c_str(), predicate.c_str(), object.c_str(), author.c_str());
 }
 
 void ControllerWrapper::selectAllSubjects(const std::string &predicate, const std::string &object) {
@@ -94,7 +94,7 @@ void ControllerWrapper::configureAWSConnection(const std::string &access_key_id,
   callPythonMethod(controller, "configure_AWS_connection", "ssss", access_key_id.c_str(), secret_access_key.c_str(), region.c_str(), profile_name.c_str());
 }
 
-void ControllerWrapper::addSensor(const std::string &sensor_name, const std::string &object_name, const std::string &property_name, const std::string &cert_pem_path, const std::string &private_key_path, const std::string &root_ca_path, const std::string &mqtt_topic, const std::string &client_id,) {
+void ControllerWrapper::addSensor(const std::string &sensor_name, const std::string &object_name, const std::string &property_name, const std::string &cert_pem_path, const std::string &private_key_path, const std::string &root_ca_path, const std::string &mqtt_topic, const std::string &client_id) {
   callPythonMethod(controller, "add_sensor", "ssssssss", sensor_name.c_str(), object_name.c_str(), property_name.c_str(), cert_pem_path.c_str(), private_key_path.c_str(), root_ca_path.c_str(), mqtt_topic.c_str(), client_id.c_str());
 }
 
@@ -102,8 +102,8 @@ void ControllerWrapper::updateSensorsAndReason() {
   callPythonMethod(controller, "update_sensors_and_reason", "");
 }
 
-void ControllerWrapper::provisionalSetArgs(const std::string &graph_uri, const std::string &ont_path, const std::string &pop_ont_path, const std::string &namespace, const std::string &populated_namespace, const std::string &virtuoso_isql) {
-  callPythonMethod(controller, "provisional_set_args", "ssssss", graph_uri.c_str(), ont_path.c_str(), pop_ont_path.c_str(), namespace.c_str(), populated_namespace.c_str(), virtuoso_isql.c_str());
+void ControllerWrapper::provisionalSetArgs(const std::string &graph_uri, const std::string &ont_path, const std::string &pop_ont_path, const std::string &Namespace, const std::string &populated_namespace, const std::string &virtuoso_isql) {
+  callPythonMethod(controller, "provisional_set_args", "ssssss", graph_uri.c_str(), ont_path.c_str(), pop_ont_path.c_str(), Namespace.c_str(), populated_namespace.c_str(), virtuoso_isql.c_str());
 }
 void ControllerWrapper::openProject(const std::string &projectName) {
   callPythonMethod(controller, "open_project", "s", projectName.c_str());

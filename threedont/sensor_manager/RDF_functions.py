@@ -1,5 +1,5 @@
-import Classes as cl
-import aws_iot_interface as aws
+from . import Classes as cl
+from . import aws_iot_interface as aws
 import os
 import importlib
 import inspect
