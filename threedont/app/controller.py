@@ -145,10 +145,10 @@ class Controller:
         self._send_legend(scalars)
 
     @report_errors_to_gui
-    def connect_to_server(self, url, namespace="http://3DOntCore"):
+    def connect_to_server(self, url, db_url, namespace="http://3DOntCore"):
         print("Loading all the points... ", url)
         self.gui.set_statusbar_content("Connecting to server...", 5)
-        self.sparql_client = SparqlEndpoint(url, namespace="http://3DOntCore")
+        self.sparql_client = SparqlEndpoint(url, db_url, namespace="http://3DOntCore")
         print("Connected to server")
         self.gui.set_statusbar_content("Loading points from server...", 60)
         coords, colors = self.sparql_client.get_all()
