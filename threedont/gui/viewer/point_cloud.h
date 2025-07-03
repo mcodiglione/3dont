@@ -26,7 +26,7 @@ public:
   PointCloud(QWindow *window, QOpenGLContext *context)
       : _context(context),
         _window(window),
-        _point_size(100.0f),
+        _point_size(0.0f),
         _num_points(0),
         _buffer_positions(0),
         _buffer_colors(0),
@@ -519,7 +519,7 @@ private:
             "    inner_radius = 0.5 * size / d * height / (2.0 * image_t);\n"
             "    outer_radius = max(1.0, 2.0 * inner_radius);\n"
             "  }\n"
-            "  gl_PointSize = outer_radius * 2.0;\n"
+            "  gl_PointSize = 1;\n" //gl_PointSize = outer_radius * 2.0;\n"
             "}\n";
     std::string fsCode =
             "#version 120\n"
