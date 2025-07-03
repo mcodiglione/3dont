@@ -65,6 +65,7 @@
               editdistance
               jarowinkler
               boto3
+              pyqt6
               self.packages.${system}.awsIoTPythonSDK
               self.packages.${system}.owlready2
             ];
