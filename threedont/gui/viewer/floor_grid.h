@@ -137,7 +137,7 @@ public:
 private:
   void compilePerspProgram() {
     std::string vsCode =
-            "#version 150\n"
+            "#version 120\n"
             "\n"
             "// camera coordinate frame\n"
             "uniform vec3 eye;\n"
@@ -152,9 +152,9 @@ private:
             "uniform float r;  // right\n"
             "uniform float t;  // top\n"
             "\n"
-            "layout(location = 0) in vec3 position;\n"
-            "out vec2 floor_coord;\n"
-            "out float distance;\n"
+            "attribute vec3 position;\n"
+            "varying vec2 floor_coord;\n"
+            "varying float distance;\n"
             "\n"
             "void main() {\n"
             "  vec2 image_coord = position.xy * vec2(2.0 * r, h_hi - h_lo) + vec2(-r, h_lo);\n"
@@ -167,7 +167,7 @@ private:
             "  distance = length(p_world);\n"
             "}\n";
     std::string fsCode =
-            "#version 150\n"
+            "#version 120\n"
             "\n"
             "uniform vec3 eye;\n"
             "uniform vec3 right;\n"
@@ -184,9 +184,8 @@ private:
             "uniform float max_dist_in_focus;\n"
             "uniform float max_dist_visible;\n"
             "\n"
-            "in vec2 floor_coord;\n"
-            "in float distance;\n"
-            "out vec4 fragColor;\n"
+            "varying vec2 floor_coord;\n"
+            "varying float distance;\n"
             "\n"
             "float compute_weight(vec3 n, vec2 image_coord) {\n"
             "  vec3 line = transpose(mat3(right, up, view)) * n;\n"
@@ -216,7 +215,7 @@ private:
             "\n"
             "  float blur_weight = clamp((max_dist_visible - distance) / (max_dist_visible - max_dist_in_focus), 0.0, 1.0);\n"
             "  vec4 c = line_color * weight + floor_color * (1.0 - weight);\n"
-            "  fragColor = vec4(c.xyz, c.w * blur_weight);\n"
+            "  gl_fragColor = vec4(c.xyz, c.w * blur_weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _persp_program.addShaderFromSourceCode(QOpenGLShader::Vertex,
@@ -228,7 +227,7 @@ private:
   }
   void compileOrthoProgram() {
     std::string vsCode =
-            "#version 150\n"
+            "#version 120\n"
             "uniform vec3 eye;\n"
             "uniform vec3 right;\n"
             "uniform vec3 up;\n"
@@ -236,8 +235,8 @@ private:
             "uniform float z_floor;\n"
             "uniform float r;\n"
             "uniform float t;\n"
-            "layout(location = 0) in vec3 position;\n"
-            "out vec2 floor_coord;\n"
+            "attribute vec3 position;\n"
+            "varying vec2 floor_coord;\n"
             "void main() {\n"
             "  vec2 image_coord = (position.xy - 0.5) * 2.0;\n"
             "  vec3 o = eye + image_coord.x * r * right + image_coord.y * t * up;\n"
@@ -246,15 +245,14 @@ private:
             "  gl_Position = vec4(image_coord, 0.0, 1.0);\n"
             "}\n";
     std::string fsCode =
-            "#version 150\n"
+            "#version 120\n"
             "uniform float eps_x;\n"
             "uniform float eps_y;\n"
             "uniform float cell_size;    // for minor grid cells\n"
             "uniform float line_weight;  // for minor grid lines\n"
             "uniform vec4 floor_color;\n"
             "uniform vec4 line_color;\n"
-            "in vec2 floor_coord;\n"
-            "out vec4 fragColor;\n"
+            "varying vec2 floor_coord;\n"
             "void main() {\n"
             "  vec2 cell_idx = floor(floor_coord / cell_size);\n"
             "  vec2 cell_min = cell_idx * cell_size;\n"
@@ -272,7 +270,7 @@ private:
             "  weight = max(weight, y_max_weight * (1.0 + (floor_coord.y - cell_max.y) / eps_y));\n"
             "  weight *= 0.7;\n"
 
-            "  fragColor = floor_color * (1.0 - weight) + line_color * (weight);\n"
+            "  gl_fragColor = floor_color * (1.0 - weight) + line_color * (weight);\n"
             "}\n";
     _context->makeCurrent(_window);
     _ortho_program.addShaderFromSourceCode(QOpenGLShader::Vertex,

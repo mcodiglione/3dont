@@ -68,23 +68,22 @@ public:
 private:
   void compileProgram() {
     std::string vsCode =
-            "#version 150\n"
+            "#version 120\n"
             "uniform float d;\n"
             "uniform vec3 lookat;\n"
             "uniform mat4 mvp;\n"
-            "layout(location = 0) in vec3 position;\n"
-            "layout(location = 1) in vec3 color;\n"
-            "out vec3 vcolor;\n"
+            "attribute vec3 position;\n"
+            "attribute vec3 color;\n"
+            "varying vec3 vcolor;\n"
             "void main() {\n"
             "  gl_Position = mvp * vec4(d * position + lookat, 1.0);\n"
             "  vcolor = color;\n"
             "}\n";
     std::string fsCode =
-            "#version 150\n"
-            "in vec3 vcolor;\n"
-            "out vec4 fragColor;\n"
+            "#version 120\n"
+            "varying vec3 vcolor;\n"
             "void main() {\n"
-            "  fragColor = vec4(vcolor, 1.0);\n"
+            "  gl_fragColor = vec4(vcolor, 1.0);\n"
             "}\n";
     _context->makeCurrent(_window);
     _program.addShaderFromSourceCode(QOpenGLShader::Vertex, vsCode.c_str());
