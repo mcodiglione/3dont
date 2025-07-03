@@ -26,7 +26,7 @@ public:
   PointCloud(QWindow *window, QOpenGLContext *context)
       : _context(context),
         _window(window),
-        _point_size(0.0f),
+        _point_size(100.0f),
         _num_points(0),
         _buffer_positions(0),
         _buffer_colors(0),
