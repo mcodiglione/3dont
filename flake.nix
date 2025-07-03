@@ -60,13 +60,13 @@
               rdflib
               networkx
               openai
-              owlready2
               platformdirs
               nltk
               editdistance
               jarowinkler
               boto3
-              AWSIoTPythonSDK
+              self.packages.${system}.awsIoTPythonSDK
+              self.packages.${system}.owlready2
             ];
           };
           owlready2 = pkgs.python3Packages.callPackage ({buildPythonPackage, fetchPypi, distutils}:
@@ -88,7 +88,7 @@
             src = pkgs.fetchPypi {
               pname = "AWSIoTPythonSDK";
               inherit version;
-              hash = "sha256-rf5rJk6KaEIfG+Slj4+jAqfNZIdZchP0WD/Vy0qbeyI=";
+              hash = "sha256-hLRAxZKfM9oc0gTzrQ6okeIIY33WPen7A57X1J14wwM=";
             };
             doCheck = false;
             pythonImportsCheck = [ "AWSIoTPythonSDK" ];

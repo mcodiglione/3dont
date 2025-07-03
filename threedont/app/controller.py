@@ -274,7 +274,7 @@ class Controller:
 
     ##### ONLY FOR DEBUGGING, UNTIL REAL ARG SETTING IS PREPARED IN "CONNECT TO SERVER" METHOD
     @report_errors_to_gui
-    def provisional_set_Args(
+    def provisional_set_args(
         self,
         graph_uri,
         ont_path,
