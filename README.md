@@ -23,7 +23,8 @@ View, query and manually annotate pointclouds ontologies.
 - [x] adjust licensing
 - [x] persistent configuration (platformdirs)
 - [x] nl queries
-- [ ] select min max scalar
+- [x] select min max scalar
+- [x] block dock floating
 - [ ] scalar templates
 - [ ] refactor input dialogs
 - [ ] import pointclouds etc.
@@ -33,6 +34,7 @@ View, query and manually annotate pointclouds ontologies.
 - [ ] better loading screen
 - [ ] gui error report (generic)
 - [ ] override config with cli arguments
+- [ ] use oxrdflib in rdflib as query engine
 - [ ] embed virtuoso in the application
  
 ## License

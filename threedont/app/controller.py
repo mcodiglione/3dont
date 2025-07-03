@@ -361,3 +361,6 @@ class Controller:
         self.project.save()
         self.gui.set_statusbar_content(f"Created project: {project_name}", 5)
         self.open_project(project_name)  # maybe remove this
+
+    def set_color_scale(self, low, high):
+        self.viewer_client.color_map("jet", (low, high))

@@ -1,11 +1,12 @@
 import argparse
+from platformdirs import user_data_dir
 
 from threedont import Controller
 from .app.state import Config, AppState
 
 # Setup dependencies
 import nltk
-nltk.download("wordnet")
+nltk.download("wordnet", user_data_dir("threedont"))
 
 def main():
     parser = argparse.ArgumentParser(description='3Dont')

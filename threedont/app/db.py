@@ -13,8 +13,8 @@ HIGHLIGHT_COLOR = [1.0, 0.0, 0.0]  # TODO make this a parameter
 
 
 class WrongResultFormatException(Exception):
-    def __init__(self, expcected, got):
-        message = f"Expected {expcected}, but got {got}"
+    def __init__(self, expected, got):
+        message = f"Expected {expected}, but got {got}"
         super().__init__(message)
 
 

@@ -95,7 +95,7 @@ void MainLayout::displayNodeDetails(const QStringList &details, const QString &p
   if (!isDetailsOpen) {
     QDockWidget *dock = new QDockWidget(tr("Point details"), this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+    dock->setFeatures(QDockWidget::DockWidgetClosable);
     connect(dock, &QDockWidget::visibilityChanged, this, &MainLayout::detailsClosed);
 
     graphTreeModel = new GraphTreeModel(controllerWrapper, this);
@@ -147,13 +147,15 @@ void MainLayout::setLegend(const QStringList &colors, const QStringList &labels)
 
   QDockWidget *dock = new QDockWidget(tr("Legend"), this);
   dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea | Qt::BottomDockWidgetArea);
-  dock->setFeatures(QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable);
+  dock->setFeatures(QDockWidget::DockWidgetClosable);
 
   QList<QColor> colorList;
   for (const auto &color: colors)
     colorList.append(QColor(color));
 
   auto *legend = new ColorScaleLegend(colorList, labels, dock);
+  connect(legend, &ColorScaleLegend::rangeUpdated, [this](double min, double max) {controllerWrapper->setColorScale(min, max); });
+
   dock->setWidget(legend);
   addDockWidget(Qt::BottomDockWidgetArea, dock);
   legendDock = dock;
