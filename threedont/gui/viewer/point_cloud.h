@@ -467,7 +467,7 @@ public:
 private:
   void compileProgram() {
     std::string vsCode =
-            "#version 330 core\n"
+            "#version 120\n"
             // "precision highp float;\n"
             // "precision highp int;\n"
             "\n"
@@ -529,7 +529,7 @@ private:
             "  gl_PointSize = outer_radius * 2.0;\n"
             "}\n";
     std::string fsCode =
-            "#version 330 core\n"
+            "#version 120\n"
             // "precision highp float;\n"
             // "precision highp int;\n"
             "\n"

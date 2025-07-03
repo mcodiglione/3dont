@@ -68,7 +68,7 @@ public:
 private:
   void compileProgram() {
     std::string vsCode =
-            "#version 330 core\n"
+            "#version 120\n"
             "uniform float d;\n"
             "uniform vec3 lookat;\n"
             "uniform mat4 mvp;\n"
@@ -80,7 +80,7 @@ private:
             "  vcolor = color;\n"
             "}\n";
     std::string fsCode =
-            "#version 330 core\n"
+            "#version 120\n"
             "in vec3 vcolor;\n"
             "out vec4 fragColor;\n"
             "void main() {\n"
