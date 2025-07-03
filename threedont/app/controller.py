@@ -342,7 +342,6 @@ class Controller:
         self.gui.set_statusbar_content(f"Opened project: {project_name}", 5)
         self.connect_to_server(
             self.project.get_graphUri(),
-            self.project.get_dbUrl(),
             self.project.get_graphNamespace(),
         )
 

@@ -32,7 +32,7 @@ class SparqlEndpoint:
         else:
             self.namespace = namespace + "#"
         # TODO generalize outside of virtuoso
-        self.endpoint = db_url + "/sparql"
+        self.endpoint = self.project.dbUrl + "/sparql"
         self.sparql = SPARQLWrapper(self.endpoint)
         self.sparql.setReturnFormat(
             TURTLE
