@@ -66,6 +66,7 @@
               editdistance
               jarowinkler
               boto3
+              AWSIoTPythonSDK
             ];
           };
           owlready2 = pkgs.python3Packages.callPackage ({buildPythonPackage, fetchPypi, distutils}:
@@ -81,6 +82,17 @@
               ];
             }
           ) {};
+          awsIoTPythonSDK = pkgs.python3Packages.buildPythonPackage rec {
+            pname = "AWSIoTPythonSDK";
+            version = "1.4.9";
+            src = pkgs.fetchPypi {
+              pname = "AWSIoTPythonSDK";
+              inherit version;
+              hash = "sha256-rf5rJk6KaEIfG+Slj4+jAqfNZIdZchP0WD/Vy0qbeyI=";
+            };
+            doCheck = false;
+            pythonImportsCheck = [ "AWSIoTPythonSDK" ];
+          };
         };
 
         devShells = {
